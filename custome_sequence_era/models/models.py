@@ -20,11 +20,11 @@ class CustomSequence(models.Model):
 
         # Optionally modify the prefix
         if self.prefix:
-            prefix = f"{self.prefix}"
+            prefix = f"{self.prefix}{be_year}"
 
         # Customize the suffix
         # For example, include the Buddha Era year in the suffix
         be_year = self._get_buddha_era_year()
-        suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
+        # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
 
         return prefix, suffix
