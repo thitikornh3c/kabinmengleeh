@@ -11,22 +11,20 @@ class CustomSequence(models.Model):
         be_year = current_year + 543
         return be_year
 
-    def _next_number(self):
-        # Custom sequence generation logic
-        be_year = self._get_buddha_era_year()
-        # Call the parent method to get the next number
-        next_number = super()._next_number()
-        # Modify the sequence format to include BE year
-        # Format: BE_YEAR/SEQUENCE_NUMBER
-        return f"{be_year}/{next_number}"
+    def _get_prefix_suffix(self):
+        """
+        Override to customize the sequence prefix and suffix.
+        """
+        # Call the super method to get the default prefix and suffix
+        prefix, suffix = super()._get_prefix_suffix()
 
-    def _get_next_number(self):
-        # Override default format to include custom year
-        sequence_number = super()._get_next_number()
+        # Optionally modify the prefix
+        if self.prefix:
+            prefix = f"{self.prefix}"
+
+        # Customize the suffix
+        # For example, include the Buddha Era year in the suffix
         be_year = self._get_buddha_era_year()
-        return f"{be_year}/{sequence_number}"
-    
-    def _get_prefix_suffix(self, date=None, date_range=None):
-        interpolated_prefix = (self.prefix) if f"{self.prefix}TEST" else ""
-        interpolated_suffix = (self.suffix) if self.suffix else ""
-        return  interpolated_prefix, interpolated_suffix
+        suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
+
+        return prefix, suffix
