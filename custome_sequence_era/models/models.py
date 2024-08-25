@@ -8,10 +8,9 @@ class CustomSequence(models.Model):
     def _get_buddha_era_year(self):
         # Calculate Buddha Era year
         current_year = datetime.now().year
-        current_month = datetime.now().month
-        current_day = datetime.now().day
         be_year = current_year + 543
-        return f"{be_year}{current_month}{current_day}"
+        month_date = datetime.now().strftime("%m%d")
+        return f"{be_year}{month_date}"
 
     def _get_prefix_suffix(self):
         """
