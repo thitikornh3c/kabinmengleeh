@@ -27,4 +27,6 @@ class CustomSequence(models.Model):
         return f"{be_year}/{sequence_number}"
     
     def _get_prefix_suffix(self, date=None, date_range=None):
-        return  self.prefix,  self.suffix
+        interpolated_prefix = (self.prefix) if self.prefix else ""
+        interpolated_suffix = (self.suffix) if self.suffix else ""
+        return  interpolated_prefix, interpolated_suffix
