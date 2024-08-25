@@ -10,7 +10,7 @@ class CustomSequence(models.Model):
         current_year = datetime.now().year
         be_year = current_year + 543
         month_date = datetime.now().strftime("%m%d")
-        return f"{be_year}{month_date}"
+        return f"{be_year[2:4]}{month_date}"
 
     def _get_prefix_suffix(self):
         """
