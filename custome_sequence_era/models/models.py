@@ -17,6 +17,7 @@ class CustomSequence(models.Model):
         """
         # Call the super method to get the default prefix and suffix
         prefix, suffix = super()._get_prefix_suffix()
+        be_year = self._get_buddha_era_year()
 
         # Optionally modify the prefix
         if self.prefix:
@@ -24,7 +25,7 @@ class CustomSequence(models.Model):
 
         # Customize the suffix
         # For example, include the Buddha Era year in the suffix
-        be_year = self._get_buddha_era_year()
+      
         # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
 
         return prefix, suffix
