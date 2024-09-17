@@ -14,7 +14,6 @@ class HRPayslip(models.Model):
                 ('partner_id', '=', slip.employee_id.id)
                 # ('state', '=', 'active')
             ])
-            print(loan_contracts)
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
             
@@ -23,7 +22,7 @@ class HRPayslip(models.Model):
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'LOAN_DEDUCTION':
                     line.total += 500
-                    line.name = loan_contracts
+                    line.name = slip.employee_id.id
     # @api.model
     # def create(self, vals):
     #     # Override create method to automatically add loan deduction rule
