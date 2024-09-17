@@ -33,13 +33,13 @@ class HRPayslip(models.Model):
                         line.name = loan
 
 
-    def prepare_report_data(self):
-        # Ensure the attribute `move_type` is present if required
-        records = self.env['hr.payslip'].search([])
-        for record in records:
-            if not hasattr(record, 'move_type'):
-                record.move_type = None  # Default value if not present
-        return records
+    # def prepare_report_data(self):
+    #     # Ensure the attribute `move_type` is present if required
+    #     records = self.env['hr.payslip'].search([])
+    #     for record in records:
+    #         if not hasattr(record, 'move_type'):
+    #             record.move_type = None  # Default value if not present
+    #     return records
     # @api.model
     # def create(self, vals):
     #     # Override create method to automatically add loan deduction rule
