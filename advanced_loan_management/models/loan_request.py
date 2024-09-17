@@ -254,12 +254,8 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
                     'amount': amount,
                     'interest_amount': interest_amount,
                     'total_amount': total_amount,
-                    'interest_account_id': self.env.ref('advanced_loan_management.'
-                                                        'loan_management_'
-                                                        'inrst_accounts').id,
-                    'repayment_account_id': self.env.ref('advanced_loan_management.'
-                                                         'demo_'
-                                                         'loan_accounts').id,
+                    'interest_account_id': 87,
+                    'repayment_account_id': 88,
                     'loan_id': loan.id})
                 date_start += relativedelta(months=1)
         return True
