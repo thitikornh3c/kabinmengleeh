@@ -9,6 +9,7 @@
         'views/loan_view.xml',
         'views/loan_installment_view.xml',
         'views/loan_menu.xml',
+        'views/loan_action.xml',
     ],
     'icon:': ['static/description/icon.png'],
     'installable': True,
