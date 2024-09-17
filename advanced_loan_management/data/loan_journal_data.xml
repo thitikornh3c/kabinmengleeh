@@ -10,16 +10,16 @@
         </record>
 
         <!--        Demo data for account.account-->
-         <record id="loan_management_disburse_accounts" model="account.account">
+        <record id="loan_management_disburse_accounts" model="account.account">
             <field name="name">Loan Disburse</field>
             <field name="code">200019</field>
-            <field name="account_type" ref="account.data_account_type_liability_current"/>
+            <field name="account_type">liability_current</field>
         </record>
 
         <record id="loan_management_inrst_accounts" model="account.account">
             <field name="name">Loan Interest</field>
             <field name="code">200011</field>
-            <field name="account_type" ref="account.data_account_type_liability_current"/>
+            <field name="account_type">liability_current</field>
         </record>
 
         <record id="demo_loan_accounts" model="account.account">
