@@ -32,7 +32,7 @@
     'company': "Cybrosys Techno Solutions",
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['mail', 'account', 'base', 'hr'],
+    'depends': ['mail', 'account', 'base', 'hr_payroll'],
     'demo': ['data/loan_journal_data.xml'],
     'data': [
         'security/loan_management_groups.xml',
