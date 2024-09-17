@@ -38,7 +38,6 @@
         'security/loan_management_groups.xml',
         'security/loan_management_security.xml',
         'security/ir.model.access.csv',
-        'data/salary_rule_data.xml',
         'data/ir_sequence_data.xml',
         'views/loan_type_views.xml',
         'views/loan_request_views.xml',
