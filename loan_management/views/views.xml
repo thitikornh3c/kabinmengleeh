@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="loan_management.list">
+      <field name="name">loan_management list</field>
+      <field name="model">loan_management.loan_management</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="loan_management.action_window">
+      <field name="name">loan_management window</field>
+      <field name="res_model">loan_management.loan_management</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="loan_management.action_server">
+      <field name="name">loan_management server</field>
+      <field name="model_id" ref="model_loan_management_loan_management"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="loan_management" id="loan_management.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="loan_management.menu_1" parent="loan_management.menu_root"/>
+    <menuitem name="Menu 2" id="loan_management.menu_2" parent="loan_management.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="loan_management.menu_1_list" parent="loan_management.menu_1"
+              action="loan_management.action_window"/>
+    <menuitem name="Server to list" id="loan_management" parent="loan_management.menu_2"
+              action="loan_management.action_server"/>
+-->
+  </data>
+</odoo>

@@ -1,9 +1,0 @@
-<odoo>
-    <!-- Define the action for Loan Management -->
-    <record id="action_loan_management" model="ir.actions.act_window">
-        <field name="name">Loan Management</field>
-        <field name="res_model">loan.management</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_loan_tree"/>
-    </record>
-</odoo>

@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_loan_management_user,loan.management user,model_loan_management,,1,1,1,1
-access_installment_user,loan.installment user,model_loan_installment,,1,1,1,1
-access_payroll_structure_user,hr.payroll.structure user,model_hr_payroll_structure,,1,1,1,1
-access_loan_deduction_user,loan.deduction user,model_loan_deduction,,1,1,1,1

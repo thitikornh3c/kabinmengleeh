@@ -7,7 +7,7 @@
                 <field name="name"/>
                 <field name="employee_id"/>
                 <field name="amount"/>
-                <field name="state"/>
+                <field name="date_start"/>
             </tree>
         </field>
     </record>
@@ -22,16 +22,16 @@
                         <field name="name"/>
                         <field name="employee_id"/>
                         <field name="amount"/>
-                        <field name="state"/>
+                        <field name="date_start"/>
                     </group>
                     <notebook>
                         <page string="Installments">
-                            <field name="installment_ids">
-                                <tree>
+                            <field name="installments">
+                                <tree editable="bottom">
                                     <field name="name"/>
-                                    <field name="amount"/>
+                                    <field name="installment_amount"/>
                                     <field name="due_date"/>
-                                    <field name="state"/>
+                                    <field name="paid"/>
                                 </tree>
                             </field>
                         </page>

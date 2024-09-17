@@ -1,6 +1,0 @@
-<odoo>
-    <!-- Main menu item for Loan Management -->
-    <menuitem id="menu_loan_management" name="Loan Management" 
-              sequence="10" 
-              action="h3c_loan_management.action_loan_management"/>
-</odoo>
