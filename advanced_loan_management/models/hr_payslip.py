@@ -5,7 +5,7 @@ class HRPayslip(models.Model):
 
     @api.model
     def compute_sheet(self):
-        super(HrPayslip, self).compute_sheet()
+        super(HRPayslip, self).compute_sheet()
         
         for slip in self:
             # Access the custom input from employee record
