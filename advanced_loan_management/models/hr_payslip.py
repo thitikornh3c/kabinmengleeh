@@ -3,7 +3,7 @@ from odoo import models, fields, api
 class HRPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    @api.multi
+    @api.model
     def compute_sheet(self):
         super(HrPayslip, self).compute_sheet()
         
