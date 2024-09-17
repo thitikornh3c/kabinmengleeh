@@ -17,9 +17,8 @@
         </record>
 
         <record id="loan_management_inrst_accounts" model="account.account">
-            <field name="name">Loan Interest</field>
-            <field name="code">200011</field>
-            <field name="account_type">liability_current</field>
+            <field name="name">Loan Management Interest Account</field>
+            <field name="code">LMINT</field>
         </record>
 
         <record id="demo_loan_accounts" model="account.account">
