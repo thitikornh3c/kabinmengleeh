@@ -11,7 +11,7 @@
         'views/loan_views.xml',
         'views/payroll_views.xml',
     ],
-    'icon': '/loan_management/static/description/icon.png',
+    'icon': '/h3c_loan_management/static/description/icon.png',
     'installable': True,
     'application': True,
 }
