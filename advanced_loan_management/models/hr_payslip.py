@@ -22,6 +22,7 @@ class HRPayslip(models.Model):
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'LOAN_DEDUCTION':
                     line.total += 500
+                    line.name = loan_contracts
                     for loan in loan_contracts:
                         line.name = loan
     # @api.model
