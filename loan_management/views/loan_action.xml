@@ -5,7 +5,6 @@
         <field name="name">Loans</field>
         <field name="res_model">loan.management</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_loan_tree"/> <!-- Ensure this view is defined -->
     </record>
 
     <!-- Action for Installments -->
@@ -13,6 +12,12 @@
         <field name="name">Installments</field>
         <field name="res_model">loan.installment</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_installment_tree"/> <!-- Ensure this view is defined -->
+         <!-- Ensure this view is defined -->
+        <!-- <field name="view_id" ref="view_installment_tree"/> -->
+    </record>
+    
+    <record id="salary_structure_category" model="hr.salary.structure.category">
+        <field name="name">Base Salary</field>
+        <!-- other fields -->
     </record>
 </odoo>

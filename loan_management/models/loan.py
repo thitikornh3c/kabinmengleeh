@@ -1,6 +1,6 @@
 from odoo import models, fields
 
-class Loan(models.Model):
+class LoanManagement(models.Model):
     _name = 'loan.management'
     _description = 'Loan Management'
 

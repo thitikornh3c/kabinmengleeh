@@ -6,6 +6,7 @@
     'description': 'Module for managing loans, installments, and payroll deductionsaccount cost',
     'category': 'Accounting',
     'author': 'Happy Three Creation',
+    'depends': ['base', 'hr_payroll'],
     'data': [
         'views/loan_view.xml',
         'views/loan_installment_view.xml',

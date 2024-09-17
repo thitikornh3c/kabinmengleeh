@@ -3,6 +3,12 @@ from odoo import models, fields, api
 class LoanInstallment(models.Model):
     _name = 'loan.installment'
     _description = 'Loan Installment'
+    
+    category_id = fields.Many2one(
+        'hr.salary.structure.category',
+        string='Salary Structure Category',
+        default=lambda self: self.env.ref('hr_payroll.salary_structure_category').id
+    )
 
     name = fields.Char(string='Installment Reference', required=True)
     loan_id = fields.Many2one('loan.management', string='Loan', required=True)
