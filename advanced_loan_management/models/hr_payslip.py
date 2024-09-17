@@ -11,7 +11,7 @@ class HRPayslip(models.Model):
 
         for slip in self:
             loan_contracts = self.env['loan.request'].search([
-                ('partner_id.id', '=', slip.employee_id.id)
+                ('partner_id_id', '=', slip.employee_id.id)
                 # ('state', '=', 'active')
             ])
             # Access the custom input from employee record
