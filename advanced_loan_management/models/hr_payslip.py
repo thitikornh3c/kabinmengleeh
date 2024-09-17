@@ -3,6 +3,12 @@ from odoo import models, fields, api
 class HRPayslip(models.Model):
     _inherit = 'hr.payslip'
 
+    move_type = fields.Selection([
+        ('out_invoice', 'Invoice Out'),
+        ('in_invoice', 'Invoice In'),
+        ('slip', 'Slip')
+    ], string='Move Type')
+
     @api.model
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
@@ -25,6 +31,15 @@ class HRPayslip(models.Model):
                     line.name = loan_contracts[0]
                     for loan in loan_contracts:
                         line.name = loan
+
+
+    def prepare_report_data(self):
+        # Ensure the attribute `move_type` is present if required
+        records = self.env['hr.payslip'].search([])
+        for record in records:
+            if not hasattr(record, 'move_type'):
+                record.move_type = None  # Default value if not present
+        return records
     # @api.model
     # def create(self, vals):
     #     # Override create method to automatically add loan deduction rule
