@@ -1,7 +1,7 @@
 {
-    'name': 'Kabin Loan Management',
+    'name': 'Loan Management',
     'version': '1.0',
-    'category': 'Accounting',
+    'category': 'Finance',
     'summary': 'Manage employee loans and payroll deductions',
     'description': 'Module for managing loans, installments, and payroll deductions',
     'author': 'Your Name',
@@ -13,7 +13,6 @@
         'views/loan_menus.xml',
         'views/loan_actions.xml',
     ],
-    'icon': '/h3c_loan_management/static/description/icon.png',
     'installable': True,
     'application': True,
 }
