@@ -50,6 +50,7 @@
         'wizard/reject_reason_views.xml',
         'report/loan_management_reports.xml',
         'report/loan_report_templates.xml',
+        'data/load_data.xml'
     ],
     'images': ['static/description/banner.jpg'],
     'license': 'AGPL-3',

@@ -1,0 +1,41 @@
+<odoo>
+    <!-- Define Loan Management Interest Account -->
+    <record id="loan_management_inrst_accounts" model="account.account">
+        <field name="name">Loan Management Interest Account</field>
+        <field name="code">LMINT</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses"/>
+        <field name="reconcile" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Define Loan Management Principal Account -->
+    <record id="loan_management_principal_accounts" model="account.account">
+        <field name="name">Loan Management Principal Account</field>
+        <field name="code">LMPRINCIPAL</field>
+        <field name="user_type_id" ref="account.data_account_type_liability"/>
+        <field name="reconcile" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Define Loan Management Configuration Settings -->
+    <record id="loan_management_config_settings" model="res.config.settings">
+        <field name="name">Loan Management Configuration</field>
+        <field name="loan_interest_rate" eval="0.05"/> <!-- Default interest rate -->
+        <field name="loan_repayment_period" eval="12"/> <!-- Default repayment period in months -->
+    </record>
+
+    <!-- Define Loan Contract Type -->
+    <record id="loan_contract_type" model="loan.contract.type">
+        <field name="name">Standard Loan</field>
+        <field name="interest_rate" eval="0.05"/> <!-- Default interest rate -->
+    </record>
+
+    <!-- Add demo data if required -->
+    <!-- <record id="demo_loan_contract" model="loan.contract">
+        <field name="name">Demo Loan</field>
+        <field name="employee_id" ref="hr.employee_demo"/>
+        <field name="amount" eval="1000.0"/>
+        <field name="interest_rate" eval="0.05"/>
+        <field name="start_date" eval="2024-01-01"/>
+    </record> -->
+</odoo>
