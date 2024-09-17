@@ -38,6 +38,7 @@
         'security/loan_management_groups.xml',
         'security/loan_management_security.xml',
         'security/ir.model.access.csv',
+        'data/load_data.xml',
         'data/ir_sequence_data.xml',
         'views/loan_type_views.xml',
         'views/loan_request_views.xml',
@@ -50,7 +51,6 @@
         'wizard/reject_reason_views.xml',
         'report/loan_management_reports.xml',
         'report/loan_report_templates.xml',
-        'data/load_data.xml'
     ],
     'images': ['static/description/banner.jpg'],
     'license': 'AGPL-3',
