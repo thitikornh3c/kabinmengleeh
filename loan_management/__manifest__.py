@@ -11,6 +11,7 @@
         'views/loan_installment_view.xml',
         'views/loan_action.xml',
         'views/loan_menu.xml',
+        'security/ir.model.access.csv',
     ],
     'icon:': ['static/description/icon.png'],
     'installable': True,
