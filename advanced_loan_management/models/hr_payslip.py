@@ -7,13 +7,14 @@ class HRPayslip(models.Model):
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
         
-        loan_contracts = self.env['loan.request'].search([
-            ('partner_id', '=', slip.employee_id.id)
-            # ('state', '=', 'active')
-        ])
-        print(loan_contracts)
+      
 
         for slip in self:
+            loan_contracts = self.env['loan.request'].search([
+                ('partner_id', '=', slip.employee_id.id)
+                # ('state', '=', 'active')
+            ])
+            print(loan_contracts)
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
             
