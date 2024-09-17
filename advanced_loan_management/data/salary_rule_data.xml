@@ -1,10 +1,10 @@
 <odoo>
+    <!-- Define Loan Deduction Salary Rule -->
     <record id="salary_rule_loan_deduction" model="hr.salary.rule">
         <field name="name">Loan Deduction</field>
         <field name="code">LOAN_DEDUCTION</field>
-        <field name="category_id" ref="hr_payroll.salary_rule_category_deduction"/>
+        <field name="category_id" ref="salary_rule_category_deduction"/> <!-- Updated ID -->
         <field name="sequence" eval="10"/>
-        <field name="contract_id" ref="hr_contract"/>
         <field name="condition_select">formula</field>
         <field name="condition_formula">date(payment_date) &lt; date('2024-01-01')</field> <!-- Modify this condition as needed -->
         <field name="amount_select">formula</field>
