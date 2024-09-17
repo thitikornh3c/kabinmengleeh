@@ -1,14 +1,20 @@
 from odoo import models, fields, api
 
-class HRSalaryRule(models.Model):
+class HrSalaryRule(models.Model):
     _inherit = 'hr.salary.rule'
 
     @api.model
-    def get_rule_amount(self, rule, contract, date_from, date_to, payslip):
-        amount = super(HRSalaryRule, self).get_rule_amount(rule, contract, date_from, date_to, payslip)
-        # Add custom logic for deduction based on payment date
-        print(rule.code)
-        if rule.code == 'LOAN_DEDUCTION':
-            # if payslip.date_to < fields.Date.from_string('2024-09-01'):  # Example condition
-            amount = 1000  # Example deduction amount
-        return amount
+    def compute_rule(self, contract, structure_type, date_from, date_to, worked_days_line_ids, contract_id):
+        res = super(HrSalaryRule, self).compute_rule(contract, structure_type, date_from, date_to, worked_days_line_ids, contract_id)
+        
+        # Get the custom model
+        # other_model = self.env['your.other.model']
+        
+        # Perform custom computations
+        # custom_value = other_model.search([]).filtered(lambda r: r.some_field == 'some_value').mapped('custom_field')
+        
+        # Assume you want to add custom_value to the salary rule computation
+        for line in res:
+            line.total += 500
+            
+        return res
