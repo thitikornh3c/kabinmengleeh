@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_loan_management_loan_management,loan_management.loan_management,model_loan_management_loan_management,base.group_user,1,1,1,1
+access_loan_management_admin,access.loan.management.admin,model_loan_management,base.group_erp_manager,1,1,1,1
+access_loan_installment_admin,access.loan.installment.admin,model_loan_installment,base.group_erp_manager,1,1,1,1

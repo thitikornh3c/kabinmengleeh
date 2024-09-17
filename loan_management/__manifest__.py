@@ -4,6 +4,7 @@
     'category': 'Finance',
     'summary': 'Manage employee loans and payroll deductions',
     'description': 'Module for managing loans, installments, and payroll deductionsaccount cost',
+    'category': 'Accounting',
     'author': 'Happy Three Creation',
     'data': [
         'views/loan_view.xml',
