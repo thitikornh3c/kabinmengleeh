@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from . import models
-from . import fields
+from . import loan
+from . import installment
+from . import payroll_deduction
