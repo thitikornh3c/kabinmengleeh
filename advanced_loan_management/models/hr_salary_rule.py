@@ -9,5 +9,5 @@ class HRSalaryRule(models.Model):
         # Add custom logic for deduction based on payment date
         if rule.code == 'LOAN_DEDUCTION':
             # if payslip.date_to < fields.Date.from_string('2024-09-01'):  # Example condition
-            amount = -500  # Example deduction amount
+            amount = 1000  # Example deduction amount
         return amount
