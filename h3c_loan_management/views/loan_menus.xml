@@ -1,0 +1,17 @@
+<odoo>
+    <!-- Main menu item for Loan Management -->
+    <menuitem id="menu_loan_management" name="Kabin Loan Management" 
+              sequence="10" 
+              groups="base.group_user" 
+              action="action_loan_management"/>
+
+    <!-- Submenu item for Loans -->
+    <menuitem id="menu_loan_management_loan" name="Loans" 
+              parent="menu_loan_management" 
+              action="action_loan_management"/>
+
+    <!-- Submenu item for Installments -->
+    <menuitem id="menu_loan_management_installment" name="Installments" 
+              parent="menu_loan_management" 
+              action="action_installment_management"/>
+</odoo>

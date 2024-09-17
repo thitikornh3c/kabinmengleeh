@@ -10,6 +10,8 @@
         'security/ir.model.access.csv',
         'views/loan_views.xml',
         'views/payroll_views.xml',
+        'views/loan_menus.xml',
+        'views/loan_actions.xml',
     ],
     'icon': '/h3c_loan_management/static/description/icon.png',
     'installable': True,
