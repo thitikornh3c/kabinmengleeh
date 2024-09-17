@@ -15,11 +15,12 @@ class HRPayslip(models.Model):
     def compute_loan_deductions(self):
         for slip in self:
             # Fetch active loan contracts for the employee
-            loan_contracts = self.env['loan.contract'].search([
-                ('employee_id', '=', slip.employee_id.id),
-                ('state', '=', 'active')
+            print(slip.employee_id.id)
+            loan_contracts = self.env['loan.request'].search([
+                ('partner_id', '=', slip.employee_id.id)
+                # ('state', '=', 'active')
             ])
-            
+            print(loan_contracts)
             for loan in loan_contracts:
                 # Example: Deduct 10% of the loan amount
                 deduction_amount = loan.amount * 0.10
@@ -27,7 +28,7 @@ class HRPayslip(models.Model):
                 # Add deduction as a salary line
                 self.env['hr.payslip.line'].create({
                     'payslip_id': slip.id,
-                    'salary_rule_id': self.env.ref('your_module.salary_rule_loan_deduction').id,
+                    'salary_rule_id': 26,
                     'amount': -deduction_amount,
                     'sequence': 10,  # Adjust sequence if needed
                 })
