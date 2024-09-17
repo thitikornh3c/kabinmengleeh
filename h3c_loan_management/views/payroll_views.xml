@@ -1,0 +1,22 @@
+<odoo>
+    <!-- Example of adding a loan deduction to the salary structure -->
+    <record id="view_salary_structure_form" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.form</field>
+        <field name="model">hr.payroll.structure</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <!-- Other fields -->
+                        <field name="loan_deduction_ids">
+                            <tree>
+                                <field name="loan_id"/>
+                                <field name="amount"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
