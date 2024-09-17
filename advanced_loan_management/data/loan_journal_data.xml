@@ -14,14 +14,12 @@
             <field name="name">Loan Disburse</field>
             <field name="code">200019</field>
             <field name="account_type">liability_current</field>
-            <field name="create_asset">False</field> 
         </record>
 
         <record id="loan_management_inrst_accounts" model="account.account">
             <field name="name">Loan Interest</field>
             <field name="code">200011</field>
             <field name="account_type">liability_current</field>
-            <field name="create_asset">False</field> 
         </record>
 
         <record id="demo_loan_accounts" model="account.account">
