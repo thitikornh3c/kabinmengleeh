@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Main Menu -->
-    <menuitem id="kaibn_loan_management_menu" name="Loan Management" sequence="10"/>
+    <menuitem id="kaibn_loan_management_menu" name="Loan Management" />
 
     <!-- Sub-menu for Loans -->
-    <menuitem id="loan_menu" name="Loans" parent="kaibn_loan_management_menu" action="kabin_action_loan_list"/>
+    <menuitem id="loan_menu" name="Loans" parent="kaibn_loan_management_menu" action="kabin_action_loan_list" sequence="10" />
 
     <!-- Sub-menu for Installments -->
-    <menuitem id="installment_menu" name="Installments" parent="kaibn_loan_management_menu" action="kabin_action_installment_list"/>
+    <menuitem id="installment_menu" name="Installments" parent="kaibn_loan_management_menu" action="kabin_action_installment_list" sequence="15"/>
 </odoo>
