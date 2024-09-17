@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Action for Loans -->
     <record id="kabin_action_loan_list" model="ir.actions.act_window">
