@@ -3,6 +3,7 @@ from odoo import models, fields
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    bank_no = fields.Char(related='company_id.x_studio_bankno', string="Bank No", store=False)
     # bank_no = fields.Char(related='company_id.bank_no', string="Bank No", store=False)
     amount_total_words = fields.Char(compute='_compute_amount_total_words', store=False)
 
