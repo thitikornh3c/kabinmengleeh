@@ -25,7 +25,9 @@ class HRPayslip(models.Model):
             # For example, you might want to add a custom amount to the payslip
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'BASIC':
-                    line.amount = line.amount * 21
+                    workDataAmount = line.amount
+                    line.amount = workDataAmount * 21
+                    line.total = workDataAmount * 21
                 elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
                     line.amount = -1000
                     line.total = -1000
