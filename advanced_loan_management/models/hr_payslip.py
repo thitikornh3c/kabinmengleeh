@@ -13,8 +13,6 @@ class HRPayslip(models.Model):
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
         
-      
-
         for slip in self:
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', 'Emp3') #slip.employee_id.id
@@ -27,6 +25,8 @@ class HRPayslip(models.Model):
             # For example, you might want to add a custom amount to the payslip
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'LOAN_DEDUCTION':
+                    line.amount = line.amount * 21
+                elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
                     line.amount = -1000
                     line.total = -1000
                     line.name = loan_contracts[0]
