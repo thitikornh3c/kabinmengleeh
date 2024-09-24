@@ -49,6 +49,6 @@ class AccountMove(models.Model):
         fraction_words = convert_fraction(fraction_part)
 
         if fraction_part > 0:
-            return f"{integer_words} บาท {fraction_words} สตางค์"
+            return f"{integer_words}บาท{fraction_words}สตางค์ถ้วน"
         else:
-            return f"{integer_words} บาท"
+            return f"{integer_words}บาทถ้วน"
