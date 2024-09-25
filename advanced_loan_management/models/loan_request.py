@@ -102,17 +102,18 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
         loan_count = self.env['loan.request'].search(
             [('partner_id', '=', vals['partner_id']),
              ('state', 'not in', ('draft', 'rejected', 'closed'))])
-        if loan_count:
-            for rec in loan_count:
-                if rec.state != 'closed':
-                    raise UserError(
-                        _('The partner has already an ongoing loan.'))
-        else:
-            if vals.get('name', 'New') == 'New':
-                vals['name'] = self.env['ir.sequence'].next_by_code(
-                    'increment_loan_ref')
-            res = super().create(vals)
-            return res
+        # ALREADY HAVE TRANSACTION
+        # if loan_count:
+        #     for rec in loan_count:
+        #         if rec.state != 'closed':
+        #             raise UserError(
+        #                 _('The partner has already an ongoing loan.'))
+        # else:
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code(
+                'increment_loan_ref')
+        res = super().create(vals)
+        return res
 
     @api.onchange('loan_type_id')
     def _onchange_loan_type_id(self):
