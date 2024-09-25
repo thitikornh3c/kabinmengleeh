@@ -31,7 +31,7 @@ class HRPayslip(models.Model):
                     amonthSalary =  workDataAmount * 21
                     line.amount = amonthSalary
                     line.total = amonthSalary
-                if line.salary_rule_id.code == 'GROSS':
+                elif line.salary_rule_id.code == 'GROSS':
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
