@@ -35,9 +35,10 @@ class HRPayslip(models.Model):
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
-                    totalOther = totalOther - 1000
-                    line.amount = totalOther
-                    line.total = totalOther
+                    loan = -1000
+                    totalOther = totalOther + loan
+                    line.amount = loan
+                    line.total = loan
                     line.name = loan_contracts[0]
                     for loan in loan_contracts:
                         line.name = loan
