@@ -31,6 +31,9 @@ class HRPayslip(models.Model):
                     amonthSalary =  workDataAmount * 21
                     line.amount = amonthSalary
                     line.total = amonthSalary
+                if line.salary_rule_id.code == 'GROSS':
+                    line.amount = amonthSalary
+                    line.total = amonthSalary
                 elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
                     totalLoan = -1000
                     line.amount = totalLoan
@@ -39,11 +42,11 @@ class HRPayslip(models.Model):
                     for loan in loan_contracts:
                         line.name = loan
             # Loop re calculate
-            # for line in slip.line_ids:
-            #     if line.salary_rule_id.code == 'GROSS':
-            #         workDataAmount = line.amount
-            #         line.amount = amonthSalary + totalLoan
-            #         line.total = amonthSalary + totalLoan
+            for line in slip.line_ids:
+                if line.salary_rule_id.code == 'NET':
+                    workDataAmount = line.amount
+                    line.amount = amonthSalary + totalLoan
+                    line.total = amonthSalary + totalLoan
 
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
