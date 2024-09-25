@@ -39,7 +39,7 @@ class HRPayslip(models.Model):
                     totalOther = totalOther + loan
                     line.amount = loan
                     line.total = loan
-                    line.name = loan_contracts[0]
+                    line.name = f'{line.name} {loan_contracts[0].id}'
                     for loan in loan_contracts:
                         line.name = loan
                 else:
