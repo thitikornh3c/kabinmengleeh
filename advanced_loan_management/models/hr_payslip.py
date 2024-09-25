@@ -39,13 +39,13 @@ class HRPayslip(models.Model):
                     totalOther = totalOther + loan
                     line.amount = loan
                     line.total = loan
-                    line.name = f'{line.name} {loan_contracts[0].id}'
+                    # line.name = f'{line.name} {loan_contracts[0].id}'
                     # for loan in loan_contracts:
                     #     line.name = loan
                 else:
                     if line.salary_rule_id.code != 'NET':
                         totalOther = totalOther + line.amount
-                        line.name = f'{line.name} {line.amount} {totalOther}'
+                        # line.name = f'{line.name} {line.amount} {totalOther}'
 
             # Loop re calculate1
             for line in slip.line_ids:
