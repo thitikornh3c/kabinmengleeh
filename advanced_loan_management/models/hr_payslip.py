@@ -40,8 +40,8 @@ class HRPayslip(models.Model):
                     line.amount = loan
                     line.total = loan
                     line.name = f'{line.name} {loan_contracts[0].id}'
-                    for loan in loan_contracts:
-                        line.name = loan
+                    # for loan in loan_contracts:
+                    #     line.name = loan
                 else:
                     if line.salary_rule_id.code != 'NET':
                         totalOther = totalOther + line.amount
