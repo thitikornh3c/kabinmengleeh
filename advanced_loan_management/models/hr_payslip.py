@@ -45,7 +45,7 @@ class HRPayslip(models.Model):
                     totalOther = totalOther + line.amount
                     line.name = f'{line.name} {line.amount} {totalOther}'
 
-            # Loop re calculate
+            # Loop re calculate1
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'NET':
                     workDataAmount = line.amount
