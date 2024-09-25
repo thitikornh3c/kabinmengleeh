@@ -24,7 +24,7 @@ class HRPayslip(models.Model):
             # Apply custom logic using the additional input
             # For example, you might want to add a custom amount to the payslip
             amonthSalary = 0
-            totalLoan = 0
+            totalOther = 0
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'BASIC':
                     workDataAmount = line.amount
@@ -35,18 +35,21 @@ class HRPayslip(models.Model):
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
-                    totalLoan = -1000
-                    line.amount = totalLoan
-                    line.total = totalLoan
+                    totalOther = -1000
+                    line.amount = totalOther
+                    line.total = totalOther
                     line.name = loan_contracts[0]
                     for loan in loan_contracts:
                         line.name = loan
+                else:
+                    totalOther = totalOther + line.amount
+
             # Loop re calculate
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'NET':
                     workDataAmount = line.amount
-                    line.amount = amonthSalary + totalLoan
-                    line.total = amonthSalary + totalLoan
+                    line.amount = amonthSalary + totalOther
+                    line.total = amonthSalary + totalOther
 
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
