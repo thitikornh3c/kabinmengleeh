@@ -23,7 +23,8 @@ class HRPayslip(models.Model):
             
             # Apply custom logic using the additional input
             # For example, you might want to add a custom amount to the payslip
-            amonthSalary = 0, totalLoan = 0
+            amonthSalary = 0
+            totalLoan = 0
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'BASIC':
                     workDataAmount = line.amount
