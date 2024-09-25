@@ -38,7 +38,7 @@ class HRPayslip(models.Model):
                     line.name = loan_contracts[0]
                     for loan in loan_contracts:
                         line.name = loan
-
+            # Loop re calculate
             # for line in slip.line_ids:
             #     if line.salary_rule_id.code == 'GROSS':
             #         workDataAmount = line.amount
