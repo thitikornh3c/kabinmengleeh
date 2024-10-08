@@ -27,6 +27,7 @@ class HRPayslip(models.Model):
             totalOther = 0
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'BASIC':
+                    print(line)
                     workDataAmount = line.amount
                     amonthSalary =  workDataAmount * line.number_of_days
                     line.amount = amonthSalary
