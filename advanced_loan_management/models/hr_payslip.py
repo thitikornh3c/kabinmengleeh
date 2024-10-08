@@ -30,15 +30,16 @@ class HRPayslip(models.Model):
             amonthSalary = 0
             totalOther = 0
             for line in slip.line_ids:
-                if line.date_from and line.date_to:
-                    date_from = fields.Datetime.from_string(line.date_from)
-                    date_to = fields.Datetime.from_string(line.date_to)
-                    number_of_days = (date_to - date_from).days + 1  # Add 1 if both dates are inclusive
-                else:
-                    number_of_days = 0  # Default if dates are not available
 
-                _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {number_of_days}")
+                # _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {number_of_days}")
                 if line.salary_rule_id.code == 'BASIC':
+                    if line.date_from and line.date_to:
+                        _logger.info(f"Processing payslip line of employee {line.date_from}: {line.date_to}")
+                        date_from = fields.Datetime.from_string(line.date_from)
+                        date_to = fields.Datetime.from_string(line.date_to)
+                        number_of_days = (date_to - date_from).days + 1  # Add 1 if both dates are inclusive
+                    else:
+                        number_of_days = 0  # Default if dates are not available
                     workDataAmount = line.amount
                     amonthSalary =  workDataAmount * number_of_days
                     line.amount = amonthSalary
