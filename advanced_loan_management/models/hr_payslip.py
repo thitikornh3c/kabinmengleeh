@@ -40,15 +40,12 @@ class HRPayslip(models.Model):
                     # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
 
                     # Get scheduled workdays for the employee
-                    workdays = self.env['resource.calendar'].search([
-                        ('employee_ids', 'in', slip.employee_id.id),
-                        ('date_start', '<=', slip.date_to),
-                        ('date_end', '>=', slip.date_from)
-                    ])
+                    employee = slip.employee_id
+                    resource_calendar = employee.resource_calendar_id
+                    # Calculate scheduled workdays
                     scheduled_workdays_count = 0
-                    for workday in workdays:
-                        days = workday.get_work_days_count(slip.date_from, slip.date_to)
-                        scheduled_workdays_count += days
+                    if resource_calendar:
+                        scheduled_workdays_count = resource_calendar.get_work_days_count(slip.date_from, slip.date_to)
 
                     _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
