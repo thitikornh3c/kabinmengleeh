@@ -31,6 +31,23 @@ class HRPayslip(models.Model):
             amonthSalary = 0
             totalOther = 0
 
+
+            work_entries = self.env['hr.work.entry'].search([
+                ('employee_id', '=', slip.employee_id.id),
+                ('date_start', '>=', slip.date_from),
+                ('date_end', '<=', slip.date_to)
+            ])
+            workdays_count = 0
+            for entry in work_entries:
+                # Calculate number of days in each work entry
+                if entry.date_start and entry.date_end:
+                    _logger.info(f"Processing payslip for work entry: {entry.duration} {entry.date_start} {entry.date_end}")
+                    # start_date = fields.Date.from_string(entry.date_start)
+                    # end_date = fields.Date.from_string(entry.date_end)
+                    # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
+                    # workdays_count += delta_days
+
+
             scheduled_workdays_count = 0
             for line in slip.worked_days_line_ids:
                 _logger.info(f"Processing payslip for attendance: {line}")
