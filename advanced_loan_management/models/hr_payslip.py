@@ -35,7 +35,7 @@ class HRPayslip(models.Model):
             work_entries = self.env['hr.work.entry'].search([
                 ('employee_id', '=', slip.employee_id.id),
                 ('date_start', '>=', slip.date_from),
-                ('date_end', '<=', slip.date_to)
+                ('date_stop', '<=', slip.date_to)
             ])
             workdays_count = 0
             for entry in work_entries:
