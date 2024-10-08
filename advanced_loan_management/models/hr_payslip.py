@@ -1,10 +1,10 @@
 from odoo import models, fields, api
 import logging
+
 _logger = logging.getLogger(__name__)
 
 class HRPayslip(models.Model):
     _inherit = 'hr.payslip'
-    _name = 'hr_payslip'
 
     move_type = fields.Selection([
         ('out_invoice', 'Invoice Out'),
@@ -16,9 +16,8 @@ class HRPayslip(models.Model):
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
         
-        _logger.info("my_method was called.")
-        
         for slip in self:
+            _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id}")
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', 'Emp3') #slip.employee_id.id
                 # ('state', '=', 'active')
@@ -31,10 +30,7 @@ class HRPayslip(models.Model):
             amonthSalary = 0
             totalOther = 0
             for line in slip.line_ids:
-                _logger.info(line)
                 if line.salary_rule_id.code == 'BASIC':
-                    _logger.info("This is an info message.")
-                    _logger.info("This is an info message.")
                     workDataAmount = line.amount
                     amonthSalary =  workDataAmount * 1
                     line.amount = amonthSalary
