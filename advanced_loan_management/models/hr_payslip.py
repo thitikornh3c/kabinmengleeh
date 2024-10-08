@@ -39,16 +39,21 @@ class HRPayslip(models.Model):
                     # ])
                     # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
 
-                    attendance_records = self.env['hr.attendance'].search([
-                        ('employee_id', '=', slip.employee_id.id),
-                        ('check_in', '>=', slip.date_from),
-                        ('check_out', '<=', slip.date_to)
+                    # Get scheduled workdays for the employee
+                    workdays = self.env['resource.calendar'].search([
+                        ('employee_ids', 'in', slip.employee_id.id),
+                        ('date_start', '<=', slip.date_to),
+                        ('date_end', '>=', slip.date_from)
                     ])
-                    workdays_count = len(attendance_records)
-                    _logger.info(f"Processing payslip for employee attendance: {attendance_records}")
+                    scheduled_workdays_count = 0
+                    for workday in workdays:
+                        days = workday.get_work_days_count(slip.date_from, slip.date_to)
+                        scheduled_workdays_count += days
+
+                    _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
                     workDataAmount = line.amount
-                    amonthSalary =  workDataAmount * workdays_count
+                    amonthSalary =  workDataAmount * scheduled_workdays_count
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'GROSS':
