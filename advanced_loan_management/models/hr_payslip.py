@@ -4,7 +4,7 @@ _logger = logging.getLogger(__name__)
 
 class HRPayslip(models.Model):
     _inherit = 'hr.payslip'
-    _name = 'my.model'
+    _name = 'hr_payslip'
 
     move_type = fields.Selection([
         ('out_invoice', 'Invoice Out'),
