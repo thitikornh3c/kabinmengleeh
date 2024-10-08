@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 import logging
+import json
 
 _logger = logging.getLogger(__name__)
 
@@ -33,15 +34,21 @@ class HRPayslip(models.Model):
 
                 # _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {number_of_days}")
                 if line.salary_rule_id.code == 'BASIC':
-                    if line.date_from and line.date_to:
-                        _logger.info(f"Processing payslip line of employee {line.date_from}: {line.date_to}")
-                        date_from = fields.Datetime.from_string(line.date_from)
-                        date_to = fields.Datetime.from_string(line.date_to)
-                        number_of_days = (date_to - date_from).days + 1  # Add 1 if both dates are inclusive
-                    else:
-                        number_of_days = 0  # Default if dates are not available
+                    # loan_contracts = self.env['loan.request'].search([
+                    #     ('partner_id', '=', slip.employee_id.id)
+                    # ])
+                    # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
+
+                    attendance_records = self.env['hr.attendance'].search([
+                        ('employee_id', '=', slip.employee_id.id),
+                        ('check_in', '>=', slip.date_from),
+                        ('check_out', '<=', slip.date_to)
+                    ])
+                    workdays_count = len(attendance_records)
+                    _logger.info(f"Processing payslip for employee attendance: {json.dumps(attendance_records)}")
+
                     workDataAmount = line.amount
-                    amonthSalary =  workDataAmount * number_of_days
+                    amonthSalary =  workDataAmount * workdays_count
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'GROSS':
