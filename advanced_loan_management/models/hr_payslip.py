@@ -29,7 +29,7 @@ class HRPayslip(models.Model):
                 if line.salary_rule_id.code == 'BASIC':
                     print(line)
                     workDataAmount = line.amount
-                    amonthSalary =  workDataAmount * line.number_of_days
+                    amonthSalary =  workDataAmount * 1
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'GROSS':
