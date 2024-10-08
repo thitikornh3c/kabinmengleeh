@@ -45,7 +45,7 @@ class HRPayslip(models.Model):
                         ('check_out', '<=', slip.date_to)
                     ])
                     workdays_count = len(attendance_records)
-                    _logger.info(f"Processing payslip for employee attendance: {json.dumps(attendance_records)}")
+                    _logger.info(f"Processing payslip for employee attendance: {attendance_records}")
 
                     workDataAmount = line.amount
                     amonthSalary =  workDataAmount * workdays_count
