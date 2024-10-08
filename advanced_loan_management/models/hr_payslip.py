@@ -30,6 +30,13 @@ class HRPayslip(models.Model):
             # For example, you might want to add a custom amount to the payslip
             amonthSalary = 0
             totalOther = 0
+
+            scheduled_workdays_count = 0
+            for line in slip.worked_days_line_ids:
+                _logger.info(f"Processing payslip for attendance: {json.dumps(line)}")
+                if line.work_entry_type_id.code == 'WORK100':
+                    scheduled_workdays_count = line.number_of_days
+            
             for line in slip.line_ids:
 
                 # _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {number_of_days}")
@@ -40,12 +47,6 @@ class HRPayslip(models.Model):
                     # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
 
                     # Get scheduled workdays for the employee
-                    employee = slip.employee_id
-                    resource_calendar = employee.resource_calendar_id
-                    # Calculate scheduled workdays
-                    scheduled_workdays_count = 0
-                    if resource_calendar:
-                        scheduled_workdays_count = resource_calendar.get_work_days(slip.date_from, slip.date_to)
 
                     _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
