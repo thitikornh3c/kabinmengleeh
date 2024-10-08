@@ -30,6 +30,7 @@ class HRPayslip(models.Model):
             amonthSalary = 0
             totalOther = 0
             for line in slip.line_ids:
+                _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {line}")
                 if line.salary_rule_id.code == 'BASIC':
                     workDataAmount = line.amount
                     amonthSalary =  workDataAmount * 1
