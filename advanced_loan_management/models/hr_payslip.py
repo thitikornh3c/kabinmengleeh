@@ -45,7 +45,7 @@ class HRPayslip(models.Model):
                     # Calculate scheduled workdays
                     scheduled_workdays_count = 0
                     if resource_calendar:
-                        scheduled_workdays_count = resource_calendar.get_work_days_count(slip.date_from, slip.date_to)
+                        scheduled_workdays_count = resource_calendar.get_work_days(slip.date_from, slip.date_to)
 
                     _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
