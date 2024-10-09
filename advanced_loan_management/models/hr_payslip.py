@@ -38,6 +38,14 @@ class HRPayslip(models.Model):
                 ('date_start', '>=', slip.date_from),
                 ('date_stop', '<=', slip.date_to)
             ])
+
+
+            contract = self.env['hr.contract'].search([
+                ('employee_id', '=', slip.employee_id.id),
+                ('state', '=', 'open')  # Only get active contracts
+            ], limit=1)
+
+
             workdays_count = 0
             for entry in work_entries:
                 # Calculate number of days in each work entry
@@ -55,6 +63,7 @@ class HRPayslip(models.Model):
                 if line.work_entry_type_id.code == 'WORK100':
                     scheduled_workdays_count = line.number_of_days
                     # line.number_of_days = 20
+                    line.amount = line.number_of_days * contract.wage
             
             for line in slip.line_ids:
 
