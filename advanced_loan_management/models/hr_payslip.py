@@ -14,6 +14,7 @@ class HRPayslip(models.Model):
         ('slip', 'Slip')
     ], string='Move Type')
 
+    @api.model
     def get_week_ranges(start_date, end_date):
         # Start from the start_date and go until the end_date
         current_date = start_date
