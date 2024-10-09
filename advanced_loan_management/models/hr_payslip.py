@@ -33,19 +33,19 @@ class HRPayslip(models.Model):
             sso_amount = 0
 
 
-            work_entries = self.env['hr.work.entry'].search([
-                ('employee_id', '=', slip.employee_id.id),
-                ('date_start', '>=', slip.date_from),
-                ('date_stop', '<=', slip.date_to)
-            ])
-
-
+   
+            # Get contract
             contract = self.env['hr.contract'].search([
                 ('employee_id', '=', slip.employee_id.id),
                 ('state', '=', 'open')  # Only get active contracts
             ], limit=1)
 
-
+            # Logic Calculate Work day
+            work_entries = self.env['hr.work.entry'].search([
+                ('employee_id', '=', slip.employee_id.id),
+                ('date_start', '>=', slip.date_from),
+                ('date_stop', '<=', slip.date_to)
+            ])
             workdays_count = 0
             for entry in work_entries:
                 # Calculate number of days in each work entry
@@ -57,6 +57,7 @@ class HRPayslip(models.Model):
                     # workdays_count += delta_days
 
 
+            # Set Workday sheet
             scheduled_workdays_count = 0
             for line in slip.worked_days_line_ids:
                 _logger.info(f"Processing payslip for attendance: {line} {line.number_of_days}")
@@ -65,6 +66,8 @@ class HRPayslip(models.Model):
                     # line.number_of_days = 20
                     amonthSalary = line.number_of_days * contract.wage
                     line.amount = amonthSalary
+                if line.work_entry_type_id.code == 'LEAVE110':
+                    line.amount = 0
             
             for line in slip.line_ids:
 
