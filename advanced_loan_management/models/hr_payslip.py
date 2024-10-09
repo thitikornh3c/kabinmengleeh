@@ -93,9 +93,14 @@ class HRPayslip(models.Model):
                             # workdays_count += delta_days 
                     if duration > 4:
                         weekDay = weekDay + 1
+                if weekDay == 6:
+                    workdays_count = workdays_count + weekDay + 1
+                else:
+                    workdays_count = workdays_count + weekDay
                 _logger.info(f"Week {weekIndex} : Duration {weekDay}")
                 weekIndex = weekIndex + 1
 
+            _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
 
             # for entry in work_entries:
             #     # Calculate number of days in each work entry
