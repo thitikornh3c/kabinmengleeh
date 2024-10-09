@@ -1,6 +1,7 @@
 from odoo import models, fields, api
 import logging
 import json
+from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -32,8 +33,6 @@ class HRPayslip(models.Model):
             totalOther = 0
             sso_amount = 0
 
-
-   
             # Get contract
             contract = self.env['hr.contract'].search([
                 ('employee_id', '=', slip.employee_id.id),
@@ -41,6 +40,13 @@ class HRPayslip(models.Model):
             ], limit=1)
 
             # Logic Calculate Work day
+
+            startDate = datetime(2024, 10, 1)  # Start date
+            endDate = datetime(2024, 10, 31)    # End date
+            week_ranges = get_week_ranges(startDate, endDate)
+
+            _logger.info(f"Processing payslip for work entry: {week_ranges}")
+
             work_entries = self.env['hr.work.entry'].search([
                 ('employee_id', '=', slip.employee_id.id),
                 ('date_start', '>=', slip.date_from),
@@ -113,10 +119,31 @@ class HRPayslip(models.Model):
             # Loop re calculate1
             for line in slip.line_ids:
                 if line.salary_rule_id.code == 'NET':
-                    workDataAmount = line.amount
+                    # workDataAmount = line.amount
                     line.amount = amonthSalary + totalOther + sso_amount
                     line.total = amonthSalary + totalOther + sso_amount
 
+    def get_week_ranges(start_date, end_date):
+        # Start from the start_date and go until the end_date
+        current_date = start_date
+        weeks = []
+        
+        while current_date <= end_date:
+            # Get the start of the week (Monday)
+            start_of_week = current_date - timedelta(days=current_date.weekday())
+            # Create a list for the week
+            week_dates = []
+            
+            # Generate the week dates (Monday to Sunday)
+            for i in range(7):
+                week_dates.append((start_of_week + timedelta(days=i)).strftime('%d-%m-%Y'))
+            
+            weeks.append(week_dates)
+            
+            # Move to the next week
+            current_date = start_of_week + timedelta(days=7)
+        
+        return weeks
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
     #     records = self.env['hr.payslip'].search([])
