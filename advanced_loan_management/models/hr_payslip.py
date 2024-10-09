@@ -78,8 +78,9 @@ class HRPayslip(models.Model):
 
                     _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
-                    workDataAmount = line.amount
-                    amonthSalary =  workDataAmount * scheduled_workdays_count
+                    # workDataAmount = line.amount
+                    # amonthSalary =  workDataAmount * scheduled_workdays_count
+                    amonthSalary = line.amount
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'GROSS':
