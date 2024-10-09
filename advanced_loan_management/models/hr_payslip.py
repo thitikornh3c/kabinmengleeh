@@ -63,7 +63,8 @@ class HRPayslip(models.Model):
                 if line.work_entry_type_id.code == 'WORK100':
                     scheduled_workdays_count = line.number_of_days
                     # line.number_of_days = 20
-                    line.amount = line.number_of_days * contract.wage
+                    amonthSalary = line.number_of_days * contract.wage
+                    line.amount = amonthSalary
             
             for line in slip.line_ids:
 
@@ -80,7 +81,6 @@ class HRPayslip(models.Model):
 
                     # workDataAmount = line.amount
                     # amonthSalary =  workDataAmount * scheduled_workdays_count
-                    amonthSalary = line.amount
                     line.amount = amonthSalary
                     line.total = amonthSalary
                 elif line.salary_rule_id.code == 'GROSS':
