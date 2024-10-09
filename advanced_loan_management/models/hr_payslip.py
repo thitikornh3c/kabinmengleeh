@@ -51,7 +51,7 @@ class HRPayslip(models.Model):
 
             scheduled_workdays_count = 0
             for line in slip.worked_days_line_ids:
-                _logger.info(f"Processing payslip for attendance: {line}")
+                _logger.info(f"Processing payslip for attendance: {line} {line.number_of_days}")
                 if line.work_entry_type_id.code == 'WORK100':
                     scheduled_workdays_count = line.number_of_days
             
