@@ -75,7 +75,7 @@ class HRPayslip(models.Model):
                 elif line.salary_rule_id.code == 'GROSS':
                     line.amount = amonthSalary
                     line.total = amonthSalary
-                elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
+                elif line.salary_rule_id.code == 'SSO':
                     sso_amount = amonthSalary * 0.05 
                     if sso_amount > 750:
                         sso_amount = -750
