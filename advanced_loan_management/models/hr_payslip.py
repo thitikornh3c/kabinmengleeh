@@ -67,7 +67,7 @@ class HRPayslip(models.Model):
             endDate = datetime(2024, 10, 31)    # End date
             week_ranges = self.get_week_ranges(startDate, endDate)
 
-            _logger.info(f"Processing payslip for work entry: {week_ranges}")
+            # _logger.info(f"Processing payslip for work entry: {week_ranges}")
 
             work_entries = self.env['hr.work.entry'].search([
                 ('employee_id', '=', slip.employee_id.id),
@@ -116,13 +116,13 @@ class HRPayslip(models.Model):
 
 
             # Set Workday sheet
-            scheduled_workdays_count = 0
+            # scheduled_workdays_count = 0
             for line in slip.worked_days_line_ids:
-                _logger.info(f"Processing payslip for attendance: {line} {line.number_of_days}")
+                # _logger.info(f"Processing payslip for attendance: {line} {line.number_of_days}")
                 if line.work_entry_type_id.code == 'WORK100':
-                    scheduled_workdays_count = line.number_of_days
+                    # scheduled_workdays_count = line.number_of_days
                     # line.number_of_days = 20
-                    amonthSalary = line.number_of_days * contract.wage
+                    amonthSalary = workdays_count * contract.wage #line.number_of_days * contract.wage
                     line.amount = amonthSalary
                 if line.work_entry_type_id.code == 'LEAVE110':
                     line.amount = 0
@@ -138,7 +138,7 @@ class HRPayslip(models.Model):
 
                     # Get scheduled workdays for the employee
 
-                    _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
+                    # _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
                     # workDataAmount = line.amount
                     # amonthSalary =  workDataAmount * scheduled_workdays_count
