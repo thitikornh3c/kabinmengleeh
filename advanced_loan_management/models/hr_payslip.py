@@ -122,6 +122,7 @@ class HRPayslip(models.Model):
                 if line.work_entry_type_id.code == 'WORK100':
                     # scheduled_workdays_count = line.number_of_days
                     # line.number_of_days = 20
+                    line.number_of_days = workdays_count
                     amonthSalary = workdays_count * contract.wage #line.number_of_days * contract.wage
                     line.amount = amonthSalary
                 if line.work_entry_type_id.code == 'LEAVE110':
