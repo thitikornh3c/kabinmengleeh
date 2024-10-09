@@ -14,6 +14,27 @@ class HRPayslip(models.Model):
         ('slip', 'Slip')
     ], string='Move Type')
 
+    def get_week_ranges(start_date, end_date):
+        # Start from the start_date and go until the end_date
+        current_date = start_date
+        weeks = []
+        
+        while current_date <= end_date:
+            # Get the start of the week (Monday)
+            start_of_week = current_date - timedelta(days=current_date.weekday())
+            # Create a list for the week
+            week_dates = []
+            
+            # Generate the week dates (Monday to Sunday)
+            for i in range(7):
+                week_dates.append((start_of_week + timedelta(days=i)).strftime('%d-%m-%Y'))
+            
+            weeks.append(week_dates)
+            
+            # Move to the next week
+            current_date = start_of_week + timedelta(days=7)
+        
+        return weeks
     @api.model
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
@@ -123,27 +144,6 @@ class HRPayslip(models.Model):
                     line.amount = amonthSalary + totalOther + sso_amount
                     line.total = amonthSalary + totalOther + sso_amount
 
-    def get_week_ranges(start_date, end_date):
-        # Start from the start_date and go until the end_date
-        current_date = start_date
-        weeks = []
-        
-        while current_date <= end_date:
-            # Get the start of the week (Monday)
-            start_of_week = current_date - timedelta(days=current_date.weekday())
-            # Create a list for the week
-            week_dates = []
-            
-            # Generate the week dates (Monday to Sunday)
-            for i in range(7):
-                week_dates.append((start_of_week + timedelta(days=i)).strftime('%d-%m-%Y'))
-            
-            weeks.append(week_dates)
-            
-            # Move to the next week
-            current_date = start_of_week + timedelta(days=7)
-        
-        return weeks
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
     #     records = self.env['hr.payslip'].search([])
