@@ -28,7 +28,7 @@ class HRPayslip(models.Model):
             
             # Generate the week dates (Monday to Sunday)
             for i in range(7):
-                week_dates.append((start_of_week + timedelta(days=i)).strftime('%d-%m-%Y'))
+                week_dates.append((start_of_week + timedelta(days=i)).strftime('%Y-%m-%d'))
             
             weeks.append(week_dates)
             
