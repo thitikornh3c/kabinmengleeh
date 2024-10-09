@@ -73,7 +73,7 @@ class HRPayslip(models.Model):
                 ('employee_id', '=', slip.employee_id.id),
                 ('date_start', '>=', slip.date_from),
                 ('date_stop', '<=', slip.date_to)
-            ])
+            ], order='id ASC')
             workdays_count = 0
             for entry in work_entries:
                 # Calculate number of days in each work entry
