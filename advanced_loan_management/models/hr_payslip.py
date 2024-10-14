@@ -91,7 +91,7 @@ class HRPayslip(models.Model):
                                     duration = entry.duration
                                 elif entry.code == 'LEAVE110':
                                     duration = -entry.duration
-                                _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
+                                _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
                             # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                             # workdays_count += delta_days 
                     if duration > 4:
