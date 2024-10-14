@@ -41,7 +41,6 @@ class HRPayslip(models.Model):
         super(HRPayslip, self).compute_sheet()
         
         for slip in self:
-            _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id}")
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', 'Emp3') #slip.employee_id.id
                 # ('state', '=', 'active')
@@ -60,6 +59,7 @@ class HRPayslip(models.Model):
                 ('employee_id', '=', slip.employee_id.id),
                 ('state', '=', 'open')  # Only get active contracts
             ], limit=1)
+            _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id} {contract.schedule_pay}")
 
             # Logic Calculate Work day
 
