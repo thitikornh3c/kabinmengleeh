@@ -1,0 +1,25 @@
+<odoo>
+    <!-- Define Expenses Account Type if not already present -->
+    <record id="loan_management_expenses_account_type" model="account.account.type">
+        <field name="name">Expenses</field>
+        <field name="code">EXP</field>
+    </record>
+
+    <!-- Define Loan Management Interest Account -->
+    <record id="loan_management_inrst_accounts" model="account.account">
+        <field name="name">Loan Management Interest Account</field>
+        <field name="code">LMINT</field>
+        <field name="user_type_id" ref="loan_management_expenses_account_type"/>
+        <field name="reconcile" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Define Loan Management Principal Account -->
+    <record id="loan_management_principal_accounts" model="account.account">
+        <field name="name">Loan Management Principal Account</field>
+        <field name="code">LMPRINCIPAL</field>
+        <field name="user_type_id" ref="loan_management_expenses_account_type"/> <!-- Change to appropriate type -->
+        <field name="reconcile" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+</odoo>

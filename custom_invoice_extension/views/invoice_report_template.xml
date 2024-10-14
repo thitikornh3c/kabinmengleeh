@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+        <!-- <template id="report_invoice_document" inherit_id="account.invoice_report">
+            <xpath expr="//div[@class='page']" position="inside">
+                <div class="amount-total-words">
+                    <p>Total in Words: <span t-esc="o.amount_total_words"/></p>
+                </div>
+            </xpath>
+        </template> -->
+    </data>
+</odoo>
