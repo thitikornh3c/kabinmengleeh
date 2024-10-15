@@ -28,8 +28,8 @@ class CustomSequence(models.Model):
         bangkok_time = utc_now + timedelta(hours=7)
 
         currentDate = bangkok_time.strftime("%d")
-        invoice = self.env['ir.sequence'].next_by_code('account.move')
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {invoice} {bangkok_time} {currentDate} {self.x_studio_last_date}")
+        invoice = self.search([('code', '=', 'account.move')], limit=1)
+        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {invoice.id} {invoice.number_next} {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
             sequence = self.search([('code', '=', self.code)], limit=1)
