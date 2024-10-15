@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 class CustomSequence(models.Model):
     _inherit = 'ir.sequence'
 
-    last_reset_date = fields.Datetime(string='Last Reset Date', readonly=True
+    last_reset_date = fields.Datetime(string='Last Reset Date', readonly=True)
                                   
     def _get_buddha_era_year(self):
         # Calculate Buddha Era year
