@@ -21,10 +21,12 @@ class CustomSequence(models.Model):
         Override to customize the sequence prefix and suffix.
         """
         # Call the super method to get the default prefix and suffix
+        currentDate = datetime.now().strftime("%d")
         prefix, suffix = super()._get_prefix_suffix()
         be_year = self._get_buddha_era_year()
+        
         _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {currentDate} {self.x_studio_last_date}")
-        currentDate = datetime.now().strftime("%d")
+    
         if currentDate != self.x_studio_last_date:
             self.number_next = 1
         # Optionally modify the prefix
