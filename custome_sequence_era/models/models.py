@@ -24,7 +24,7 @@ class CustomSequence(models.Model):
         currentDate = datetime.now().strftime("%d")
         prefix, suffix = super()._get_prefix_suffix()
         be_year = self._get_buddha_era_year()
-        
+
         _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
@@ -42,3 +42,12 @@ class CustomSequence(models.Model):
         # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
 
         return prefix, suffix
+    
+    def next_by_code(self, code=None):
+        """Override the next_by_code method to reset number_next if needed."""
+        if code:
+            self = self.search([('code', '=', code)], limit=1)
+        if self:
+            # Call _get_prefix_suffix to ensure number_next is reset before generating the next number
+            self._get_prefix_suffix()
+            return super().next_by_code(code)
