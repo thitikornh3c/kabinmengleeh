@@ -21,7 +21,7 @@ class CustomSequence(models.Model):
         # Call the super method to get the default prefix and suffix
         prefix, suffix = super()._get_prefix_suffix()
         be_year = self._get_buddha_era_year()
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next}")
+        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} {self.last_reset_date}")
 
         # Optionally modify the prefix
         if self.prefix:
