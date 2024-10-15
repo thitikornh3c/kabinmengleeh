@@ -23,13 +23,16 @@ class CustomSequence(models.Model):
         # Call the super method to get the default prefix and suffix
         prefix, suffix = super()._get_prefix_suffix()
         be_year = self._get_buddha_era_year()
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next}")
-
+        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} {self.x_studio_last_date}")
+        currentDate = datetime.now().strftime("%d")
+        if currentDate != self.x_studio_last_date:
+            self.number_next = 1
         # Optionally modify the prefix
         if self.prefix:
             prefix = f"{self.prefix}{be_year}"
-
-        self.number_next = 1
+            
+        self.x_studio_last_date = currentDate
+        # self.number_next = 1
         # prefix = f"{self.code}{be_year}"
         # Customize the suffix
         # For example, include the Buddha Era year in the suffix
