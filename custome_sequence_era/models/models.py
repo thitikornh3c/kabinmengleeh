@@ -45,9 +45,8 @@ class CustomSequence(models.Model):
     
     def next_by_code(self, code=None):
         """Override the next_by_code method to reset number_next if needed."""
-        if code:
-            self = self.search([('code', '=', code)], limit=1)
-        if self:
+        sequence = self.search([('code', '=', code)], limit=1)
+        if sequence:
             # Call _get_prefix_suffix to ensure number_next is reset before generating the next number
-            self._get_prefix_suffix()
-            return super().next_by_code(code)
+            sequence._get_prefix_suffix()
+            return super(CustomSequence, sequence).next_by_code(code)  # Ensure the correct call
