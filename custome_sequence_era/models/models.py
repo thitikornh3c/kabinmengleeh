@@ -43,10 +43,11 @@ class CustomSequence(models.Model):
 
         return prefix, suffix
     
-    def next_by_code(self, code=None):
+    @api.model
+    def next_by_code(self, code=None, **kwargs):
         """Override the next_by_code method to reset number_next if needed."""
         sequence = self.search([('code', '=', code)], limit=1)
         if sequence:
             # Call _get_prefix_suffix to ensure number_next is reset before generating the next number
             sequence._get_prefix_suffix()
-            return super(CustomSequence, sequence).next_by_code(code)  # Ensure the correct call
+            return super(CustomSequence, sequence).next_by_code(code=code, **kwargs)
