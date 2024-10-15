@@ -21,8 +21,14 @@ class CustomSequence(models.Model):
         Override to customize the sequence prefix and suffix.
         """
         # Call the super method to get the default prefix and suffix
-        currentDate = datetime.now().strftime("%d")
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {currentDate} {self.x_studio_last_date}")
+        # Get the current UTC time
+        utc_now = datetime.utcnow()
+
+        # Bangkok is UTC+7
+        bangkok_time = utc_now + timedelta(hours=7)
+
+        currentDate = bangkok_time.strftime("%d")
+        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
             sequence = self.search([('code', '=', self.code)], limit=1)
