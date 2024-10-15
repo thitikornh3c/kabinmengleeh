@@ -24,9 +24,9 @@ class CustomSequence(models.Model):
         currentDate = datetime.now().strftime("%d")
         _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {currentDate} {self.x_studio_last_date}")
     
-        # if currentDate != self.x_studio_last_date:
-        #     sequence = self.search([('code', '=', self.code)], limit=1)
-        #     sequence.number_next = 1
+        if currentDate != self.x_studio_last_date:
+            sequence = self.search([('code', '=', self.code)], limit=1)
+            sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
         # next_by_code = super().next_by_code(self.code)
@@ -37,7 +37,7 @@ class CustomSequence(models.Model):
         if self.prefix:
             prefix = f"{self.prefix}{be_year}"
 
-        # self.x_studio_last_date = currentDate
+        self.x_studio_last_date = currentDate
         # self.number_next = 1
         # prefix = f"{self.code}{be_year}"
         # Customize the suffix
