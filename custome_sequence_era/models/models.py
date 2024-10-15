@@ -50,7 +50,7 @@ class CustomSequence(models.Model):
         if sequence:
             # Call _get_prefix_suffix to ensure number_next is reset before generating the next number
             sequence._get_prefix_suffix()
-            return super(CustomSequence, sequence).next_by_code()
+            return super(CustomSequence, sequence).next_by_code(code)
 
         # Handle case where sequence is not found
         _logger.warning(f"Sequence code '{code}' not found.")
