@@ -58,7 +58,7 @@ class CustomSequence(models.Model):
             sequence._get_prefix_suffix()
 
             # Call the original next_by_code to get the next number
-            next_number = super(CustomSequence, sequence).next_by_code(**kwargs)
+            next_number = super(CustomSequence, sequence).next_by_code(code, **kwargs)
 
             # Combine the prefix and next number to form the full sequence value
             prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
