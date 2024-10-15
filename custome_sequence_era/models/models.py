@@ -13,7 +13,7 @@ class CustomSequence(models.Model):
         # Calculate Buddha Era year
         current_year = datetime.now().year
         be_year = current_year + 543
-        month_date = datetime.now().strftime("%m%d")
+        month_date = datetime.now().strftime("%m")
         return f"{str(be_year)[2:4]}{month_date}"
 
     def _get_prefix_suffix(self):
@@ -41,7 +41,7 @@ class CustomSequence(models.Model):
 
         # Optionally modify the prefix
         if self.prefix:
-            prefix = f"{self.prefix}{be_year}"
+            prefix = f"{self.prefix}{be_year}{currentDate}"
 
         self.x_studio_last_date = currentDate
         # self.number_next = 1
