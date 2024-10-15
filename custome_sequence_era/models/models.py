@@ -22,13 +22,14 @@ class CustomSequence(models.Model):
         """
         # Call the super method to get the default prefix and suffix
         currentDate = datetime.now().strftime("%d")
-        prefix, suffix = super()._get_prefix_suffix()
-        be_year = self._get_buddha_era_year()
-
         _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
             self.number_next = 1
+
+        prefix, suffix = super()._get_prefix_suffix()
+        be_year = self._get_buddha_era_year()
+
         # Optionally modify the prefix
         if self.prefix:
             prefix = f"{self.prefix}{be_year}"
@@ -43,15 +44,3 @@ class CustomSequence(models.Model):
 
         return prefix, suffix
     
-    @api.model
-    def next_by_code(self, code, **kwargs):
-        """Override next_by_code to reset number_next if needed."""
-        sequence = self.search([('code', '=', code)], limit=1)
-        if sequence:
-            # Call _get_prefix_suffix to ensure number_next is reset before generating the next number
-            sequence._get_prefix_suffix()
-            return super(CustomSequence, sequence).next_by_code(**kwargs)  # Pass any additional kwargs
-
-        # Handle case where sequence is not found
-        _logger.warning(f"Sequence code '{code}' not found.")
-        return super(CustomSequence, self).next_by_code(code)
