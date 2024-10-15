@@ -25,9 +25,12 @@ class CustomSequence(models.Model):
         _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
-            self.number_next = 1
+            sequence = self.search([('code', '=', self.code)], limit=1)
+            sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
+        next_by_code = super().next_by_code()
+        _logger.info(f"Sequnece Entry: {next_by_code}")
         be_year = self._get_buddha_era_year()
 
         # Optionally modify the prefix
