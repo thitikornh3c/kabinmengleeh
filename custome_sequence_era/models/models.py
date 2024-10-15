@@ -61,8 +61,8 @@ class CustomSequence(models.Model):
             next_number = super(CustomSequence, sequence).next_by_code(code, **kwargs)
 
             # Combine the prefix and next number to form the full sequence value
-            prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
-            return f"{prefix}{next_number}"  # Adjust as needed
+            # prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
+            return f"{next_number}"  # Adjust as needed
 
         # Handle case where sequence is not found
-        return super(CustomSequence, self).next_by_code(code)
+        return super(CustomSequence, self).next_by_code(code, **kwargs)
