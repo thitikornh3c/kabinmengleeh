@@ -29,8 +29,8 @@ class CustomSequence(models.Model):
             sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
-        next_by_code = super().next_by_code(self.code)
-        _logger.info(f"Sequnece Entry: {next_by_code}")
+        # next_by_code = super().next_by_code(self.code)
+        # _logger.info(f"Sequnece Entry: {next_by_code}")
         be_year = self._get_buddha_era_year()
 
         # Optionally modify the prefix
@@ -47,3 +47,8 @@ class CustomSequence(models.Model):
 
         return prefix, suffix
     
+    @api.model
+    def next_by_code(self, code):
+        """Override next_by_code to reset number_next if needed."""
+        _logger.info(f"Sequnece Entry: {code}")
+        return super().next_by_code(self.code)
