@@ -46,9 +46,3 @@ class CustomSequence(models.Model):
         # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
 
         return prefix, suffix
-    
-    @api.model
-    def next_by_code(self, code):
-        """Override next_by_code to reset number_next if needed."""
-        _logger.info(f"Sequnece Entry: {code}")
-        return super().next_by_code(self.code)
