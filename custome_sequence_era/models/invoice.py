@@ -7,7 +7,7 @@ class CustomInvoice(models.Model):
 
     @api.model
     def create(self, vals):
-        _logger.info(f"Invoice Code: {vals['name']}")
+        _logger.info(f"Invoice Code: {vals}")
         if vals.get('move_type') in ('out_invoice', 'in_invoice'):
             # Use your custom sequence logic
             vals['name'] = self.env['ir.sequence'].next_by_code('account.move')
