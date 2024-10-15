@@ -4,7 +4,7 @@
     'summary': 'Custom Sequence with Buddha Era Year',
     'description': 'Customizes sequence formatting to include Buddha Era year.',
     'author': 'Happy Three Creation',
-    'depends': ['base'],
+    'depends': ['base', 'account'],
     'data': [
         'views/views.xml',
     ],
