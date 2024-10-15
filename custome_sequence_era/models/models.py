@@ -29,7 +29,7 @@ class CustomSequence(models.Model):
             sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
-        next_by_code = super().next_by_code()
+        next_by_code = super().next_by_code(self.code)
         _logger.info(f"Sequnece Entry: {next_by_code}")
         be_year = self._get_buddha_era_year()
 
