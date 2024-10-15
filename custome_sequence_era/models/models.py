@@ -7,6 +7,8 @@ _logger = logging.getLogger(__name__)
 class CustomSequence(models.Model):
     _inherit = 'ir.sequence'
 
+    last_reset_date = fields.Datetime(string='Last Reset Date', readonly=True
+                                  
     def _get_buddha_era_year(self):
         # Calculate Buddha Era year
         current_year = datetime.now().year
@@ -21,7 +23,7 @@ class CustomSequence(models.Model):
         # Call the super method to get the default prefix and suffix
         prefix, suffix = super()._get_prefix_suffix()
         be_year = self._get_buddha_era_year()
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} {self.last_reset_date}")
+        _logger.info(f"Sequnece Entry: {self.code} {self.number_next}")
 
         # Optionally modify the prefix
         if self.prefix:
