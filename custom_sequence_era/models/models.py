@@ -63,15 +63,22 @@ class CustomSequence(models.Model):
     @api.model
     def next_by_code(self, code, **kwargs):
         """Override next_by_code to reset number_next if needed."""
-        sequence = self.search([('code', '=', code)], limit=1)
-        _logger.warning(f"Sequence code '{code}' {kwargs} not found.")
+
+        company_id = self.env.context.get('company_id', self.env.company.id)
+        _logger.info(f"Sequnece of Company: {company_id}")
+        sequence_code = code
+        if company_id == 2:
+            sequence_code = sequence_code + '.h3c'
+
+        sequence = self.search([('code', '=', sequence_code)], limit=1)
+        _logger.warning(f"Sequence code '{sequence_code}' {kwargs} not found.")
         
         if sequence:
             # Call _get_prefix_suffix to update number_next if needed
             sequence._get_prefix_suffix()
 
             # Call the original next_by_code to get the next number
-            next_number = super(CustomSequence, sequence).next_by_code(code, **kwargs)
+            next_number = super(CustomSequence, sequence).next_by_code(sequence_code, **kwargs)
             _logger.warning(f"Sequence next_number '{next_number}'")
 
             # Combine the prefix and next number to form the full sequence value
@@ -79,4 +86,4 @@ class CustomSequence(models.Model):
             return f"{next_number}"  # Adjust as needed
 
         # Handle case where sequence is not found
-        return super(CustomSequence, self).next_by_code(code, **kwargs)
+        return super(CustomSequence, self).next_by_code(sequence_code, **kwargs)
