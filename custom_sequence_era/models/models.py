@@ -28,6 +28,8 @@ class CustomSequence(models.Model):
         bangkok_time = utc_now + timedelta(hours=7)
 
         currentDate = bangkok_time.strftime("%d")
+        company_id = self.env.context.get('company_id', self.env.company.id)
+        _logger.info(f"Sequnece of Company: {company_id}")
         # invoice = self.search([('code', '=', 'account.move')], limit=1)
         _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
