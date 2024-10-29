@@ -51,6 +51,7 @@ class CustomSequence(models.Model):
         # For example, include the Buddha Era year in the suffix
       
         # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
+        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date} {prefix} {suffix}")
 
         return prefix, suffix
     
@@ -66,6 +67,7 @@ class CustomSequence(models.Model):
 
             # Call the original next_by_code to get the next number
             next_number = super(CustomSequence, sequence).next_by_code(code, **kwargs)
+            _logger.warning(f"Sequence next_number '{next_number}'")
 
             # Combine the prefix and next number to form the full sequence value
             # prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
