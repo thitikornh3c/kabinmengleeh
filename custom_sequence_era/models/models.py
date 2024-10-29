@@ -30,11 +30,14 @@ class CustomSequence(models.Model):
         currentDate = bangkok_time.strftime("%d")
         company_id = self.env.context.get('company_id', self.env.company.id)
         _logger.info(f"Sequnece of Company: {company_id}")
+        sequence_code = self.code
+        if company_id == 2:
+            sequence_code = sequence_code + '.h3c'
         # invoice = self.search([('code', '=', 'account.move')], limit=1)
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
+        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
-            sequence = self.search([('code', '=', self.code)], limit=1)
+            sequence = self.search([('code', '=', sequence_code)], limit=1)
             sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
@@ -53,7 +56,7 @@ class CustomSequence(models.Model):
         # For example, include the Buddha Era year in the suffix
       
         # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date} {prefix} {suffix}")
+        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date} {prefix} {suffix}")
 
         return prefix, suffix
     
