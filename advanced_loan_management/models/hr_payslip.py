@@ -48,7 +48,10 @@ class HRPayslip(models.Model):
 
             # Final net salary calculation
             for line in slip.line_ids:
-                if line.salary_rule_id.code == 'NET':
+                if line.salary_rule_id.code == 'PND':
+                    line.amount = -withholding_tax
+                    line.total = -withholding_tax
+                elif line.salary_rule_id.code == 'NET':
                     line.amount = amonth_salary + total_other_deductions + sso_amount - withholding_tax
                     line.total = line.amount
 
