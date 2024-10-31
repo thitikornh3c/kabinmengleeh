@@ -20,6 +20,10 @@ class CustomSequence(models.Model):
         """
         Override to customize the sequence prefix and suffix.
         """
+
+        if self.code in (None, "", False):
+            prefix, suffix = super()._get_prefix_suffix()
+            return prefix, suffix
         # Call the super method to get the default prefix and suffix
         # Get the current UTC time
         utc_now = datetime.utcnow()
