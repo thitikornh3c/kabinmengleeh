@@ -65,7 +65,7 @@ class CustomSequence(models.Model):
         """Override next_by_code to reset number_next if needed."""
 
         company_id = self.env.context.get('company_id', self.env.company.id)
-        _logger.info(f"Sequnece of Company: {company_id}")
+        _logger.info(f"Sequnece of Company: {company_id} {code}")
         sequence_code = code
         if company_id == 2:
             sequence_code = sequence_code + '.h3c'
