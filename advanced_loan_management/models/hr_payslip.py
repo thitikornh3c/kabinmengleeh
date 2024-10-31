@@ -299,7 +299,7 @@ class HRPayslip(models.Model):
 
                 # Loop re calculate1
                 for line in slip.line_ids:
-                    if line.salary_rule_id.code == 'PND':
+                    if line.salary_rule_id.code == 'with_holding':
                         # workDataAmount = line.amount
                         line.amount = -withholding_tax
                         line.total = -withholding_tax
