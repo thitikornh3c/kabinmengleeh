@@ -80,8 +80,8 @@ class HRPayslip(models.Model):
 
             # Logic Calculate Work day
             if contract.schedule_pay == 'daily':
-                startDate = datetime(2024, 10, 1)  # Start date
-                endDate = datetime(2024, 10, 31)    # End date
+                startDate = slip.date_from  # Start date
+                endDate = slip.date_to    # End date
                 week_ranges = self.get_week_ranges(startDate, endDate)
 
                 # _logger.info(f"Processing payslip for work entry: {week_ranges}")
