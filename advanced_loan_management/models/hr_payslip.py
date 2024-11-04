@@ -66,13 +66,17 @@ class HRPayslip(models.Model):
             totalOther = 0
             sso_amount = 0
             withholding_tax = 0
+            contract_type_code = ''
 
             # Get contract
             contract = self.env['hr.contract'].search([
                 ('employee_id', '=', slip.employee_id.id),
                 ('state', '=', 'open')  # Only get active contracts
             ], limit=1)
-            _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id} {contract.schedule_pay}")
+
+            if contract:
+                contract_type_code = contract.type_id.code
+            _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id} {contract.schedule_pay} {contract_type_code}")
 
             # Logic Calculate Work day
             if contract.schedule_pay == 'daily':
@@ -189,6 +193,7 @@ class HRPayslip(models.Model):
                         line.amount = amonthSalary + totalOther + sso_amount
                         line.total = amonthSalary + totalOther + sso_amount
             elif contract.schedule_pay == 'monthly':
+
                 startDate = slip.date_from  # Start date
                 endDate = slip.date_to    # End date
                 week_ranges = self.get_week_ranges(startDate, endDate)
@@ -277,13 +282,14 @@ class HRPayslip(models.Model):
                         line.amount = amonthSalary
                         line.total = amonthSalary
                     elif line.salary_rule_id.code == 'SSO':
-                        sso_amount = amonthSalary * 0.05 
-                        if sso_amount > 750:
-                            sso_amount = -750
-                        else:
-                            sso_amount = -sso_amount
-                        line.amount = sso_amount
-                        line.total = sso_amount
+                        if contract_type_code == 'จ่ายประกันสังคม': 
+                            sso_amount = amonthSalary * 0.05 
+                            if sso_amount > 750:
+                                sso_amount = -750
+                            else:
+                                sso_amount = -sso_amount
+                            line.amount = sso_amount
+                            line.total = sso_amount
                     elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
                         loan = -1000
                         totalOther = totalOther + loan
