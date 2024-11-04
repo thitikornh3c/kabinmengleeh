@@ -75,7 +75,7 @@ class HRPayslip(models.Model):
             ], limit=1)
 
             if contract:
-                contract_type_code = contract.type_id.code
+                contract_type_code = contract.contract_type_id.code
             _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id} {contract.schedule_pay} {contract_type_code}")
 
             # Logic Calculate Work day
