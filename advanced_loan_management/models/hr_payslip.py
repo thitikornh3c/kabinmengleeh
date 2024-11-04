@@ -166,13 +166,14 @@ class HRPayslip(models.Model):
                         line.amount = amonthSalary
                         line.total = amonthSalary
                     elif line.salary_rule_id.code == 'SSO':
-                        sso_amount = amonthSalary * 0.05 
-                        if sso_amount > 750:
-                            sso_amount = -750
-                        else:
-                            sso_amount = -sso_amount
-                        line.amount = sso_amount
-                        line.total = sso_amount
+                        if contract_type_code == 'จ่ายประกันสังคม': 
+                            sso_amount = amonthSalary * 0.05 
+                            if sso_amount > 750:
+                                sso_amount = -750
+                            else:
+                                sso_amount = -sso_amount
+                            line.amount = sso_amount
+                            line.total = sso_amount
                     elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
                         loan = -1000
                         totalOther = totalOther + loan
