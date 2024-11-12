@@ -24,3 +24,20 @@ class CustomInvoice(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('account.bill.move')
 
         return super(CustomInvoice, self).create(vals)
+    
+
+    # basic = 10k salary 
+    # เบี้ยขยัน 
+    # ot
+    # gross = sum()
+    # deduction
+    # net = gross - sso
+    # (rule input)
+
+
+    #รับ Other Inputs
+    #inbouce & outbounce
+
+    # slip เงินเดือน
+    # รายได้สะสม gross salary (เงินได้สะสม Accumalate income)
+    # (ประกันสังคมสะสม)
