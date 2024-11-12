@@ -43,7 +43,7 @@ class HRPayslip(models.Model):
         year_tax = year_gross_salary * 0.05
         month_tax = year_tax / 12
 
-        return gross_salary - month_tax
+        return month_tax
         # """Calculate withholding tax (PND) based on gross salary."""
         # # Example tax calculation logic; adjust according to specific rules
         # if gross_salary <= 15000:
