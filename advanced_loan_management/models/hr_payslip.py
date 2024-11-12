@@ -298,13 +298,13 @@ class HRPayslip(models.Model):
                                 sso_amount = -sso_amount
                             line.amount = sso_amount
                             line.total = sso_amount
-                    elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
-                        loan = -1000
-                        totalOther = totalOther + loan
-                        line.amount = loan
-                        line.total = loan
-                        line.name = f'{line.name} ({loan_contracts[0].id})'
-                        # for loan in loan_contracts:
+                    # elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
+                    #     loan = -1000
+                    #     totalOther = totalOther + loan
+                    #     line.amount = loan
+                    #     line.total = loan
+                    #     line.name = f'{line.name} ({loan_contracts[0].id})'
+                    #     # for loan in loan_contracts:
                         #     line.name = loan
                     else:
                         if line.salary_rule_id.code != 'NET':
@@ -315,8 +315,8 @@ class HRPayslip(models.Model):
                 for line in slip.line_ids:
                     if line.salary_rule_id.code == 'with_holding':
                         # workDataAmount = line.amount
-                        line.amount = -withholding_tax
-                        line.total = -withholding_tax
+                        line.amount = withholding_tax
+                        line.total = withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
                         line.amount = amonthSalary + totalOther + sso_amount - withholding_tax
