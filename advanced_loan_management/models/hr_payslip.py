@@ -319,8 +319,8 @@ class HRPayslip(models.Model):
                         line.total = withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
-                        line.amount = amonthSalary + totalOther - sso_amount - withholding_tax
-                        line.total = amonthSalary + totalOther - sso_amount - withholding_tax
+                        line.amount = amonthSalary - (totalOther + sso_amount + withholding_tax)
+                        line.total = amonthSalary - (totalOther + sso_amount + withholding_tax)
                 
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
