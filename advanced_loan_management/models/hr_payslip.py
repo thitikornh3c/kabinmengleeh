@@ -40,6 +40,7 @@ class HRPayslip(models.Model):
     def calculate_withholding_tax(self, gross_salary):
         year_gross_salary = gross_salary * 12
         year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล
+        year_gross_salary = year_gross_salary - 150000 #ยกเว้นภาษีเงินได้
         year_tax = year_gross_salary * 0.05
         month_tax = year_tax / 12
 
