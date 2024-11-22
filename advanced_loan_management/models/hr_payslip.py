@@ -40,22 +40,14 @@ class HRPayslip(models.Model):
     def calculate_withholding_tax(self, gross_salary):
         year_gross_salary = gross_salary * 12
         year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล
+        year_gross_salary = year_gross_salary - 100000 #หักค่าใช้จ่าย สูงสุด 100000
         year_gross_salary = year_gross_salary - 150000 #ยกเว้นภาษีเงินได้
         year_gross_salary = year_gross_salary - 9000 #ยกเว้นภาษีเงินได้
         year_tax = year_gross_salary * 0.05
         month_tax = year_tax / 12
 
         return month_tax
-        # """Calculate withholding tax (PND) based on gross salary."""
-        # # Example tax calculation logic; adjust according to specific rules
-        # if gross_salary <= 15000:
-        #     return 0  # No withholding tax for salary up to 15,000
-        # elif gross_salary <= 30000:
-        #     return gross_salary * 0.05  # 5% withholding tax
-        # elif gross_salary <= 50000:
-        #     return gross_salary * 0.1  # 10% withholding tax
-        # else:
-        #     return gross_salary * 0.15  # 15% withholding tax
+      
     
     @api.model
     def compute_sheet(self):
