@@ -37,20 +37,35 @@ class HRPayslip(models.Model):
         
         return weeks
     
-    def calculate_withholding_tax(self, gross_salary):
-        year_gross_salary = gross_salary * 12   #300000
-        year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล 240000
-        year_gross_salary = year_gross_salary - 100000 #หักค่าใช้จ่าย สูงสุด 100000 140000
-        year_gross_salary = year_gross_salary - 9000 #ยกเว้นภาษีเงินได้ 131000
-        if year_gross_salary > 150000:
-            year_gross_salary = year_gross_salary - 150000 #ยกเว้นภาษีเงินได้ 0%
-
-            year_tax = year_gross_salary * 0.05
-            month_tax = year_tax / 12
-        else:
-            month_tax = 0
+    def calculate_withholding_tax(self, gross_salary, empId):
+        month_tax = 0
+        if empId == 23: 
+            month_tax = 5179.17
+        elif empId == 48: 
+            month_tax = 5179.17
+        elif empId == 49: 
+            month_tax = 5179.17
+        elif empId == 46: #Fifa
+            month_tax = 3679.17
+        elif empId == 45: #Fifa
+            month_tax = 193.33
 
         return month_tax
+        # year_gross_salary = gross_salary * 12 
+        # year_gross_salary = year_gross_salary - 100000 #หักค่าใช้จ่าย สูงสุด 100000 40(1) 50% ไม่เกิน 100000
+
+        # year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล
+        # year_gross_salary = year_gross_salary - 9000 #ยกเว้นภาษีเงินได้ เงินประกันสังคมสะสม สูงสุด 9000
+
+        # if year_gross_salary > 150000:
+        #     year_gross_salary = year_gross_salary - 150000 #ยกเว้นภาษีเงินได้ 0%
+
+        #     year_tax = year_gross_salary * 0.05
+        #     month_tax = year_tax / 12
+        # else:
+        #     month_tax = 0
+
+        # return month_tax
       
     
     @api.model
@@ -265,7 +280,7 @@ class HRPayslip(models.Model):
                     if line.work_entry_type_id.code == 'LEAVE110':
                         line.amount = 0
                 
-                withholding_tax = self.calculate_withholding_tax(amonthSalary)
+                withholding_tax = self.calculate_withholding_tax(amonthSalary,  slip.employee_id.id)
 
                 for line in slip.line_ids:
 
