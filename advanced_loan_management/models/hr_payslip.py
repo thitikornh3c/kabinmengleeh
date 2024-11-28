@@ -351,7 +351,7 @@ class HRPayslip(models.Model):
                 # Trigger custom logic when payslip is marked as 'Paid'
                 self.trigger_custom_event()
 
-        return super(Payslip, self).write(vals)
+        return super(HRPayslip, self).write(vals)
 
     def trigger_custom_event(self):
         """
