@@ -347,6 +347,7 @@ class HRPayslip(models.Model):
             new_state = vals['state']
             
             # If the state is changing to 'done' (or 'paid', depending on your workflow)
+            message = f"Payslip {self.number} has been change status to {new_state}"
             if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
                 # Trigger custom logic when payslip is marked as 'Paid'
                 self.trigger_custom_event()
@@ -358,12 +359,12 @@ class HRPayslip(models.Model):
         Custom function to trigger an event when the payslip is marked as paid.
         """
         # Example of a log message
-        message = f"Payslip {self.number} has been marked as paid."
+        message = f"Payslip {self.number} has been marked as create draft entry."
         _logger.info(message)
 
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
-        Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
+        # Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
 
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
