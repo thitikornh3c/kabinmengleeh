@@ -334,7 +334,37 @@ class HRPayslip(models.Model):
                         # workDataAmount = line.amount
                         line.amount = amonthSalary - (totalOther + sso_amount + withholding_tax)
                         line.total = amonthSalary - (totalOther + sso_amount + withholding_tax)
-                
+
+
+    @api.model
+    def write(self, vals):
+        """
+        Override the write method to listen for the state change when a payslip is paid.
+        """
+        # Check if the 'state' field is in the values being written
+        if 'state' in vals:
+            old_state = self.state
+            new_state = vals['state']
+            
+            # If the state is changing to 'done' (or 'paid', depending on your workflow)
+            if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
+                # Trigger custom logic when payslip is marked as 'Paid'
+                self.trigger_custom_event()
+
+        return super(Payslip, self).write(vals)
+
+    def trigger_custom_event(self):
+        """
+        Custom function to trigger an event when the payslip is marked as paid.
+        """
+        # Example of a log message
+        message = f"Payslip {self.number} has been marked as paid."
+        _logger.info(message)
+
+        # Example of broadcasting a message via the bus system (optional)
+        # Odoo bus to notify other parts of the system (or external systems)
+        Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
+
     # def prepare_report_data(self):
     #     # Ensure the attribute `move_type` is present if required
     #     records = self.env['hr.payslip'].search([])
