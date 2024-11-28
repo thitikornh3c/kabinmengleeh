@@ -348,6 +348,7 @@ class HRPayslip(models.Model):
             
             # If the state is changing to 'done' (or 'paid', depending on your workflow)
             message = f"Payslip {self.number} has been change status to {new_state}"
+            _logger.info(message)
             if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
                 # Trigger custom logic when payslip is marked as 'Paid'
                 self.trigger_custom_event()
