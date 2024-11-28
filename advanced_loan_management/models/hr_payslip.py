@@ -374,6 +374,8 @@ class HRPayslip(models.Model):
         message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding} {contract.x_studio_total_withholding}"
         _logger.info(message)
 
+        # Test Save value
+        contract.x_studio_total_withholding = 100
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
         # Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
