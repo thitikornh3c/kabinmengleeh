@@ -360,12 +360,18 @@ class HRPayslip(models.Model):
         Custom function to trigger an event when the payslip is marked as paid.
         """
         # Example of a log message
+        contract = self.env['hr.contract'].search([
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'open')  # Only get active contracts
+            ], limit=1)
+
+
         taxWithHolding = 0
         for line in self.line_ids:
             if line.salary_rule_id.code == 'with_holding':
                 taxWithHolding = line.amount
         
-        message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding}"
+        message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding} {contract.x_studio_total_withholding}"
         _logger.info(message)
 
         # Example of broadcasting a message via the bus system (optional)
