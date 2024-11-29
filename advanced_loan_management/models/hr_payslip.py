@@ -83,6 +83,7 @@ class HRPayslip(models.Model):
             # Apply custom logic using the additional input
             # For example, you might want to add a custom amount to the payslip
             amonthSalary = 0
+            totalOtherPlus = 0
             totalOther = 0
             sso_amount = 0
             withholding_tax = 0
@@ -282,8 +283,15 @@ class HRPayslip(models.Model):
                 
                 withholding_tax = self.calculate_withholding_tax(amonthSalary,  slip.employee_id.id)
 
-                for line in slip.line_ids:
 
+                for line in slip.line_ids:
+                    if line.salary_rule_id.code == 'EXTRAPAID':
+                        # workDataAmount = line.amount
+                        totalOtherPlus = line.amount
+                        line.amount = totalOtherPlus
+                        line.total = totalOtherPlus
+
+                for line in slip.line_ids:
                     if line.salary_rule_id.code == 'BASIC':
                         # loan_contracts = self.env['loan.request'].search([
                         #     ('partner_id', '=', slip.employee_id.id)
@@ -299,8 +307,8 @@ class HRPayslip(models.Model):
                         line.amount = amonthSalary
                         line.total = amonthSalary
                     elif line.salary_rule_id.code == 'GROSS':
-                        line.amount = amonthSalary
-                        line.total = amonthSalary
+                        line.amount = amonthSalary + totalOtherPlus
+                        line.total = amonthSalary + totalOtherPlus
                     elif line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
                             sso_amount = amonthSalary * 0.05 
@@ -333,8 +341,8 @@ class HRPayslip(models.Model):
                         line.total = withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
-                        line.amount = amonthSalary - (totalOther - (sso_amount + withholding_tax))
-                        line.total = amonthSalary - (totalOther - (sso_amount + withholding_tax))
+                        line.amount = amonthSalary - (-(totalOther) + sso_amount + withholding_tax)
+                        line.total = amonthSalary - (totalOther + sso_amount + withholding_tax)
 
 
     @api.model
