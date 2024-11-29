@@ -392,21 +392,30 @@ class HRPayslip(models.Model):
         _logger.info(message)
 
         # Test Save value
-        try:
-            total_net = float(contract.x_studio_total_net.replace(',', ''))
-        except ValueError:
+        if isinstance(contract.x_studio_total_net, str):
+            try:
+                total_net = float(contract.x_studio_total_net.replace(',', ''))
+            except ValueError:
+                total_net = 0.0
+        else:
             total_net = 0.0
         contract.x_studio_total_net = str(total_net + float(salary))
 
-        try:
-            total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
-        except ValueError:
+        if isinstance(contract.x_studio_total_withholding, str):
+            try:
+                total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
+            except ValueError:
+                total_withholding = 0.0
+        else:
             total_withholding = 0.0
         contract.x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
 
-        try:
-            total_sso = float(contract.x_studio_total_sso.replace(',', ''))
-        except ValueError:
+        if isinstance(contract.x_studio_total_sso, str):
+            try:
+                total_sso = float(contract.x_studio_total_sso.replace(',', ''))
+            except ValueError:
+                total_sso = 0.0
+        else:
             total_sso = 0.0
         contract.x_studio_total_sso = str(total_sso + float(sso))
 
