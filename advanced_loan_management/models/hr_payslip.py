@@ -381,9 +381,9 @@ class HRPayslip(models.Model):
         _logger.info(message)
 
         # Test Save value
-        contract.x_studio_total_net = str(float(contract.x_studio_total_net) + float(salary))
-        contract.x_studio_total_withholding = str(float(contract.x_studio_total_withholding) + float(taxWithHolding))
-        contract.x_studio_total_sso = str(float(contract.x_studio_total_sso) + float(sso))
+        contract.x_studio_total_net = str(float(contract.x_studio_total_net.replace(',', '')) + float(salary))
+        contract.x_studio_total_withholding = str(float(contract.x_studio_total_withholding.replace(',', '')) + float(taxWithHolding))
+        contract.x_studio_total_sso = str(float(contract.x_studio_total_sso.replace(',', '')) + float(sso))
 
 
         # Example of broadcasting a message via the bus system (optional)
