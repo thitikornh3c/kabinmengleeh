@@ -392,9 +392,23 @@ class HRPayslip(models.Model):
         _logger.info(message)
 
         # Test Save value
-        contract.x_studio_total_net = str(float(contract.x_studio_total_net.replace(',', '')) + float(salary))
-        contract.x_studio_total_withholding = str(float(contract.x_studio_total_withholding.replace(',', '')) + float(taxWithHolding))
-        contract.x_studio_total_sso = str(float(contract.x_studio_total_sso.replace(',', '')) + float(sso))
+        try:
+            total_net = float(contract.x_studio_total_net.replace(',', ''))
+        except ValueError:
+            total_net = 0.0
+        contract.x_studio_total_net = str(total_net + float(salary))
+
+        try:
+            total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
+        except ValueError:
+            total_withholding = 0.0
+        contract.x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
+
+        try:
+            total_sso = float(contract.x_studio_total_sso.replace(',', ''))
+        except ValueError:
+            total_sso = 0.0
+        contract.x_studio_total_sso = str(total_sso + float(sso))
 
 
         # Example of broadcasting a message via the bus system (optional)
