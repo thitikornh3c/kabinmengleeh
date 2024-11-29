@@ -366,18 +366,26 @@ class HRPayslip(models.Model):
             ], limit=1)
 
 
+        salary = 0 
         taxWithHolding = 0
+        sso = 0
         for line in self.line_ids:
-            if line.salary_rule_id.code == 'with_holding':
+            if line.salary_rule_id.code == 'BASIC':
+                salary = line.amount
+            elif line.salary_rule_id.code == 'with_holding':
                 taxWithHolding = line.amount
+            elif line.salary_rule_id.code == 'SSO':
+                sso = line.amount
         
         message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding} {contract.x_studio_total_withholding}"
         _logger.info(message)
 
         # Test Save value
-        # contract.x_studio_total_withholding = 100
+        contract.x_studio_total_net = contract.x_studio_total_net + salary
+        contract.x_studio_total_withholding = contract.x_studio_total_withholding + taxWithHolding
+        contract.x_studio_total_sso = contract.x_studio_total_sso + sso
 
-        
+
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
         # Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
