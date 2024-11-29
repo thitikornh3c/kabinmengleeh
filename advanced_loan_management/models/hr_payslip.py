@@ -284,7 +284,6 @@ class HRPayslip(models.Model):
 
                 for line in slip.line_ids:
 
-                    # _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {number_of_days}")
                     if line.salary_rule_id.code == 'BASIC':
                         # loan_contracts = self.env['loan.request'].search([
                         #     ('partner_id', '=', slip.employee_id.id)
@@ -321,9 +320,11 @@ class HRPayslip(models.Model):
                         #     line.name = loan
                     else:
                         if line.salary_rule_id.code != 'NET':
+                            _logger.info(f"Processing other line of employee {line.salary_rule_id.code}: {line.amount}")
                             totalOther = totalOther + sso_amount + line.amount
                             # line.name = f'{line.name} {line.amount} {totalOther}'
 
+                _logger.info(f"Processing payslip deduct cost of employee {totalOther}: {sso_amount} {withholding_tax}")
                 # Loop re calculate1
                 for line in slip.line_ids:
                     if line.salary_rule_id.code == 'with_holding':
