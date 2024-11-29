@@ -287,6 +287,7 @@ class HRPayslip(models.Model):
                 for line in slip.line_ids:
                     if line.salary_rule_id.code == 'EXTRAPAID':
                         # workDataAmount = line.amount
+                        _logger.info(f"Processing EXTRAPAID for employee attendance: {line.amount}")
                         totalOtherPlus = line.amount
                         line.amount = totalOtherPlus
                         line.total = totalOtherPlus
