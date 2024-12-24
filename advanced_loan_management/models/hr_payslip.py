@@ -423,10 +423,13 @@ class HRPayslip(models.Model):
 
 
         self.env['x_employee_salaries'].create({
-                'x_name': '2024-10',
+                'x_name': self.date_from.strftime('%Y') + self.date_from.strftime('%m'),
                 'x_studio_employee': self.employee_id.id,
-                'x_studio_month': self.date_from ,
-                'x_studio_total_salary': str(total_net + float(salary)),
+                'x_studio_year': self.date_from.strftime('%Y'),
+                'x_studio_month': self.date_from.strftime('%m'),
+                'x_studio_total_salary': contract.x_studio_total_net,
+                'x_studio_total_sso': contract.x_studio_total_sso,
+                'x_studio_total_withholding': contract.x_studio_total_withholding
         })
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
