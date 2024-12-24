@@ -423,6 +423,7 @@ class HRPayslip(models.Model):
 
 
         self.env['x_employee_salaries'].create({
+                'x_name': '2024-10',
                 'x_studio_employee': self.employee_id.id,
                 'x_studio_month': self.date_from ,
                 'x_studio_total_salary': str(total_net + float(salary)),
