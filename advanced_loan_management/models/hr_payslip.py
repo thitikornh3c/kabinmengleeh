@@ -420,6 +420,11 @@ class HRPayslip(models.Model):
         contract.x_studio_total_sso = str(total_sso + float(sso))
 
 
+        self.env['x_employee_salaries'].create({
+                'x_studio_employee': self.employee_id.id,
+                'x_studio_month': self.date_from ,
+                'x_studio_total_salary': str(total_net + float(salary)),
+        })
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
         # Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
