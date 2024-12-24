@@ -363,6 +363,8 @@ class HRPayslip(models.Model):
             if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
                 # Trigger custom logic when payslip is marked as 'Paid'
                 self.trigger_custom_event()
+            if new_state == 'verify': 
+                self.trigger_custom_event()
 
         return super(HRPayslip, self).write(vals)
 
