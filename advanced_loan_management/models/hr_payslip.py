@@ -501,13 +501,13 @@ class HRPayslip(models.Model):
 
         if empSlipLog:
             # Update
-            empSlipLog.x_studio_total_salary = "{:.2f}".format(x_studio_total_net)
-            empSlipLog.x_studio_total_sso = "{:.2f}".format(x_studio_total_sso)
-            empSlipLog.x_studio_total_withholding = "{:.2f}".format(x_studio_total_withholding)
-            empSlipLog.x_studio_salary = "{:.2f}".format(salary)
-            empSlipLog.x_studio_sso = "{:.2f}".format(sso)
-            empSlipLog.x_studio_with_holding = "{:.2f}".format(taxWithHolding)
-            empSlipLog.x_studio_total_amount = "{:.2f}".format(net)
+            empSlipLog.x_studio_total_salary = x_studio_total_net
+            empSlipLog.x_studio_total_sso = x_studio_total_sso
+            empSlipLog.x_studio_total_withholding = x_studio_total_withholding
+            empSlipLog.x_studio_salary = salary
+            empSlipLog.x_studio_sso = sso
+            empSlipLog.x_studio_with_holding = taxWithHolding
+            empSlipLog.x_studio_total_amount = net
         else:
              self.env['x_employee_salaries'].create({
                 'x_name': str(year) + str(month),
@@ -515,14 +515,14 @@ class HRPayslip(models.Model):
                 'x_studio_slip': self.id,
                 'x_studio_year': year,
                 'x_studio_month': month,
-                'x_studio_total_salary': "{:.2f}".format(x_studio_total_net),
-                'x_studio_total_sso': "{:.2f}".format(x_studio_total_sso),
-                'x_studio_total_withholding': "{:.2f}".format(x_studio_total_withholding),
+                'x_studio_total_salary': x_studio_total_net,
+                'x_studio_total_sso': x_studio_total_sso,
+                'x_studio_total_withholding': x_studio_total_withholding,
 
-                'x_studio_salary': "{:.2f}".format(salary),
-                'x_studio_sso': "{:.2f}".format(sso),
-                'x_studio_with_holding': "{:.2f}".format(taxWithHolding),
-                'x_studio_total_amount': "{:.2f}".format(net)
+                'x_studio_salary': salary,
+                'x_studio_sso': sso,
+                'x_studio_with_holding': taxWithHolding,
+                'x_studio_total_amount': net
             })
 
     @api.model
