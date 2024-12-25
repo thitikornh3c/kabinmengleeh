@@ -484,7 +484,7 @@ class HRPayslip(models.Model):
             empSlipLog.x_studio_total_withholding = x_studio_total_withholding
         else:
              self.env['x_employee_salaries'].create({
-                'x_name': year + month,
+                'x_name': str(year) + str(month),
                 'x_studio_employee': self.employee_id.id,
                 'x_studio_slip': self.id,
                 'x_studio_year': year,
