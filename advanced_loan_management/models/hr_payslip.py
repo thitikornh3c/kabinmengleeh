@@ -414,34 +414,63 @@ class HRPayslip(models.Model):
                     ('x_studio_month', '=', month - 1),
                     # ('x_studio_slip', '=', self.id),
                 ], limit=1)
-                
-            # Test Save value
-            if isinstance(slipLastMonth.x_studio_total_salary, str):
-                try:
-                    total_net = float(slipLastMonth.x_studio_total_salary.replace(',', ''))
-                except ValueError:
+            
+            if slipLastMonth:
+                # Test Save value
+                if isinstance(slipLastMonth.x_studio_total_salary, str):
+                    try:
+                        total_net = float(slipLastMonth.x_studio_total_salary.replace(',', ''))
+                    except ValueError:
+                        total_net = 0.0
+                else:
                     total_net = 0.0
-            else:
-                total_net = 0.0
-            x_studio_total_net = str(total_net + float(salary))
+                x_studio_total_net = str(total_net + float(salary))
 
-            if isinstance(slipLastMonth.x_studio_total_withholding, str):
-                try:
-                    total_withholding = float(slipLastMonth.x_studio_total_withholding.replace(',', ''))
-                except ValueError:
+                if isinstance(slipLastMonth.x_studio_total_withholding, str):
+                    try:
+                        total_withholding = float(slipLastMonth.x_studio_total_withholding.replace(',', ''))
+                    except ValueError:
+                        total_withholding = 0.0
+                else:
                     total_withholding = 0.0
-            else:
-                total_withholding = 0.0
-            x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
+                x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
 
-            if isinstance(slipLastMonth.x_studio_total_sso, str):
-                try:
-                    total_sso = float(slipLastMonth.x_studio_total_sso.replace(',', ''))
-                except ValueError:
+                if isinstance(slipLastMonth.x_studio_total_sso, str):
+                    try:
+                        total_sso = float(slipLastMonth.x_studio_total_sso.replace(',', ''))
+                    except ValueError:
+                        total_sso = 0.0
+                else:
                     total_sso = 0.0
+                x_studio_total_sso = str(total_sso + float(sso))
             else:
-                total_sso = 0.0
-            x_studio_total_sso = str(total_sso + float(sso))
+                # Use Snapshot Data in Contract
+                if isinstance(contract.x_studio_total_net, str):
+                    try:
+                        total_net = float(contract.x_studio_total_net.replace(',', ''))
+                    except ValueError:
+                        total_net = 0.0
+                else:
+                    total_net = 0.0
+                x_studio_total_net = str(total_net + float(salary))
+
+                if isinstance(contract.x_studio_total_withholding, str):
+                    try:
+                        total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
+                    except ValueError:
+                        total_withholding = 0.0
+                else:
+                    total_withholding = 0.0
+                x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
+
+                if isinstance(contract.x_studio_total_sso, str):
+                    try:
+                        total_sso = float(contract.x_studio_total_sso.replace(',', ''))
+                    except ValueError:
+                        total_sso = 0.0
+                else:
+                    total_sso = 0.0
+                x_studio_total_sso = str(total_sso + float(sso))
 
 
         empSlipLog = self.env['x_employee_salaries'].search([
@@ -464,7 +493,7 @@ class HRPayslip(models.Model):
                 'x_studio_total_sso': x_studio_total_sso,
                 'x_studio_total_withholding': x_studio_total_withholding
             })
-       
+
 
        
         # Example of broadcasting a message via the bus system (optional)
