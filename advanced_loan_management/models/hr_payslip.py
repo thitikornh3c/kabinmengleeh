@@ -14,6 +14,22 @@ class HRPayslip(models.Model):
         ('slip', 'Slip')
     ], string='Move Type')
 
+    q_total_net = fields.Float(
+        string='Total Net',
+        compute='_compute_salary_details',
+        store=False,
+    )
+    q_total_sso = fields.Float(
+        string='Total SSO',
+        compute='_compute_salary_details',
+        store=False,
+    )
+    q_total_withholding = fields.Float(
+        string='Total Withholding',
+        compute='_compute_salary_details',
+        store=False,
+    )
+
     @api.model
     def get_week_ranges(self, start_date, end_date):
         # Start from the start_date and go until the end_date
@@ -509,7 +525,22 @@ class HRPayslip(models.Model):
                 'x_studio_total_amount': net
             })
 
+    @api.model
+    def _compute_salary_details(self):
+        for payslip in self:
+            # Search for the associated x_employee_salaries record
+            emp_salary = self.env['x_employee_salaries'].search([
+                 ('x_studio_slip', '=', payslip.id),
+            ], limit=1)
 
+            if emp_salary:
+                payslip.total_net = emp_salary.total_net
+                payslip.total_sso = emp_salary.total_sso
+                payslip.total_withholding = emp_salary.total_withholding
+            else:
+                payslip.total_net = 0.0
+                payslip.total_sso = 0.0
+                payslip.total_withholding = 0.0
        
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
