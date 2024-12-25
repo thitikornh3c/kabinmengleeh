@@ -390,8 +390,8 @@ class HRPayslip(models.Model):
         year = self.date_from.strftime('%Y')
         month = int(self.date_from.strftime('%m'))
         
+        _logger.info(f"Payslip {self.number} line_ids: {self.line_ids}")
         for line in self.line_ids:
-            _logger(f"{line.salary_rule_id}")
             if line.salary_rule_id.code == 'BASIC':
                 salary = line.amount
             elif line.salary_rule_id.code == 'with_holding':
