@@ -530,17 +530,17 @@ class HRPayslip(models.Model):
         for payslip in self:
             # Search for the associated x_employee_salaries record
             emp_salary = self.env['x_employee_salaries'].search([
-                 ('x_studio_slip', '=', payslip.id),
+                ('x_studio_slip', '=', payslip.id),
             ], limit=1)
 
             if emp_salary:
-                payslip.total_net = emp_salary.total_net
-                payslip.total_sso = emp_salary.total_sso
-                payslip.total_withholding = emp_salary.total_withholding
+                payslip.q_total_net = emp_salary.x_studio_total_salary
+                payslip.q_total_sso = emp_salary.x_studio_total_sso
+                payslip.q_total_withholding = emp_salary.x_studio_total_withholding
             else:
-                payslip.total_net = 0.0
-                payslip.total_sso = 0.0
-                payslip.total_withholding = 0.0
+                payslip.q_total_net = 0.0
+                payslip.q_total_sso = 0.0
+                payslip.q_total_withholding = 0.0
        
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
