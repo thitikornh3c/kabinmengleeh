@@ -390,42 +390,21 @@ class HRPayslip(models.Model):
                 taxWithHolding = line.amount
             elif line.salary_rule_id.code == 'SSO':
                 sso = line.amount
-        
-
 
         message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding} {contract.x_studio_total_withholding}"
         _logger.info(message)
 
-        # Test Save value
-        if isinstance(contract.x_studio_total_net, str):
-            try:
-                total_net = float(contract.x_studio_total_net.replace(',', ''))
-            except ValueError:
-                total_net = 0.0
+        empSlipLog = self.env['x_employee_salaries'].search([
+                ('x_studio_slip', '=', self.id),
+            ], limit=1)
+
+        if empSlipLog:
+            # Update
+            empSlipLog.x_studio_total_salary = 0
+            empSlipLog.x_studio_total_sso = 0
+            empSlipLog.x_studio_total_withholding = 0
         else:
-            total_net = 0.0
-        contract.x_studio_total_net = str(total_net + float(salary))
-
-        if isinstance(contract.x_studio_total_withholding, str):
-            try:
-                total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
-            except ValueError:
-                total_withholding = 0.0
-        else:
-            total_withholding = 0.0
-        contract.x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
-
-        if isinstance(contract.x_studio_total_sso, str):
-            try:
-                total_sso = float(contract.x_studio_total_sso.replace(',', ''))
-            except ValueError:
-                total_sso = 0.0
-        else:
-            total_sso = 0.0
-        contract.x_studio_total_sso = str(total_sso + float(sso))
-
-
-        self.env['x_employee_salaries'].create({
+             self.env['x_employee_salaries'].create({
                 'x_name': self.date_from.strftime('%Y') + self.date_from.strftime('%m'),
                 'x_studio_employee': self.employee_id.id,
                 'x_studio_slip': self.id,
@@ -434,7 +413,37 @@ class HRPayslip(models.Model):
                 'x_studio_total_salary': contract.x_studio_total_net,
                 'x_studio_total_sso': contract.x_studio_total_sso,
                 'x_studio_total_withholding': contract.x_studio_total_withholding
-        })
+            })
+        # # Test Save value
+        # if isinstance(contract.x_studio_total_net, str):
+        #     try:
+        #         total_net = float(contract.x_studio_total_net.replace(',', ''))
+        #     except ValueError:
+        #         total_net = 0.0
+        # else:
+        #     total_net = 0.0
+        # contract.x_studio_total_net = str(total_net + float(salary))
+
+        # if isinstance(contract.x_studio_total_withholding, str):
+        #     try:
+        #         total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
+        #     except ValueError:
+        #         total_withholding = 0.0
+        # else:
+        #     total_withholding = 0.0
+        # contract.x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
+
+        # if isinstance(contract.x_studio_total_sso, str):
+        #     try:
+        #         total_sso = float(contract.x_studio_total_sso.replace(',', ''))
+        #     except ValueError:
+        #         total_sso = 0.0
+        # else:
+        #     total_sso = 0.0
+        # contract.x_studio_total_sso = str(total_sso + float(sso))
+
+
+       
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
         # Bus.sendone(self.env.cr, self.env.uid, 'custom.payslip.paid', message)
