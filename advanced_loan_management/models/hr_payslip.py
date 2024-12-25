@@ -446,7 +446,7 @@ class HRPayslip(models.Model):
                 x_studio_total_sso = str(total_sso + float(sso))
             else:
                 # Use Snapshot Data in Contract
-                _logger.info(f"Not Found Old Slip Logs")
+                _logger.info(f"Not Found Old Slip Logs {salary} {taxWithHolding} {sso}")
                 if isinstance(contract.x_studio_total_net, str):
                     try:
                         total_net = float(contract.x_studio_total_net.replace(',', ''))
