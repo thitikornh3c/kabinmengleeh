@@ -382,6 +382,7 @@ class HRPayslip(models.Model):
         salary = 0 
         taxWithHolding = 0
         sso = 0
+        
         for line in self.line_ids:
             if line.salary_rule_id.code == 'BASIC':
                 salary = line.amount
@@ -390,6 +391,8 @@ class HRPayslip(models.Model):
             elif line.salary_rule_id.code == 'SSO':
                 sso = line.amount
         
+
+
         message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding} {contract.x_studio_total_withholding}"
         _logger.info(message)
 
@@ -425,6 +428,7 @@ class HRPayslip(models.Model):
         self.env['x_employee_salaries'].create({
                 'x_name': self.date_from.strftime('%Y') + self.date_from.strftime('%m'),
                 'x_studio_employee': self.employee_id.id,
+                'x_studio_slip': self.id,
                 'x_studio_year': self.date_from.strftime('%Y'),
                 'x_studio_month': self.date_from.strftime('%m'),
                 'x_studio_total_salary': contract.x_studio_total_net,
