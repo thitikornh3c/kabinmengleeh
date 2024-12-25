@@ -417,6 +417,7 @@ class HRPayslip(models.Model):
             
             if slipLastMonth:
                 # Test Save value
+                _logger.info(f"Use Last Month Data to make Total accumarative")
                 if isinstance(slipLastMonth.x_studio_total_salary, str):
                     try:
                         total_net = float(slipLastMonth.x_studio_total_salary.replace(',', ''))
@@ -445,6 +446,7 @@ class HRPayslip(models.Model):
                 x_studio_total_sso = str(total_sso + float(sso))
             else:
                 # Use Snapshot Data in Contract
+                _logger.info(f"Not Found Old Slip Logs")
                 if isinstance(contract.x_studio_total_net, str):
                     try:
                         total_net = float(contract.x_studio_total_net.replace(',', ''))
