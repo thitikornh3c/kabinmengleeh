@@ -581,7 +581,7 @@ class HRPayslip(models.Model):
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
-                payslip.q_total_deduct = emp_salary.x_studio_with_holding + emp_salary.x_studio_sso
+                payslip.q_total_deduct = float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
 
                 payslip.q_total_amount = emp_salary.x_studio_total_amount
             else:
