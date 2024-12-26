@@ -56,6 +56,12 @@ class HRPayslip(models.Model):
         store=False,
     )
 
+    q_other = fields.Float(
+        string='Unknown',
+        compute='_compute_salary_details',
+        store=False,
+    )
+
     @api.model
     def get_week_ranges(self, start_date, end_date):
         # Start from the start_date and go until the end_date
@@ -579,6 +585,8 @@ class HRPayslip(models.Model):
                 payslip.q_sso = 0.0
                 payslip.q_withholding = 0.0
                 payslip.q_total_amount = 0.0
+            
+            payslip.q_other = 0.0
             payslip.trigger_custom_event()
        
 
