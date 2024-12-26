@@ -50,6 +50,11 @@ class HRPayslip(models.Model):
         compute='_compute_salary_details',
         store=False,
     )
+    q_total_deduct = fields.Float(
+        string='Total Deduct',
+        compute='_compute_salary_details',
+        store=False,
+    )
     q_total_amount = fields.Float(
         string='Total Amount',
         compute='_compute_salary_details',
@@ -575,6 +580,9 @@ class HRPayslip(models.Model):
                 payslip.q_salary = emp_salary.x_studio_salary
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
+
+                payslip.q_total_deduct = emp_salary.x_studio_with_holding + emp_salary.x_studio_sso
+
                 payslip.q_total_amount = emp_salary.x_studio_total_amount
             else:
                 payslip.q_total_net = 0.0
@@ -584,6 +592,7 @@ class HRPayslip(models.Model):
                 payslip.q_salary = 0.0
                 payslip.q_sso = 0.0
                 payslip.q_withholding = 0.0
+                payslip.q_total_deduct = 0.0
                 payslip.q_total_amount = 0.0
             
             payslip.q_other = 0.0
