@@ -30,6 +30,32 @@ class HRPayslip(models.Model):
         store=False,
     )
 
+    q_year = fields.Float(
+        string='Total Net',
+        compute='_compute_salary_details',
+        store=False,
+    )
+    q_salary = fields.Float(
+        string='Total Net',
+        compute='_compute_salary_details',
+        store=False,
+    )
+    q_sso = fields.Float(
+        string='Total Net',
+        compute='_compute_salary_details',
+        store=False,
+    )
+    q_withholding = fields.Float(
+        string='Total Net',
+        compute='_compute_salary_details',
+        store=False,
+    )
+    q_total_amount = fields.Float(
+        string='Total Net',
+        compute='_compute_salary_details',
+        store=False,
+    )
+
     @api.model
     def get_week_ranges(self, start_date, end_date):
         # Start from the start_date and go until the end_date
@@ -538,10 +564,21 @@ class HRPayslip(models.Model):
                 payslip.q_total_net = emp_salary.x_studio_total_salary
                 payslip.q_total_sso = emp_salary.x_studio_total_sso
                 payslip.q_total_withholding = emp_salary.x_studio_total_withholding
+                payslip.q_year = emp_salary.x_studio_year
+
+                payslip.q_salary = emp_salary.x_studio_salary
+                payslip.q_sso = emp_salary.x_studio_sso
+                payslip.q_withholding = emp_salary.x_studio_with_holding
+                payslip.q_total_amount = emp_salary.x_studio_total_amount
             else:
                 payslip.q_total_net = 0.0
                 payslip.q_total_sso = 0.0
                 payslip.q_total_withholding = 0.0
+                payslip.q_year = 0
+                payslip.q_salary = 0.0
+                payslip.q_sso = 0.0
+                payslip.q_withholding = 0.0
+                payslip.q_total_amount = 0.0
             payslip.trigger_custom_event()
        
 
