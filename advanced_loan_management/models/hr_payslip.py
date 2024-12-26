@@ -370,17 +370,18 @@ class HRPayslip(models.Model):
         """
         # Check if the 'state' field is in the values being written
         if 'state' in vals:
-            old_state = self.state
-            new_state = vals['state']
-            
-            # If the state is changing to 'done' (or 'paid', depending on your workflow)
-            message = f"Payslip {self.number} has been change status to {new_state}"
-            _logger.info(message)
-            if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
-                # Trigger custom logic when payslip is marked as 'Paid'
-                self.trigger_custom_event()
-            if new_state == 'verify': 
-                self.trigger_custom_event()
+            for payslip in self:
+                old_state = payslip.state
+                new_state = vals['state']
+                
+                # If the state is changing to 'done' (or 'paid', depending on your workflow)
+                message = f"Payslip {payslip.number} has been change status to {new_state}"
+                _logger.info(message)
+                if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
+                    # Trigger custom logic when payslip is marked as 'Paid'
+                    payslip.trigger_custom_event()
+                if new_state == 'verify': 
+                    payslip.trigger_custom_event()
 
         return super(HRPayslip, self).write(vals)
 
