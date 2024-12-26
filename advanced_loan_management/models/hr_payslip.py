@@ -542,8 +542,8 @@ class HRPayslip(models.Model):
                 payslip.q_total_net = 0.0
                 payslip.q_total_sso = 0.0
                 payslip.q_total_withholding = 0.0
-        # self.trigger_custom_event()
-        _logger.info('Re-Print Payslip Detail', self)
+            payslip.trigger_custom_event()
+       
 
         # Example of broadcasting a message via the bus system (optional)
         # Odoo bus to notify other parts of the system (or external systems)
