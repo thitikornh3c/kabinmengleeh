@@ -30,28 +30,28 @@ class HRPayslip(models.Model):
         store=False,
     )
 
-    q_year = fields.Float(
-        string='Total Net',
+    q_year = fields.Integer(
+        string='Year',
         compute='_compute_salary_details',
         store=False,
     )
     q_salary = fields.Float(
-        string='Total Net',
+        string='Salary',
         compute='_compute_salary_details',
         store=False,
     )
     q_sso = fields.Float(
-        string='Total Net',
+        string='SSO',
         compute='_compute_salary_details',
         store=False,
     )
     q_withholding = fields.Float(
-        string='Total Net',
+        string='WithHolding',
         compute='_compute_salary_details',
         store=False,
     )
     q_total_amount = fields.Float(
-        string='Total Net',
+        string='Total Amount',
         compute='_compute_salary_details',
         store=False,
     )
