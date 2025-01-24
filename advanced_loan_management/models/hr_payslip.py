@@ -466,6 +466,11 @@ class HRPayslip(models.Model):
             x_studio_total_net = 0
             x_studio_total_withholding = 0
             x_studio_total_sso = 0
+
+            _logger.info(f"New Year {salary} {taxWithHolding} {sso}")
+            x_studio_total_net = str(float(salary))
+            x_studio_total_withholding = str(float(taxWithHolding))
+            x_studio_total_sso = str(float(sso))
         else:
             slipLastMonth = self.env['x_employee_salaries'].search([
                     ('x_studio_employee', '=', self.employee_id.id),
