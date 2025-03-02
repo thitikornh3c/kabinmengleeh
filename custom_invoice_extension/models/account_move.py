@@ -1,6 +1,18 @@
 import math
 from odoo import models, fields, api
 
+class CustomAccountMoveLine(models.Model):
+    _inherit = 'account.move.line'
+
+    @api.depends('move_id', 'tax_line_ids.amount')
+    def _compute_tax_amount(self):
+        for line in self:
+            if line.tax_line_ids:
+                for tax in line.tax_line_ids:
+                    # Round down the tax amount to 2 decimal places
+                    if tax.amount:
+                        tax.amount = math.floor(tax.amount * 100) / 100
+
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
@@ -76,7 +88,8 @@ class AccountMove(models.Model):
         
         # Custom rounding logic for tax amount
         for move in self:
-            for tax in move.tax_line_ids:
-                if tax.amount:
-                    # Round down to two decimal places
-                    tax.amount = math.floor(tax.amount * 100) / 100
+            for line in move.invoice_line_ids:
+                for tax in line.tax_ids:
+                    if tax.amount:
+                        # Round down the tax amount to 2 decimal places
+                        tax.amount = math.floor(tax.amount * 100) / 100
