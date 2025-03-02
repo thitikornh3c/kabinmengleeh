@@ -1,17 +1,4 @@
-import math
-from odoo import models, fields, api
-
-class CustomAccountMoveLine(models.Model):
-    _inherit = 'account.move.line'
-
-    @api.depends('move_id', 'tax_line_ids.amount')
-    def _compute_tax_amount(self):
-        for line in self:
-            if line.tax_line_ids:
-                for tax in line.tax_line_ids:
-                    # Round down the tax amount to 2 decimal places
-                    if tax.amount:
-                        tax.amount = math.floor(tax.amount * 100) / 100
+from odoo import models, fields
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -80,16 +67,3 @@ class AccountMove(models.Model):
             return f"{integer_words}บาท{fraction_words}สตางค์"
         else:
             return f"{integer_words}บาทถ้วน"
-
-
-    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount')
-    def _compute_amount(self):
-        super(AccountMove, self)._compute_amount()
-        
-        # Custom rounding logic for tax amount
-        for move in self:
-            for line in move.invoice_line_ids:
-                for tax in line.tax_ids:
-                    if tax.amount:
-                        # Round down the tax amount to 2 decimal places
-                        tax.amount = math.floor(tax.amount * 100) / 100
