@@ -400,9 +400,9 @@ class HRPayslip(models.Model):
                         line.amount = sumTotal
                         line.total = sumTotal
                         
-                        if slip.employee_id.id == 50:
-                            line.amount = 12500
-                            line.total = 12500
+                        # if slip.employee_id.id == 50:
+                        #     line.amount = 12500
+                        #     line.total = 12500
 
 
     @api.model
