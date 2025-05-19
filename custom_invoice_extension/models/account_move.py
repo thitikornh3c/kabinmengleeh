@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, api, fields
 import math
 import logging
 _logger = logging.getLogger(__name__)
@@ -71,13 +71,14 @@ class AccountMove(models.Model):
         else:
             return f"{integer_words}บาทถ้วน"
     
-
+    @api.model
     def _compute_taxes(self):
         for move in self:
             ctx = dict(self.env.context, invoice=move)
             _logger.info(f"_compute_taxes Custom Rounding: Invoice in context: {move}")
             move.with_context(ctx)._recompute_dynamic_lines(recompute_all_taxes=True)
 
+    @api.model
     def _recompute_tax_lines(self, tax_lines_data):
         res = super()._prepare_tax_lines_dict(tax_lines_data)
         _logger.info(f"Custom Rounding: Invoice in context: {self}")
