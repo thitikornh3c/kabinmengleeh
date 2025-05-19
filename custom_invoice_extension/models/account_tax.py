@@ -26,7 +26,7 @@ class AccountTax(models.Model):
             tax_amount = super()._compute_amount(
                 base_amount, price_unit, quantity, product, partner, is_refund
             )
-            
+            _logger.info(f"Custom Rounding: Invoice in context: {getattr(invoice, 'name', 'N/A')}")
             invoice = self.env.context.get('invoice')
             currency = self.env.context.get('currency')  # Optional, if passed
 
