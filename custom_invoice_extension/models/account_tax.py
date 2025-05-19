@@ -10,7 +10,8 @@ class AccountTax(models.Model):
     def _prepare_tax_lines_dict(self, tax_lines_data):
         """Override tax line preparation to apply custom rounding logic"""
         res = super()._prepare_tax_lines_dict(tax_lines_data)
-
+        _logger.info(f"Custom Rounding: Invoice in context: {res}")
+        
         if self.name == 'INV20250228001':  # Or use a custom field here
             for line in res:
                 amount = line.get('amount', 0.0)
