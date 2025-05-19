@@ -8,7 +8,7 @@ class AccountTax(models.Model):
     def _round_tax_amount(self, amount, currency=None):
         # Check for invoice name condition in context
         invoice = self.env.context.get('invoice')
-        if invoice and invoice.name.startswith('INV20250228001'):
+        if invoice and invoice.name == 'INV20250228001':
             # Custom rounding: round down
             precision = currency.decimal_places if currency else 2
             factor = 10 ** precision
