@@ -52,8 +52,3 @@ class AccountMove(models.Model):
                     'invoice': False
                 })
         return res
-
-    def _compute_taxes(self):
-        for move in self:
-            ctx = dict(self.env.context, invoice=move)
-            move.with_context(ctx)._recompute_dynamic_lines(recompute_all_taxes=True)

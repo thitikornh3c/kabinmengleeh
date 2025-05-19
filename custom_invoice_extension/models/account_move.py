@@ -67,3 +67,9 @@ class AccountMove(models.Model):
             return f"{integer_words}บาท{fraction_words}สตางค์"
         else:
             return f"{integer_words}บาทถ้วน"
+    
+
+    def _compute_taxes(self):
+        for move in self:
+            ctx = dict(self.env.context, invoice=move)
+            move.with_context(ctx)._recompute_dynamic_lines(recompute_all_taxes=True)
