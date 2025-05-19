@@ -19,3 +19,19 @@ class AccountTax(models.Model):
         else:
             # Default Odoo rounding
             return currency.round(amount) if currency else round(amount, 2)
+
+    @api.model
+    def _compute_amount(self, base_amount, price_unit, quantity=1.0, product=None, partner=None):
+            """Override the tax computation to round down for a specific invoice"""
+            tax_amount = super()._compute_amount(base_amount, price_unit, quantity, product, partner)
+            
+            invoice = self.env.context.get('invoice')
+            currency = self.env.context.get('currency')  # Optional, if passed
+
+            if invoice and invoice.name == 'INV20250228001':
+                precision = currency.decimal_places if currency else 2
+                factor = 10 ** precision
+                tax_amount = math.floor(tax_amount * factor) / factor
+                _logger.info(f"Rounding down tax for {invoice.name}: {tax_amount}")
+            
+            return tax_amount
