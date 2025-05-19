@@ -28,7 +28,7 @@ class AccountTax(models.Model):
             )
             invoice = self.env.context.get('invoice')
             currency = self.env.context.get('currency')  # Optional, if passed
-            _logger.info(f"Custom Rounding: Invoice in context: {getattr(invoice, 'name', 'N/A')}")
+            _logger.info(f"Custom Rounding: Invoice in context: {invoice}")
 
             if invoice and invoice.name == 'INV20250228001':
                 precision = currency.decimal_places if currency else 2
