@@ -21,9 +21,11 @@ class AccountTax(models.Model):
             return currency.round(amount) if currency else round(amount, 2)
 
     @api.model
-    def _compute_amount(self, base_amount, price_unit, quantity=1.0, product=None, partner=None):
+    def _compute_amount(self, base_amount, price_unit, quantity=1.0, product=None, partner=None, is_refund=False):
             """Override the tax computation to round down for a specific invoice"""
-            tax_amount = super()._compute_amount(base_amount, price_unit, quantity, product, partner)
+            tax_amount = super()._compute_amount(
+                base_amount, price_unit, quantity, product, partner, is_refund
+            )
             
             invoice = self.env.context.get('invoice')
             currency = self.env.context.get('currency')  # Optional, if passed
