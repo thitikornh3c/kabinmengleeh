@@ -86,55 +86,55 @@ class RepaymentLine(models.Model):
             'advanced_loan_management.interest_product_id')
         repayment_product_id = self.env['ir.config_parameter'].sudo().get_param(
             'advanced_loan_management.repayment_product_id')
-        for rec in self:
-            loan_lines_ids = self.env['repayment.line'].search(
-                [('loan_id', '=', rec.loan_id.id)], order='date asc')
-            for line in loan_lines_ids:
-                if line.date < rec.date and line.state in \
-                        ('unpaid', 'invoiced'):
-                    message_id = self.env['message.popup'].create(
-                        {'message': (
-                            "You have pending amounts")})
-                    return {
-                        'name': 'Repayment',
-                        'type': 'ir.actions.act_window',
-                        'view_mode': 'form',
-                        'res_model': 'message.popup',
-                        'res_id': message_id.id,
-                        'target': 'new'
-                    }
+        # for rec in self:
+        #     loan_lines_ids = self.env['repayment.line'].search(
+        #         [('loan_id', '=', rec.loan_id.id)], order='date asc')
+        #     for line in loan_lines_ids:
+        #         if line.date < rec.date and line.state in \
+        #                 ('unpaid', 'invoiced'):
+        #             message_id = self.env['message.popup'].create(
+        #                 {'message': (
+        #                     "You have pending amounts")})
+        #             return {
+        #                 'name': 'Repayment',
+        #                 'type': 'ir.actions.act_window',
+        #                 'view_mode': 'form',
+        #                 'res_model': 'message.popup',
+        #                 'res_id': message_id.id,
+        #                 'target': 'new'
+        #             }
 
-        invoice = self.env['account.move'].create({
-            'move_type': 'out_invoice',
-            'invoice_date': time_now,
-            'partner_id': self.partner_id.id,
-            'currency_id': self.company_id.currency_id.id,
-            'payment_reference': self.name,
-            'invoice_line_ids': [
-                (0, 0, {
-                    'price_unit': self.amount,
-                    'product_id': repayment_product_id,
-                    'name': 'Repayment',
-                    'account_id': self.repayment_account_id.id,
-                    'quantity': 1,
-                }),
-                (0, 0, {
-                    'price_unit': self.interest_amount,
-                    'product_id': interest_product_id,
-                    'name': 'Interest amount',
-                    'account_id': self.interest_account_id.id,
-                    'quantity': 1,
-                }),
-            ],
-        })
-        if invoice:
-            invoice.action_post()
-            self.invoice=True
-            self.write({'state':'invoiced'})
+        # invoice = self.env['account.move'].create({
+        #     'move_type': 'out_invoice',
+        #     'invoice_date': time_now,
+        #     'partner_id': self.partner_id.id,
+        #     'currency_id': self.company_id.currency_id.id,
+        #     'payment_reference': self.name,
+        #     'invoice_line_ids': [
+        #         (0, 0, {
+        #             'price_unit': self.amount,
+        #             'product_id': repayment_product_id,
+        #             'name': 'Repayment',
+        #             'account_id': self.repayment_account_id.id,
+        #             'quantity': 1,
+        #         }),
+        #         (0, 0, {
+        #             'price_unit': self.interest_amount,
+        #             'product_id': interest_product_id,
+        #             'name': 'Interest amount',
+        #             'account_id': self.interest_account_id.id,
+        #             'quantity': 1,
+        #         }),
+        #     ],
+        # })
+        # if invoice:
+        #     invoice.action_post()
+        self.invoice=True
+        self.write({'state':'invoiced'})
         return {
             'name': 'Invoice',
             'res_model': 'account.move',
-            'res_id': invoice.id,
+            # 'res_id': invoice.id,
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
         }
