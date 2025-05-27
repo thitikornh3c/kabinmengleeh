@@ -270,11 +270,11 @@ class HRPayslip(models.Model):
 
                 # Loop re calculate1
                 # for line in slip.line_ids:
-                #     if line.salary_rule_id.code == 'NET':
-                #         # workDataAmount = line.amount
-                #         _logger.info(f"Processing NET line of employee {amonthSalary} {totalOther}: {sso_amount} {line.salary_rule_id}")
-                #         line.amount = amonthSalary + totalOther + sso_amount
-                #         line.total = amonthSalary + totalOther + sso_amount
+                if line.salary_rule_id.code == 'NET':
+                    # workDataAmount = line.amount
+                    _logger.info(f"Processing NET line of employee {line.amount } {sso_amount} {line.salary_rule_id}")
+                    # line.amount = amonthSalary + totalOther + sso_amount
+                    # line.total = amonthSalary + totalOther + sso_amount
             elif contract.schedule_pay == 'monthly':
 
                 startDate = slip.date_from  # Start date
