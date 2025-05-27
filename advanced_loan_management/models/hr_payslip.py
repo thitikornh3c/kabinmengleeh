@@ -180,9 +180,11 @@ class HRPayslip(models.Model):
                                 # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
                                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
                                     if entry.code == 'WORK100':
-                                        duration = duration + entry.duration
+                                        duration = duration + 0.5 #entry.duration
                                     elif entry.code == 'LEAVE110':
-                                        duration = duration - entry.duration
+                                        duration = duration - 0.5 #entry.duration
+                                    elif entry.code == 'LEAVE120':
+                                        duration = duration - 0.5 #entry.duration
                                     _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
                                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                                 # workdays_count += delta_days 
