@@ -85,8 +85,8 @@
                                        readonly="state != 'draft'"/>
                             </group>
                             <group>
-                                <field name="tenure"
-                                       readonly="state != 'draft'"/>
+                                <field name="tenure" />
+                                       <!-- readonly="state != 'draft'"/> -->
                                 <field name="disbursal_amount"/>
                                 <field name="currency_id"/>
                                 <field name="date"/>
