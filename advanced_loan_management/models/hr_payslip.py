@@ -273,6 +273,9 @@ class HRPayslip(models.Model):
                 if line.salary_rule_id.code == 'NET':
                     # workDataAmount = line.amount
                     _logger.info(f"Processing NET line of employee {line.amount } {sso_amount} {line.salary_rule_id}")
+                    netSum =  line.amount + sso_amount
+                    line.amount = netSum
+                    line.total = netSum
                     # line.amount = amonthSalary + totalOther + sso_amount
                     # line.total = amonthSalary + totalOther + sso_amount
             elif contract.schedule_pay == 'monthly':
