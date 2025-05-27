@@ -56,9 +56,15 @@ class LoanRequest(models.Model):
                                                               "percentage")
     date = fields.Date(string="Date", default=fields.Date.today(),
                        readonly=True, help="Date")
-    partner_id = fields.Many2one('res.partner', string="Partner",
-                                 required=True,
-                                 help="Partner")
+    partner_id = fields.Many2one(
+        'hr.employee',
+        string="Employee",
+        required=True,
+        help="Employee"
+    )
+    # partner_id = fields.Many2one('res.partner', string="Partner",
+    #                              required=True,
+    #                              help="Partner")
     repayment_lines_ids = fields.One2many('repayment.line',
                                           'loan_id',
                                           string="Loan Line", index=True,
