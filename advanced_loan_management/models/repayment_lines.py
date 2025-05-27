@@ -131,13 +131,14 @@ class RepaymentLine(models.Model):
         #     invoice.action_post()
         self.invoice=True
         self.write({'state':'invoiced'})
-        return {
-            'name': 'Invoice',
-            'res_model': 'account.move',
-            # 'res_id': invoice.id,
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-        }
+        return True
+        # return {
+        #     'name': 'Invoice',
+        #     'res_model': 'account.move',
+        #     # 'res_id': invoice.id,
+        #     'type': 'ir.actions.act_window',
+        #     'view_mode': 'form',
+        # }
 
     def action_view_invoice(self):
         """To view the invoices"""
