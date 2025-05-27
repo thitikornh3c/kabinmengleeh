@@ -392,6 +392,7 @@ class HRPayslip(models.Model):
                 _logger.info(f"Processing payslip deduct cost of employee {totalOther}: {sso_amount} {withholding_tax}")
                 # Loop re calculate1
                 for line in slip.line_ids:
+                    _logger.info(f"Processing other line of employee {line.name} {line.salary_rule_id.code}: {line.amount}")
                     if line.salary_rule_id.code == 'with_holding':
                         # workDataAmount = line.amount
                         line.amount = withholding_tax
