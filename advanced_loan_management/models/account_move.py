@@ -34,7 +34,7 @@ class AccountMove(models.Model):
             ('name', 'ilike', self.payment_reference)])
         if loan_line_ids:
             loan_line_ids.update({
-                'state': 'invoiced',
+                'state': 'paid',
                 'invoice': True
             })
         return res
