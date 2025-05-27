@@ -225,15 +225,15 @@ class HRPayslip(models.Model):
 
 
               
-                for line in slip.line_ids:
-                    if line.salary_rule_id.code == 'BASIC':
-                        if amonthSalary > 10000:
-                            line.amount = 10000
-                            line.total = 10000
-                            totalOtherPlus = amonthSalary - 10000
-                        else: 
-                            line.amount = amonthSalary 
-                            line.total = amonthSalary
+                # for line in slip.line_ids:
+                #     if line.salary_rule_id.code == 'BASIC':
+                #         if amonthSalary > 10000:
+                #             line.amount = 10000
+                #             line.total = 10000
+                #             totalOtherPlus = amonthSalary - 10000
+                #         else: 
+                #             line.amount = amonthSalary 
+                #             line.total = amonthSalary
 
                 # for line in slip.line_ids:
                 #     if line.salary_rule_id.code == 'EXTRAPAID':
@@ -243,10 +243,10 @@ class HRPayslip(models.Model):
                 #         line.total = totalOtherPlus
 
                 for line in slip.line_ids:
-                    if line.salary_rule_id.code == 'GROSS':
-                        line.amount = amonthSalary + totalOtherPlus
-                        line.total = amonthSalary + totalOtherPlus
-                    elif line.salary_rule_id.code == 'SSO':
+                    # if line.salary_rule_id.code == 'GROSS':
+                    #     line.amount = amonthSalary + totalOtherPlus
+                    #     line.total = amonthSalary + totalOtherPlus
+                    if line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
                             sso_amount = amonthSalary * 0.05 
                             if sso_amount > 750:
@@ -271,8 +271,6 @@ class HRPayslip(models.Model):
                 # Loop re calculate1
                 for line in slip.line_ids:
                     _logger.info(f"Processing other line of employee {line.name} {line.salary_rule_id.code}: {line.amount} {line.salary_rule_id}")
-                    if line.salary_rule_id.code == 'DEDUCTION':
-                        line.name = line.input_type_id.name
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
                         line.amount = amonthSalary + totalOther + sso_amount
