@@ -266,7 +266,7 @@ class HRPayslip(models.Model):
 
                 # Loop re calculate1
                 for line in slip.line_ids:
-                    _logger.info(f"Processing other line of employee {line.name} {line.salary_rule_id.code}: {line.amount}")
+                    _logger.info(f"Processing other line of employee {line.name} {line.salary_rule_id.code}: {line.amount} {line}")
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
                         line.amount = amonthSalary + totalOther + sso_amount
