@@ -129,9 +129,9 @@ class RepaymentLine(models.Model):
         # })
         # if invoice:
         #     invoice.action_post()
-        self.invoice=True
-        self.write({'state':'invoiced'})
-        return True
+        # self.invoice=True
+        self.write({'state':'paid', 'invoice': True,})
+        return {'type': 'ir.actions.act_window_close'}
         # return {
         #     'name': 'Invoice',
         #     'res_model': 'account.move',

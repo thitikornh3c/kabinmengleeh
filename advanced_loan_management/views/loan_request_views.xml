@@ -109,13 +109,20 @@
                                         <field name="interest_amount"/>
                                         <field name="total_amount"/>
                                         <field name="state"
-                                               column_invisible="parent.state != 'disbursed'"
                                                widget="badge"
                                                optional="show"
                                                decoration-danger="state == 'unpaid'"
                                                decoration-warning="state == 'invoiced'"
                                                decoration-success="state == 'paid'"/>
                                         <field name="invoice" column_invisible="1"/>
+                                        <!-- <field name="state"
+                                               column_invisible="parent.state != 'disbursed'"
+                                               widget="badge"
+                                               optional="show"
+                                               decoration-danger="state == 'unpaid'"
+                                               decoration-warning="state == 'invoiced'"
+                                               decoration-success="state == 'paid'"/>
+                                        <field name="invoice" column_invisible="1"/> -->
                                         <button invisible="(invoice == True) or (state != 'unpaid') or (parent.state != 'disbursed')"
                                                 name="action_pay_emi"
                                                 class="oe_highlight"
