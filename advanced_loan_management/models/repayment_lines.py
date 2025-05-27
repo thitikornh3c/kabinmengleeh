@@ -29,9 +29,15 @@ class RepaymentLine(models.Model):
 
     name = fields.Char(string="Loan ", default="/", readonly=True,
                        help="Repayment no: of loan")
-    partner_id = fields.Many2one('res.partner', string="Partner",
-                                 required=True,
-                                 help="Partner")
+    # partner_id = fields.Many2one('res.partner', string="Partner",
+    #                              required=True,
+    #                              help="Partner")
+    partner_id = fields.Many2one(
+        'hr.employee',
+        string="Employee",
+        required=True,
+        help="Employee"
+    )
     company_id = fields.Many2one('res.company', string='Company',
                                  readonly=True,
                                  help="Company",

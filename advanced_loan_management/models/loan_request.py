@@ -136,20 +136,22 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
         self.write({'state': "confirmed"})
         partner = self.partner_id
         loan_no = self.name
-        subject = 'Loan Confirmation'
-        message = (f"Dear {partner.name},<br/> This is a confirmation mail "
-                   f"for your loan{loan_no}. We have submitted your loan "
-                   f"for approval.")
-        outgoing_mail = self.company_id.email
-        mail_values = {
-            'subject': subject,
-            'email_from': outgoing_mail,
-            'author_id': self.env.user.partner_id.id,
-            'email_to': partner.email,
-            'body_html': message,
-        }
-        mail = self.env['mail.mail'].sudo().create(mail_values)
-        mail.send()
+
+        if partner.work_email: 
+            subject = 'Loan Confirmation'
+            message = (f"Dear {partner.name},<br/> This is a confirmation mail "
+                    f"for your loan{loan_no}. We have submitted your loan "
+                    f"for approval.")
+            outgoing_mail = self.company_id.email
+            mail_values = {
+                'subject': subject,
+                'email_from': outgoing_mail,
+                'author_id': self.env.user.partner_id.id,
+                'email_to': partner.work_email,
+                'body_html': message,
+            }
+            mail = self.env['mail.mail'].sudo().create(mail_values)
+            mail.send()
 
     def action_request_for_loan(self):
         """Change the state to waiting for approval"""
