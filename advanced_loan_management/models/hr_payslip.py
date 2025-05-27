@@ -142,6 +142,7 @@ class HRPayslip(models.Model):
             sso_amount = 0
             withholding_tax = 0
             contract_type_code = ''
+            extraPlus = 0
 
             # Get contract
             contract = self.env['hr.contract'].search([
@@ -221,27 +222,30 @@ class HRPayslip(models.Model):
                         line.amount = amonthSalary
                     if line.work_entry_type_id.code == 'LEAVE110':
                         line.amount = 0
-                
+
+
+              
                 for line in slip.line_ids:
-
-                    # _logger.info(f"Processing payslip line of employee {slip.employee_id.id}: {number_of_days}")
                     if line.salary_rule_id.code == 'BASIC':
-                        # loan_contracts = self.env['loan.request'].search([
-                        #     ('partner_id', '=', slip.employee_id.id)
-                        # ])
-                        # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
+                        if amonthSalary > 10000:
+                            line.amount = 10000
+                            line.total = 10000
+                            totalOtherPlus = amonthSalary - 10000
+                        else: 
+                            line.amount = amonthSalary 
+                            line.total = amonthSalary
 
-                        # Get scheduled workdays for the employee
+                # for line in slip.line_ids:
+                #     if line.salary_rule_id.code == 'EXTRAPAID':
+                #         _logger.info(f"Processing EXTRAPAID for employee attendance: {line.amount}")
+                #         totalOtherPlus = line.amount
+                #         line.amount = totalOtherPlus
+                #         line.total = totalOtherPlus
 
-                        # _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
-
-                        # workDataAmount = line.amount
-                        # amonthSalary =  workDataAmount * scheduled_workdays_count
-                        line.amount = amonthSalary
-                        line.total = amonthSalary
-                    elif line.salary_rule_id.code == 'GROSS':
-                        line.amount = amonthSalary
-                        line.total = amonthSalary
+                for line in slip.line_ids:
+                    if line.salary_rule_id.code == 'GROSS':
+                        line.amount = amonthSalary + totalOtherPlus
+                        line.total = amonthSalary + totalOtherPlus
                     elif line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
                             sso_amount = amonthSalary * 0.05 
@@ -267,6 +271,8 @@ class HRPayslip(models.Model):
                 # Loop re calculate1
                 for line in slip.line_ids:
                     _logger.info(f"Processing other line of employee {line.name} {line.salary_rule_id.code}: {line.amount} {line.salary_rule_id}")
+                    if line.salary_rule_id.code == 'DEDUCTION':
+                        line.name = line.input_type_id.name
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
                         line.amount = amonthSalary + totalOther + sso_amount
