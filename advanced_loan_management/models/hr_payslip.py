@@ -142,7 +142,7 @@ class HRPayslip(models.Model):
             sso_amount = 0
             withholding_tax = 0
             contract_type_code = ''
-            extraPlus = 0
+            grossTotal = 0
 
             # Get contract
             contract = self.env['hr.contract'].search([
@@ -270,9 +270,9 @@ class HRPayslip(models.Model):
 
                 # Loop re calculate1
                 for line in slip.line_ids:
-                    _logger.info(f"Processing other line of employee {line.name} {line.salary_rule_id.code}: {line.amount} {line.salary_rule_id}")
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
+                        _logger.info(f"Processing NET line of employee {amonthSalary} {totalOther}: {sso_amount} {line.salary_rule_id}")
                         line.amount = amonthSalary + totalOther + sso_amount
                         line.total = amonthSalary + totalOther + sso_amount
             elif contract.schedule_pay == 'monthly':
