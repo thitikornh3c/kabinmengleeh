@@ -258,7 +258,7 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
             """
         self.request = True
         for loan in self:
-            if loan.tenure:
+            if loan.tenure > 0:
                 loan.repayment_lines_ids.unlink()
                 date_start = datetime.strptime(str(loan.date),'%Y-%m-%d') + relativedelta(months=1)
                 amount = loan.loan_amount / loan.tenure
@@ -278,7 +278,7 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
                         'repayment_account_id': 88,
                         'loan_id': loan.id})
                     date_start += relativedelta(months=1)
-            elif loan.paid_per_mount_amount:
+            elif loan.paid_per_mount_amount > 0:
                 loan.repayment_lines_ids.unlink()
                 date_start = datetime.strptime(str(loan.date), '%Y-%m-%d') + relativedelta(months=1)
                 amount = loan.loan_amount / loan.tenure
