@@ -279,7 +279,7 @@ class HRPayslip(models.Model):
                         line_month = int(repayment.date.strftime('%m'))
                         line.name = f"{line.name} ({line_month}/${line_year})"
     
-                        loan = loan_line.amount
+                        loan = -loan_line.amount
                         totalOther = totalOther + loan
                         line.amount = loan
                         line.total = loan
