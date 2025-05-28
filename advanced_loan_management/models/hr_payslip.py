@@ -274,7 +274,7 @@ class HRPayslip(models.Model):
                                 sso_amount = -sso_amount
                             line.amount = sso_amount
                             line.total = sso_amount
-                    elif line.salary_rule_id.code == 'LOAN_DEDUCTION' and loan_line:
+                    elif line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION' and loan_line:
                         line_year = repayment.date.strftime('%Y')
                         line_month = int(repayment.date.strftime('%m'))
                         line.name = f"{line.name} ({line_month}/${line_year})"
