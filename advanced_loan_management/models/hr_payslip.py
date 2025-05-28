@@ -7,7 +7,6 @@ _logger = logging.getLogger(__name__)
 
 class HRPayslip(models.Model):
     _inherit = 'hr.payslip'
-    show_loan = fields.Boolean(string="Has Loan Deduction")
     move_type = fields.Selection([
         ('out_invoice', 'Invoice Out'),
         ('in_invoice', 'Invoice In'),
@@ -170,9 +169,9 @@ class HRPayslip(models.Model):
 
             if loan_line:
                 _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
-                slip.show_loan = True
-            else:
-                slip.show_loan = False
+                # slip.show_loan = True
+            # else:
+                # slip.show_loan = False
 
             # Logic Calculate Work day
             if contract.schedule_pay == 'daily':
