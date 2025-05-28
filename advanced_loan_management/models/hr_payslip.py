@@ -680,7 +680,7 @@ class HRPayslip(models.Model):
             if loan_line:
                 _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
                 self.env['hr.payslip.line'].create({
-                    'payslip_id': slip.id,
+                    'slip_id': slip.id,
                     'contract_id': slip.contract_id.id,
                     'salary_rule_id': 40,
                     'amount': repayment.amount,
