@@ -274,12 +274,17 @@ class HRPayslip(models.Model):
                                 sso_amount = -sso_amount
                             line.amount = sso_amount
                             line.total = sso_amount
-                    elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
-                        loan = -1000
+                    elif line.salary_rule_id.code == 'LOAN_DEDUCTION' and loan_line:
+                        line_year = repayment.date.strftime('%Y')
+                        line_month = int(repayment.date.strftime('%m'))
+                        line.name = f"{line.name} ({line_month}/${line_year})"
+    
+                        loan = loan_line.amount
                         totalOther = totalOther + loan
                         line.amount = loan
                         line.total = loan
-                        line.name = f'{line.name} ({loan_contracts[0].id})'
+                        # line.name = f'{line.name} ({loan_contracts[0].id})'
+                    
                         # for loan in loan_contracts:
                         #     line.name = loan
                     # else:
@@ -292,7 +297,7 @@ class HRPayslip(models.Model):
                 if line.salary_rule_id.code == 'NET':
                     # workDataAmount = line.amount
                     _logger.info(f"Processing NET line of employee {line.amount } {sso_amount} {line.salary_rule_id}")
-                    netSum =  line.amount + sso_amount
+                    netSum =  line.amount + sso_amount + totalOther
                     line.amount = netSum
                     line.total = netSum
                     # line.amount = amonthSalary + totalOther + sso_amount
@@ -659,36 +664,36 @@ class HRPayslip(models.Model):
     #         res.compute_loan_deductions()
     #     return res
 
-    # def compute_loan_deductions(self):
-    #     for slip in self:
-    #         # Fetch active loan contracts for the employee
-    #         _logger.info(f'Create Slip ${slip.employee_id.id}')
-    #         year = self.date_from.strftime('%Y')
-    #         month = int(self.date_from.strftime('%m'))
+    def compute_loan_deductions(self):
+        for slip in self:
+            # Fetch active loan contracts for the employee
+            _logger.info(f'Create Slip ${slip.employee_id.id}')
+            year = self.date_from.strftime('%Y')
+            month = int(self.date_from.strftime('%m'))
             
-    #         loan_contracts = self.env['loan.request'].search([
-    #             ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
-    #             # ('state', '=', 'active')
-    #         ], limit=1)
+            loan_contracts = self.env['loan.request'].search([
+                ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
+                # ('state', '=', 'active')
+            ], limit=1)
             
-    #         _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
-    #         for repayment in loan_contracts.repayment_lines_ids:
-    #             line_year = repayment.date.strftime('%Y')
-    #             line_month = int(repayment.date.strftime('%m'))
-    #             if year == line_year and month == line_month:
-    #                 _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
-    #                 loan_line = repayment
+            _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
+            for repayment in loan_contracts.repayment_lines_ids:
+                line_year = repayment.date.strftime('%Y')
+                line_month = int(repayment.date.strftime('%m'))
+                if year == line_year and month == line_month:
+                    _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+                    loan_line = repayment
                 
-    #         if loan_line:
-    #             _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
-    #             self.env['hr.payslip.line'].create({
-    #                 'slip_id': slip.id,
-    #                 'contract_id': slip.contract_id.id,
-    #                 'salary_rule_id': 40,
-    #                 'amount': repayment.amount,
-    #                 'sequence': 197,  # Adjust sequence if needed
-    #                 'name': 'เบิกเงินล่วงหน้า'
-    #             })
+            if loan_line:
+                _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
+                self.env['hr.payslip.line'].create({
+                    'slip_id': slip.id,
+                    'contract_id': slip.contract_id.id,
+                    'salary_rule_id': 40,
+                    'amount': repayment.amount,
+                    'sequence': 197,  # Adjust sequence if needed
+                    'name': 'เบิกเงินล่วงหน้า'
+                })
 
             # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
