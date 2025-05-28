@@ -643,7 +643,7 @@ class HRPayslip(models.Model):
     def compute_loan_deductions(self):
         for slip in self:
             # Fetch active loan contracts for the employee
-            print(slip.employee_id.id)
+            print('Create Slip', slip.employee_id.id)
 
             year = self.date_from.strftime('%Y')
             month = int(self.date_from.strftime('%m'))
@@ -652,7 +652,8 @@ class HRPayslip(models.Model):
                 ('partner_id', '=', slip.employee_id.id)
                 # ('state', '=', 'active')
             ])
-            print(loan_contracts)
+            
+            print('Slip contracts', loan_contracts)
             # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
             #     deduction_amount = loan.total_amount
