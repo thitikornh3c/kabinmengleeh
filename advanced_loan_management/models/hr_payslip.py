@@ -242,14 +242,10 @@ class HRPayslip(models.Model):
                     if line.work_entry_type_id.code == 'LEAVE110':
                         line.amount = 0
 
-
-              
-                # for line in slip.line_ids:
-                #     if line.salary_rule_id.code == 'BASIC':
-                #         if amonthSalary > 10000:
-                #             line.amount = 10000
-                #             line.total = 10000
-                #             totalOtherPlus = amonthSalary - 10000
+                basic_amount = 0
+                for line in slip.line_ids:
+                    if line.salary_rule_id.code == 'BASIC':
+                        basic_amount = line.amount
                 #         else: 
                 #             line.amount = amonthSalary 
                 #             line.total = amonthSalary
@@ -261,13 +257,14 @@ class HRPayslip(models.Model):
                 #         line.amount = totalOtherPlus
                 #         line.total = totalOtherPlus
 
+
                 for line in slip.line_ids:
                     # if line.salary_rule_id.code == 'GROSS':
                     #     line.amount = amonthSalary + totalOtherPlus
                     #     line.total = amonthSalary + totalOtherPlus
                     if line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
-                            sso_amount = amonthSalary * 0.05 
+                            sso_amount = basic_amount * 0.05 
                             if sso_amount > 750:
                                 sso_amount = -750
                             else:
