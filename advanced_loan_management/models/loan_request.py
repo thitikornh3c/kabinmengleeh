@@ -125,9 +125,9 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
     def _onchange_loan_type_id(self):
         """Changing field values based on the chosen loan type"""
         type_id = self.loan_type_id
-        self.loan_amount = type_id.loan_amount
-        self.disbursal_amount = type_id.disbursal_amount
-        self.tenure = type_id.tenure
+        # self.loan_amount = type_id.loan_amount
+        # self.disbursal_amount = type_id.disbursal_amount
+        # self.tenure = type_id.tenure
         self.interest_rate = type_id.interest_rate
         self.documents_ids = type_id.documents_ids
 
