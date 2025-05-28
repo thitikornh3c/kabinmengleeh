@@ -644,6 +644,10 @@ class HRPayslip(models.Model):
         for slip in self:
             # Fetch active loan contracts for the employee
             print(slip.employee_id.id)
+
+            year = self.date_from.strftime('%Y')
+            month = int(self.date_from.strftime('%m'))
+            
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', slip.employee_id.id)
                 # ('state', '=', 'active')
@@ -651,8 +655,9 @@ class HRPayslip(models.Model):
             print(loan_contracts)
             for loan in loan_contracts:
                 # Example: Deduct 10% of the loan amount
-                deduction_amount = loan.amount
-
+                deduction_amount = loan.total_amount
+                _logger.info(loan)
+                _logger.info(f"Not Found Old Slip Logs {loan}")
                 # Add deduction as a salary line
                 self.env['hr.payslip.line'].create({
                     'payslip_id': slip.id,
