@@ -653,13 +653,13 @@ class HRPayslip(models.Model):
             month = int(self.date_from.strftime('%m'))
             
             loan_contracts = self.env['loan.request'].search([
-                ('partner_id', '=', slip.employee_id.id)
+                ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
                 # ('state', '=', 'active')
-            ])
-            _logger.info(json.dumps(loan, indent=4, ensure_ascii=False, default=str))
+            ], limit=1)
+            _logger.info(json.dumps(loan_contracts, indent=4, ensure_ascii=False, default=str))
             
            
-            for loan in loan_contracts:
+            # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
             #     deduction_amount = loan.total_amount
             #     _logger.info(loan)
