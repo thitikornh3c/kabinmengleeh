@@ -294,7 +294,7 @@ class HRPayslip(models.Model):
                 if line.salary_rule_id.code == 'NET':
                     # workDataAmount = line.amount
                     _logger.info(f"Processing NET line of employee {line.amount } {sso_amount} {line.salary_rule_id}")
-                    netSum =  line.amount + sso_amount + totalOther
+                    netSum = line.amount + sso_amount + totalOther
                     line.amount = netSum
                     line.total = netSum
                     # line.amount = amonthSalary + totalOther + sso_amount
@@ -431,7 +431,7 @@ class HRPayslip(models.Model):
                         line.total = withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
-                        sumTotal = line.amount - ((-totalOther) + sso_amount + withholding_tax)
+                        sumTotal = line.amount + sso_amount + withholding_tax
                         # sumTotal = amonthSalary - ((-totalOther) + sso_amount + withholding_tax)
                         line.amount = sumTotal
                         line.total = sumTotal
