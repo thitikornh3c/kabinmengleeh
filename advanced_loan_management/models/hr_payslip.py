@@ -648,45 +648,45 @@ class HRPayslip(models.Model):
     #         if not hasattr(record, 'move_type'):
     #             record.move_type = None  # Default value if not present
     #     return records
-    @api.model
-    def create(self, vals):
-        # Override create method to automatically add loan deduction rule
-        res = super(HRPayslip, self).create(vals)
-        if res:
-            # Compute loan deductions and create corresponding salary lines
-            res.compute_loan_deductions()
-        return res
+    # @api.model
+    # def create(self, vals):
+    #     # Override create method to automatically add loan deduction rule
+    #     res = super(HRPayslip, self).create(vals)
+    #     if res:
+    #         # Compute loan deductions and create corresponding salary lines
+    #         res.compute_loan_deductions()
+    #     return res
 
-    def compute_loan_deductions(self):
-        for slip in self:
-            # Fetch active loan contracts for the employee
-            _logger.info(f'Create Slip ${slip.employee_id.id}')
-            year = self.date_from.strftime('%Y')
-            month = int(self.date_from.strftime('%m'))
+    # def compute_loan_deductions(self):
+    #     for slip in self:
+    #         # Fetch active loan contracts for the employee
+    #         _logger.info(f'Create Slip ${slip.employee_id.id}')
+    #         year = self.date_from.strftime('%Y')
+    #         month = int(self.date_from.strftime('%m'))
             
-            loan_contracts = self.env['loan.request'].search([
-                ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
-                # ('state', '=', 'active')
-            ], limit=1)
+    #         loan_contracts = self.env['loan.request'].search([
+    #             ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
+    #             # ('state', '=', 'active')
+    #         ], limit=1)
             
-            _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
-            for repayment in loan_contracts.repayment_lines_ids:
-                line_year = repayment.date.strftime('%Y')
-                line_month = int(repayment.date.strftime('%m'))
-                if year == line_year and month == line_month:
-                    _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
-                    loan_line = repayment
+    #         _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
+    #         for repayment in loan_contracts.repayment_lines_ids:
+    #             line_year = repayment.date.strftime('%Y')
+    #             line_month = int(repayment.date.strftime('%m'))
+    #             if year == line_year and month == line_month:
+    #                 _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+    #                 loan_line = repayment
                 
-            if loan_line:
-                _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
-                self.env['hr.payslip.line'].create({
-                    'slip_id': slip.id,
-                    'contract_id': slip.contract_id.id,
-                    'salary_rule_id': 40,
-                    'amount': repayment.amount,
-                    'sequence': 197,  # Adjust sequence if needed
-                    'name': 'เบิกเงินล่วงหน้า'
-                })
+    #         if loan_line:
+    #             _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
+    #             self.env['hr.payslip.line'].create({
+    #                 'slip_id': slip.id,
+    #                 'contract_id': slip.contract_id.id,
+    #                 'salary_rule_id': 40,
+    #                 'amount': repayment.amount,
+    #                 'sequence': 197,  # Adjust sequence if needed
+    #                 'name': 'เบิกเงินล่วงหน้า'
+    #             })
 
             # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
