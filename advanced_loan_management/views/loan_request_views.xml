@@ -95,6 +95,7 @@
                             <group>
                                 <field name="loan_amount"/>
                                 <field name="interest_rate" widget="percentage"/>
+                                 <field name="paid_per_mount_amount" />
                                 <field name="company_id"/>
                             </group>
                         </group>

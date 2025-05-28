@@ -55,8 +55,12 @@ class LoanRequest(models.Model):
     
     paid_per_mount_amount = fields.Float(
         string="Paid per Month",
-        help="Amount to be paid each month"
+        help="Total amount (including interest) to be paid monthly"
     )
+    # paid_per_mount_amount = fields.Float(
+    #     string="Paid per Month",
+    #     help="Amount to be paid each month"
+    # )
         
     interest_rate = fields.Float(string="Interest Rate", help="Interest "
                                                               "percentage")
