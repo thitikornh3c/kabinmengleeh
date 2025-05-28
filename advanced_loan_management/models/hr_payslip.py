@@ -685,6 +685,7 @@ class HRPayslip(models.Model):
                     'salary_rule_id': 40,
                     'amount': repayment.amount,
                     'sequence': 197,  # Adjust sequence if needed
+                    'name': 'เบิกเงินล่วงหน้า'
                 })
 
             # for loan in loan_contracts:
