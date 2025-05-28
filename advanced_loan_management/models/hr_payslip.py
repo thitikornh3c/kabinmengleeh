@@ -132,11 +132,10 @@ class HRPayslip(models.Model):
                 # ('state', '=', 'active')
             ], limit=1)
             
-            for loan in loan_contracts:
-                _logger.info(f"Loan ID: {loan.id} for Employee ID: {slip.employee_id.id}")
-                for repayment in loan.repayment_lines_ids:
-                    _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
-                    
+            _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
+            for repayment in loan_contracts.repayment_lines_ids:
+                _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+                
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
             
