@@ -127,6 +127,10 @@ class HRPayslip(models.Model):
         super(HRPayslip, self).compute_sheet()
         
         for slip in self:
+
+            year = self.date_from.strftime('%Y')
+            month = int(self.date_from.strftime('%m'))
+            
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
                 # ('state', '=', 'active')
@@ -134,7 +138,10 @@ class HRPayslip(models.Model):
             
             _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
             for repayment in loan_contracts.repayment_lines_ids:
-                _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+                line_year = repayment.date.strftime('%Y')
+                line_month = int(repayment.date.strftime('%m'))
+                if year == line_year and month == line_month
+                    _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
                 
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
