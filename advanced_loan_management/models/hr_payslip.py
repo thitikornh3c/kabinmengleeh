@@ -652,7 +652,7 @@ class HRPayslip(models.Model):
                 # ('state', '=', 'active')
             ])
             
-            _logger.info(loan_contracts)
+            _logger.info(json.dumps(loan_contracts, indent=4, ensure_ascii=False, default=str))
             # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
             #     deduction_amount = loan.total_amount
