@@ -352,6 +352,10 @@ class HRPayslip(models.Model):
                 #         # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                 #         # workdays_count += delta_days
 
+                basic_amount = 0
+                for line in slip.line_ids:
+                    if line.salary_rule_id.code == 'BASIC':
+                        basic_amount = line.amount
 
                 # Set Workday sheet
                 # scheduled_workdays_count = 0
@@ -378,26 +382,26 @@ class HRPayslip(models.Model):
                         line.total = totalOtherPlus
 
                 for line in slip.line_ids:
-                    if line.salary_rule_id.code == 'BASIC':
-                        # loan_contracts = self.env['loan.request'].search([
-                        #     ('partner_id', '=', slip.employee_id.id)
-                        # ])
-                        # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
+                    # if line.salary_rule_id.code == 'BASIC':
+                    #     # loan_contracts = self.env['loan.request'].search([
+                    #     #     ('partner_id', '=', slip.employee_id.id)
+                    #     # ])
+                    #     # loan_contracts_data = loan_contracts.read(['id', 'amount', 'state'])
 
-                        # Get scheduled workdays for the employee
+                    #     # Get scheduled workdays for the employee
 
-                        # _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
+                    #     # _logger.info(f"Processing payslip for employee attendance: {scheduled_workdays_count}")
 
-                        # workDataAmount = line.amount
-                        # amonthSalary =  workDataAmount * scheduled_workdays_count
-                        line.amount = amonthSalary
-                        line.total = amonthSalary
-                    elif line.salary_rule_id.code == 'GROSS':
-                        line.amount = amonthSalary + totalOtherPlus
-                        line.total = amonthSalary + totalOtherPlus
-                    elif line.salary_rule_id.code == 'SSO':
+                    #     # workDataAmount = line.amount
+                    #     # amonthSalary =  workDataAmount * scheduled_workdays_count
+                    #     line.amount = amonthSalary
+                    #     line.total = amonthSalary
+                    # elif line.salary_rule_id.code == 'GROSS':
+                    #     line.amount = amonthSalary + totalOtherPlus
+                    #     line.total = amonthSalary + totalOtherPlus
+                    if line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
-                            sso_amount = amonthSalary * 0.05 
+                            sso_amount = basic_amount * 0.05 
                             if sso_amount > 750:
                                 sso_amount = 750
                             else:
