@@ -130,7 +130,8 @@ class HRPayslip(models.Model):
 
             year = self.date_from.strftime('%Y')
             month = int(self.date_from.strftime('%m'))
-            
+            loan_line = None
+
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
                 # ('state', '=', 'active')
@@ -142,6 +143,7 @@ class HRPayslip(models.Model):
                 line_month = int(repayment.date.strftime('%m'))
                 if year == line_year and month == line_month:
                     _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+                    loan_line = repayment
                 
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
@@ -165,6 +167,9 @@ class HRPayslip(models.Model):
             if contract:
                 contract_type_code = contract.contract_type_id.code
             _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id} {contract.schedule_pay} {contract_type_code}")
+
+            if loan_line:
+                _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
 
             # Logic Calculate Work day
             if contract.schedule_pay == 'daily':
@@ -663,9 +668,24 @@ class HRPayslip(models.Model):
                 ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
                 # ('state', '=', 'active')
             ], limit=1)
-            _logger.info(json.dumps(loan_contracts, indent=4, ensure_ascii=False, default=str))
             
-           
+            _logger.info(f"Loan ID: {loan_contracts.id} for Employee ID: {slip.employee_id.id}")
+            for repayment in loan_contracts.repayment_lines_ids:
+                line_year = repayment.date.strftime('%Y')
+                line_month = int(repayment.date.strftime('%m'))
+                if year == line_year and month == line_month:
+                    _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+                    loan_line = repayment
+                
+            if loan_line:
+                _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
+                self.env['hr.payslip.line'].create({
+                    'payslip_id': slip.id,
+                    'salary_rule_id': 40,
+                    'amount': repayment.amount,
+                    'sequence': 10,  # Adjust sequence if needed
+                })
+
             # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
             #     deduction_amount = loan.total_amount
