@@ -130,7 +130,13 @@ class HRPayslip(models.Model):
             loan_contracts = self.env['loan.request'].search([
                 ('partner_id', '=', slip.employee_id.id) #slip.employee_id.id
                 # ('state', '=', 'active')
-            ])
+            ], limit=1)
+            
+            for loan in loan_contracts:
+                _logger.info(f"Loan ID: {loan.id} for Employee ID: {slip.employee_id.id}")
+                for repayment in loan.repayment_lines_ids:
+                    _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
+                    
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
             
@@ -651,9 +657,10 @@ class HRPayslip(models.Model):
                 ('partner_id', '=', slip.employee_id.id)
                 # ('state', '=', 'active')
             ])
+            _logger.info(json.dumps(loan, indent=4, ensure_ascii=False, default=str))
             
-            _logger.info(json.dumps(loan_contracts, indent=4, ensure_ascii=False, default=str))
-            # for loan in loan_contracts:
+           
+            for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
             #     deduction_amount = loan.total_amount
             #     _logger.info(loan)
