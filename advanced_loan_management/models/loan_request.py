@@ -281,26 +281,59 @@ selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
             elif loan.paid_per_mount_amount > 0:
                 loan.repayment_lines_ids.unlink()
                 date_start = datetime.strptime(str(loan.date), '%Y-%m-%d') + relativedelta(months=1)
-                amount = loan.loan_amount / loan.tenure
-                interest = loan.loan_amount * loan.interest_rate
-                interest_amount = interest / loan.tenure
-                total_amount = amount + interest_amount
                 
-                # ✅ Set paid per month amount
-                loan.paid_per_mount_amount = total_amount
+                paid_per_month = loan.paid_per_mount_amount  # Make sure this field exists
+                interest = loan.loan_amount * loan.interest_rate
+                total_loan = loan.loan_amount + interest
+                
+                partner = loan.partner_id  # assuming you're in the loan model, not repayment
+                
+                remaining_amount = total_loan
+                counter = 1
 
-                partner = self.partner_id
-                for rand_num in range(1, loan.tenure + 1):
+                while remaining_amount > 0:
+                    this_month_amount = min(paid_per_month, remaining_amount)
+                    interest_amount = 0  # Optional: calculate interest per line if needed
+                    repayment_amount = this_month_amount - interest_amount
+                    total_amount = this_month_amount
+                    
                     self.env['repayment.line'].create({
-                        'name': f"{loan.name}/{rand_num}",
+                        'name': f"{loan.name}/{counter}",
                         'partner_id': partner.id,
                         'date': date_start,
-                        'amount': amount,
+                        'amount': repayment_amount,
                         'interest_amount': interest_amount,
                         'total_amount': total_amount,
                         'interest_account_id': 87,
                         'repayment_account_id': 88,
-                        'loan_id': loan.id
+                        'loan_id': loan.id,
                     })
+
+                    remaining_amount -= this_month_amount
                     date_start += relativedelta(months=1)
+                    counter += 1
+                # loan.repayment_lines_ids.unlink()
+                # date_start = datetime.strptime(str(loan.date), '%Y-%m-%d') + relativedelta(months=1)
+                # amount = loan.loan_amount / loan.tenure
+                # interest = loan.loan_amount * loan.interest_rate
+                # interest_amount = interest / loan.tenure
+                # total_amount = amount + interest_amount
+                
+                # # ✅ Set paid per month amount
+                # loan.paid_per_mount_amount = total_amount
+
+                # partner = self.partner_id
+                # for rand_num in range(1, loan.tenure + 1):
+                #     self.env['repayment.line'].create({
+                #         'name': f"{loan.name}/{rand_num}",
+                #         'partner_id': partner.id,
+                #         'date': date_start,
+                #         'amount': amount,
+                #         'interest_amount': interest_amount,
+                #         'total_amount': total_amount,
+                #         'interest_account_id': 87,
+                #         'repayment_account_id': 88,
+                #         'loan_id': loan.id
+                #     })
+                #     date_start += relativedelta(months=1)
         return True
