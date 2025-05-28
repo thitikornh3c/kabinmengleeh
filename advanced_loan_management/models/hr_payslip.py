@@ -140,7 +140,7 @@ class HRPayslip(models.Model):
             for repayment in loan_contracts.repayment_lines_ids:
                 line_year = repayment.date.strftime('%Y')
                 line_month = int(repayment.date.strftime('%m'))
-                if year == line_year and month == line_month
+                if year == line_year and month == line_month:
                     _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
                 
             # Access the custom input from employee record
