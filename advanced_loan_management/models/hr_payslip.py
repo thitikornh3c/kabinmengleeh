@@ -127,8 +127,8 @@ class HRPayslip(models.Model):
         
         for slip in self:
 
-            year = self.date_from.strftime('%Y')
-            month = int(self.date_from.strftime('%m'))
+            year = slip.date_from.strftime('%Y')
+            month = int(slip.date_from.strftime('%m'))
             loan_line = None
 
             loan_contracts = self.env['loan.request'].search([
