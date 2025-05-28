@@ -64,8 +64,7 @@ class LoanRequest(models.Model):
         
     interest_rate = fields.Float(string="Interest Rate", help="Interest "
                                                               "percentage")
-    date = fields.Date(string="Date", default=fields.Date.today(),
-                       readonly=True, help="Date")
+    date = fields.Date(string="Date", default=fields.Date.today(), help="Date")
     partner_id = fields.Many2one(
         'hr.employee',
         string="Employee",
