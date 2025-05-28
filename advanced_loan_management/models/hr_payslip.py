@@ -653,15 +653,15 @@ class HRPayslip(models.Model):
                 # ('state', '=', 'active')
             ])
             print(loan_contracts)
-            for loan in loan_contracts:
-                # Example: Deduct 10% of the loan amount
-                deduction_amount = loan.total_amount
-                _logger.info(loan)
-                _logger.info(f"Not Found Old Slip Logs {loan}")
-                # Add deduction as a salary line
-                self.env['hr.payslip.line'].create({
-                    'payslip_id': slip.id,
-                    'salary_rule_id': 40,
-                    'amount': -deduction_amount,
-                    'sequence': 10,  # Adjust sequence if needed
-                })
+            # for loan in loan_contracts:
+            #     # Example: Deduct 10% of the loan amount
+            #     deduction_amount = loan.total_amount
+            #     _logger.info(loan)
+            #     _logger.info(f"Not Found Old Slip Logs {loan}")
+            #     # Add deduction as a salary line
+            #     self.env['hr.payslip.line'].create({
+            #         'payslip_id': slip.id,
+            #         'salary_rule_id': 40,
+            #         'amount': -deduction_amount,
+            #         'sequence': 10,  # Adjust sequence if needed
+            #     })

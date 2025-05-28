@@ -105,7 +105,7 @@ class LoanRequest(models.Model):
     request = fields.Boolean(string="Request",
                              help="For monitoring the record")
     state = fields.Selection(string='State',
-selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
+    selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
                    ('waiting', 'Waiting For Approval'),
                    ('approved', 'Approved'), ('disbursed', 'Disbursed'),
                    ('rejected', 'Rejected'), ('closed', 'Closed')],
