@@ -655,7 +655,7 @@ class HRPayslip(models.Model):
                 payslip.q_total_withholding = emp_salary.x_studio_total_withholding
                 payslip.q_year = emp_salary.x_studio_year
 
-                payslip.q_salary = emp_salary.x_studio_salary + float(emp_salary.x_studio_extrapaid or 0.0)
+                payslip.q_salary = float(emp_salary.x_studio_salary or 0.0) + float(emp_salary.x_studio_extrapaid or 0.0)
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
