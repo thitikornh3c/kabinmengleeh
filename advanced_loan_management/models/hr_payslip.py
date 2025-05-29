@@ -39,6 +39,11 @@ class HRPayslip(models.Model):
         compute='_compute_salary_details',
         store=False,
     )
+    q_salary_total = fields.Float(
+        string='Salary Total',
+        compute='_compute_salary_details',
+        store=False,
+    )
     q_sso = fields.Float(
         string='SSO',
         compute='_compute_salary_details',
@@ -676,7 +681,8 @@ class HRPayslip(models.Model):
                 payslip.q_total_withholding = emp_salary.x_studio_total_withholding
                 payslip.q_year = emp_salary.x_studio_year
 
-                payslip.q_salary = float(emp_salary.x_studio_salary or 0.0) + float(emp_salary.x_studio_extrapaid or 0.0)
+                payslip.q_salary = float(emp_salary.x_studio_salary or 0.0)
+                payslip.q_salary_total = float(emp_salary.x_studio_salary or 0.0) + float(emp_salary.x_studio_extrapaid or 0.0)
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
