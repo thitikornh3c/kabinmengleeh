@@ -572,8 +572,8 @@ class HRPayslip(models.Model):
             else:
                 x_studio_total_net = str(float(salary))
                 
-            x_studio_total_withholding = str(float(taxWithHolding))
-            x_studio_total_sso = str(float(sso))
+            x_studio_total_withholding = str(abs(float(taxWithHolding)))
+            x_studio_total_sso = str(abs(float(sso)))
         else:
             slipLastMonth = self.env['x_employee_salaries'].search([
                     ('x_studio_employee', '=', self.employee_id.id),
@@ -607,7 +607,7 @@ class HRPayslip(models.Model):
                         total_withholding = 0.0
                 else:
                     total_withholding = 0.0
-                x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
+                x_studio_total_withholding = str(total_withholding + abs(float(taxWithHolding)))
 
                 if isinstance(slipLastMonth.x_studio_total_sso, str):
                     try:
@@ -616,7 +616,7 @@ class HRPayslip(models.Model):
                         total_sso = 0.0
                 else:
                     total_sso = 0.0
-                x_studio_total_sso = str(total_sso + float(sso))
+                x_studio_total_sso = str(total_sso + abs(float(sso)))
             else:
                 # Use Snapshot Data in Contract
                 _logger.info(f"Not Found Old Slip Logs {salary} {taxWithHolding} {sso}")
@@ -641,7 +641,7 @@ class HRPayslip(models.Model):
                         total_withholding = 0.0
                 else:
                     total_withholding = 0.0
-                x_studio_total_withholding = str(total_withholding + float(taxWithHolding))
+                x_studio_total_withholding = str(total_withholding + abs(float(taxWithHolding)))
 
                 if isinstance(contract.x_studio_total_sso, str):
                     try:
@@ -650,7 +650,7 @@ class HRPayslip(models.Model):
                         total_sso = 0.0
                 else:
                     total_sso = 0.0
-                x_studio_total_sso = str(total_sso + float(sso))
+                x_studio_total_sso = str(total_sso + abs(float(sso)))
 
 
         empSlipLog = self.env['x_employee_salaries'].search([
@@ -665,8 +665,8 @@ class HRPayslip(models.Model):
             empSlipLog.x_studio_total_sso = x_studio_total_sso
             empSlipLog.x_studio_total_withholding = x_studio_total_withholding
             empSlipLog.x_studio_salary = salary
-            empSlipLog.x_studio_sso = sso
-            empSlipLog.x_studio_with_holding = taxWithHolding
+            empSlipLog.x_studio_sso = str(abs(float(sso)))
+            empSlipLog.x_studio_with_holding = str(abs(float(taxWithHolding)))
             empSlipLog.x_studio_total_amount = net
             empSlipLog.x_studio_extrapaid = other_paid 
             empSlipLog.x_studio_deduction = other_deduct
