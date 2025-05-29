@@ -618,6 +618,13 @@ class HRPayslip(models.Model):
                 ('x_studio_slip', '=', payslip.id),
             ], limit=1)
 
+            other_deduct = 0.0
+            for line in payslip.line_ids:
+                if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION':
+                    other_deduct = other_deduct + float(line.amount)
+                if line.salary_rule_id.code == 'DEDUCTION':
+                    other_deduct = other_deduct + float(line.amount)
+
             if emp_salary:
                 payslip.q_total_net = emp_salary.x_studio_total_salary
                 payslip.q_total_sso = emp_salary.x_studio_total_sso
@@ -628,7 +635,7 @@ class HRPayslip(models.Model):
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
-                payslip.q_total_deduct = float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
+                payslip.q_total_deduct = other_deduct + float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
 
                 payslip.q_total_amount = emp_salary.x_studio_total_amount
             else:
