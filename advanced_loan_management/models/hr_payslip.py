@@ -636,17 +636,17 @@ class HRPayslip(models.Model):
                 ('x_studio_slip', '=', payslip.id),
             ], limit=1)
 
-            other_deduct = 0.0
-            for line in payslip.line_ids:
-                if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION':
-                    other_deduct = other_deduct + float(line.amount)
-                if line.salary_rule_id.code == 'DEDUCTION':
-                    other_deduct = other_deduct + float(line.amount)
+            # other_deduct = 0.0
+            # for line in payslip.line_ids:
+            #     if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION':
+            #         other_deduct = other_deduct + float(line.amount)
+            #     if line.salary_rule_id.code == 'DEDUCTION':
+            #         other_deduct = other_deduct + float(line.amount)
 
-            other_paid = 0.0
-            for line in payslip.line_ids:
-                if 'EXTRAPAID' in line.salary_rule_id.code:
-                    other_paid += float(line.amount)
+            # other_paid = 0.0
+            # for line in payslip.line_ids:
+            #     if 'EXTRAPAID' in line.salary_rule_id.code:
+            #         other_paid += float(line.amount)
             
 
             if emp_salary:
@@ -655,11 +655,11 @@ class HRPayslip(models.Model):
                 payslip.q_total_withholding = emp_salary.x_studio_total_withholding
                 payslip.q_year = emp_salary.x_studio_year
 
-                payslip.q_salary = emp_salary.x_studio_salary + other_paid
+                payslip.q_salary = emp_salary.x_studio_salary + float(emp_salary.x_studio_extrapaid or 0.0)
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
-                payslip.q_total_deduct = other_deduct + float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
+                payslip.q_total_deduct = float(emp_salary.x_studio_deduction or 0.0) + float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
 
                 payslip.q_total_amount = emp_salary.x_studio_total_amount
             else:
