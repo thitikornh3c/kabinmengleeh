@@ -458,7 +458,8 @@ class HRPayslip(models.Model):
                         line.total = withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
-                        sumTotal = line.amount + sso_amount + withholding_tax
+                        
+                        sumTotal = line.amount + sso_amount - withholding_tax
                         # sumTotal = amonthSalary - ((-totalOther) + sso_amount + withholding_tax)
                         line.amount = sumTotal
                         line.total = sumTotal
