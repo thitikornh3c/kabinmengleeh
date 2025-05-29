@@ -708,7 +708,18 @@ class HRPayslip(models.Model):
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
-                payslip.q_total_deduct = float(emp_salary.x_studio_deduction or 0.0) + float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
+                deduction = float(emp_salary.x_studio_deduction or 0.0)
+                with_holding = float(emp_salary.x_studio_with_holding or 0.0)
+                sso = float(emp_salary.x_studio_sso or 0.0)
+
+                # ถ้า deduction หรืo sso < 0 ให้คูณ -1 เพื่อแปลงเป็นบวก
+                if deduction < 0:
+                    deduction *= -1
+                if sso < 0:
+                    sso *= -1
+
+                payslip.q_total_deduct = deduction + with_holding + sso
+                # payslip.q_total_deduct = float(-emp_salary.x_studio_deduction or 0.0) + float(emp_salary.x_studio_with_holding or 0.0) + float(emp_salary.x_studio_sso or 0.0)
 
                 payslip.q_total_amount = emp_salary.x_studio_total_amount
             else:
