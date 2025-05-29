@@ -474,7 +474,6 @@ class HRPayslip(models.Model):
                 ('state', '=', 'open')  # Only get active contracts
             ], limit=1)
 
-
         salary = 0 
         taxWithHolding = 0
         sso = 0
@@ -487,7 +486,7 @@ class HRPayslip(models.Model):
         year = self.date_from.strftime('%Y')
         month = int(self.date_from.strftime('%m'))
         
-        _logger.info(f"Payslip {self.number} line_ids: {self.line_ids}")
+        _logger.info(f"Payslip1111111 {self.number} line_ids: {self.line_ids} {self.company_id.id}")
         for line in self.line_ids:
             if line.salary_rule_id.code == 'BASIC':
                 salary = line.amount
