@@ -669,7 +669,7 @@ class HRPayslip(models.Model):
             empSlipLog.x_studio_with_holding = str(abs(float(taxWithHolding)))
             empSlipLog.x_studio_total_amount = net
             empSlipLog.x_studio_extrapaid = other_paid 
-            empSlipLog.x_studio_deduction = other_deduct
+            empSlipLog.x_studio_deduction = str(abs(float(other_deduct or 0.0)))
         else:
              self.env['x_employee_salaries'].create({
                 'x_name': str(year) + str(month),
@@ -686,7 +686,7 @@ class HRPayslip(models.Model):
                 'x_studio_with_holding': taxWithHolding,
                 'x_studio_total_amount': net,
                 'x_studio_extrapaid': other_paid,
-                'x_studio_deduction': other_deduct
+                'x_studio_deduction': str(abs(float(other_deduct or 0.0)))
             })
 
     @api.model
