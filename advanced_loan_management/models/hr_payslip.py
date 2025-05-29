@@ -502,6 +502,12 @@ class HRPayslip(models.Model):
 
         _logger.info(f"salary: {salary} taxWithHolding: {taxWithHolding} sso: {sso} net: {net}")
 
+
+        amonthSalary = 0
+        for line in self.worked_days_line_ids:
+            if line.work_entry_type_id.code == 'WORK100':
+                amonthSalary = float(line.amount)
+
         # Find Slip Last month of this Employee
         if month == 1:
             x_studio_total_net = 0
@@ -509,7 +515,12 @@ class HRPayslip(models.Model):
             x_studio_total_sso = 0
 
             _logger.info(f"New Year {salary} {taxWithHolding} {sso}")
-            x_studio_total_net = str(float(salary))
+
+            if self.company_id.id == 1:
+                x_studio_total_net = str(float(amonthSalary))
+            else:
+                x_studio_total_net = str(float(salary))
+                
             x_studio_total_withholding = str(float(taxWithHolding))
             x_studio_total_sso = str(float(sso))
         else:
@@ -530,7 +541,13 @@ class HRPayslip(models.Model):
                         total_net = 0.0
                 else:
                     total_net = 0.0
-                x_studio_total_net = str(total_net + float(salary))
+
+                if self.company_id.id == 1:
+                    x_studio_total_net = str(total_net + float(amonthSalary))
+                else:
+                    x_studio_total_net = str(total_net + float(salary))
+                    
+                
 
                 if isinstance(slipLastMonth.x_studio_total_withholding, str):
                     try:
@@ -559,7 +576,12 @@ class HRPayslip(models.Model):
                         total_net = 0.0
                 else:
                     total_net = 0.0
-                x_studio_total_net = str(total_net + float(salary))
+
+                if self.company_id.id == 1:
+                    x_studio_total_net = str(total_net + float(amonthSalary))
+                else:
+                    x_studio_total_net = str(total_net + float(salary))
+                
 
                 if isinstance(contract.x_studio_total_withholding, str):
                     try:
