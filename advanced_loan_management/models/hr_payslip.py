@@ -585,19 +585,30 @@ class HRPayslip(models.Model):
                 ('x_studio_slip', '=', self.id),
             ], limit=1)
 
+        other_deduct = 0.0
+        for line in payslip.line_ids:
+            if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION':
+                other_deduct = other_deduct + float(line.amount)
+            if line.salary_rule_id.code == 'DEDUCTION':
+                other_deduct = other_deduct + float(line.amount)
+
         other_paid = 0.0
         for line in self.line_ids:
             if 'EXTRAPAID' in line.salary_rule_id.code:
                 other_paid += float(line.amount)
+        
+        
         if empSlipLog:
             # Update
             empSlipLog.x_studio_total_salary = x_studio_total_net
             empSlipLog.x_studio_total_sso = x_studio_total_sso
             empSlipLog.x_studio_total_withholding = x_studio_total_withholding
-            empSlipLog.x_studio_salary = other_paid + salary
+            empSlipLog.x_studio_salary = salary
             empSlipLog.x_studio_sso = sso
             empSlipLog.x_studio_with_holding = taxWithHolding
             empSlipLog.x_studio_total_amount = net
+            empSlipLog.x_studio_extrapaid = other_deduct
+            empSlipLog.x_studio_deduction = other_paid
         else:
              self.env['x_employee_salaries'].create({
                 'x_name': str(year) + str(month),
@@ -609,10 +620,12 @@ class HRPayslip(models.Model):
                 'x_studio_total_sso': x_studio_total_sso,
                 'x_studio_total_withholding': x_studio_total_withholding,
 
-                'x_studio_salary': other_paid + salary,
+                'x_studio_salary': salary,
                 'x_studio_sso': sso,
                 'x_studio_with_holding': taxWithHolding,
-                'x_studio_total_amount': net
+                'x_studio_total_amount': net,
+                'x_studio_extrapaid': other_deduct,
+                'x_studio_deduction': other_paid
             })
 
     @api.model
@@ -630,6 +643,10 @@ class HRPayslip(models.Model):
                 if line.salary_rule_id.code == 'DEDUCTION':
                     other_deduct = other_deduct + float(line.amount)
 
+            other_paid = 0.0
+            for line in self.line_ids:
+                if 'EXTRAPAID' in line.salary_rule_id.code:
+                    other_paid += float(line.amount)
             
 
             if emp_salary:
@@ -638,7 +655,7 @@ class HRPayslip(models.Model):
                 payslip.q_total_withholding = emp_salary.x_studio_total_withholding
                 payslip.q_year = emp_salary.x_studio_year
 
-                payslip.q_salary = emp_salary.x_studio_salary
+                payslip.q_salary = emp_salary.x_studio_salary + other_paid
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
