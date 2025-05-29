@@ -125,6 +125,25 @@ class HRPayslip(models.Model):
 
         return month_tax
       
+    def calculate_withholding_tax_2(self, gross_salary, empId):
+        month_tax = gross_salary * 0.03
+        # return month_tax
+        
+        # year_gross_salary = gross_salary * 12 
+        # year_gross_salary = year_gross_salary - 100000 #หักค่าใช้จ่าย สูงสุด 100000 40(1) 50% ไม่เกิน 100000
+
+        # year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล
+        # year_gross_salary = year_gross_salary - 9000 #ยกเว้นภาษีเงินได้ เงินประกันสังคมสะสม สูงสุด 9000
+
+        # if year_gross_salary > 150000:
+        #     year_gross_salary = year_gross_salary - 150000 #ยกเว้นภาษีเงินได้ 0%
+
+        #     year_tax = year_gross_salary * 0.05
+        #     month_tax = year_tax / 12
+        # else:
+        #     month_tax = 0
+
+        return month_tax
     
     @api.model
     def compute_sheet(self):
@@ -375,7 +394,10 @@ class HRPayslip(models.Model):
                     if line.work_entry_type_id.code == 'LEAVE110':
                         line.amount = 0
                 
-                withholding_tax = self.calculate_withholding_tax(amonthSalary,  slip.employee_id.id)
+                if slip.company_id.id == 1:
+                    withholding_tax = self.calculate_withholding_tax_2(amonthSalary,  slip.employee_id.id)
+                else:
+                    withholding_tax = self.calculate_withholding_tax(amonthSalary,  slip.employee_id.id)
 
 
                 for line in slip.line_ids:
