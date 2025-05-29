@@ -432,7 +432,7 @@ class HRPayslip(models.Model):
                             if sso_amount > 750:
                                 sso_amount = 750
                             else:
-                                sso_amount = sso_amount
+                                sso_amount = -sso_amount
                             line.amount = sso_amount
                             line.total = sso_amount
                     # elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
@@ -454,7 +454,7 @@ class HRPayslip(models.Model):
                 for line in slip.line_ids:
                     if line.salary_rule_id.code == 'with_holding':
                         # workDataAmount = line.amount
-                        line.amount = withholding_tax
+                        line.amount = -withholding_tax
                         line.total = withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
