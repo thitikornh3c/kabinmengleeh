@@ -538,7 +538,7 @@ class HRPayslip(models.Model):
         # message = f"Payslip {self.number} has been marked as create draft entry. {taxWithHolding} {contract.x_studio_total_withholding}"
         # _logger.info(message)
 
-        _logger.info(f"salary: {salary} taxWithHolding: {taxWithHolding} sso: {sso} net: {net}")
+       
 
 
         other_deduct = 0.0
@@ -554,6 +554,8 @@ class HRPayslip(models.Model):
                 other_paid += float(line.amount)
 
         amonthSalary = float(salary) + other_paid
+
+        _logger.info(f"salary: {salary} otherPaid: {other_paid} taxWithHolding: {taxWithHolding} sso: {sso} net: {net}")
 
         # Find Slip Last month of this Employee
         if month == 1:
