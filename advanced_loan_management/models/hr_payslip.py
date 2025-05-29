@@ -436,6 +436,7 @@ class HRPayslip(models.Model):
                         line.amount = sumTotal
                         line.total = sumTotal
                         
+            slip.trigger_custom_event()
                         # if slip.employee_id.id == 50:
                         #     line.amount = 12500
                         #     line.total = 12500
