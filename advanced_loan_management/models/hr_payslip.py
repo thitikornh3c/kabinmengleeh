@@ -593,10 +593,10 @@ class HRPayslip(models.Model):
             empSlipLog.x_studio_total_salary = x_studio_total_net
             empSlipLog.x_studio_total_sso = x_studio_total_sso
             empSlipLog.x_studio_total_withholding = x_studio_total_withholding
-            empSlipLog.x_studio_salary = salary
+            empSlipLog.x_studio_salary = other_paid + salary
             empSlipLog.x_studio_sso = sso
             empSlipLog.x_studio_with_holding = taxWithHolding
-            empSlipLog.x_studio_total_amount = other_paid + net
+            empSlipLog.x_studio_total_amount = net
         else:
              self.env['x_employee_salaries'].create({
                 'x_name': str(year) + str(month),
@@ -608,7 +608,7 @@ class HRPayslip(models.Model):
                 'x_studio_total_sso': x_studio_total_sso,
                 'x_studio_total_withholding': x_studio_total_withholding,
 
-                'x_studio_salary': salary,
+                'x_studio_salary': other_paid + salary,
                 'x_studio_sso': sso,
                 'x_studio_with_holding': taxWithHolding,
                 'x_studio_total_amount': net
