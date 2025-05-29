@@ -459,7 +459,7 @@ class HRPayslip(models.Model):
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
                         
-                        sumTotal = line.amount + sso_amount - withholding_tax
+                        sumTotal = line.amount - sso_amount - withholding_tax
                         # sumTotal = amonthSalary - ((-totalOther) + sso_amount + withholding_tax)
                         line.amount = sumTotal
                         line.total = sumTotal
@@ -692,12 +692,11 @@ class HRPayslip(models.Model):
             #     if line.salary_rule_id.code == 'DEDUCTION':
             #         other_deduct = other_deduct + float(line.amount)
 
-            basic_extrapaid = 0.0
-            for line in payslip.line_ids:
-                if line.salary_rule_id.code == 'BASIC_EXTRAPAID':
-                    basic_extrapaid += float(line.amount)
+            # basic_extrapaid = 0.0
+            # for line in payslip.line_ids:
+            #     if line.salary_rule_id.code == 'BASIC_EXTRAPAID':
+            #         basic_extrapaid += float(line.amount)
             
-
             if emp_salary:
                 payslip.q_total_net = emp_salary.x_studio_total_salary
                 payslip.q_total_sso = emp_salary.x_studio_total_sso
@@ -705,7 +704,7 @@ class HRPayslip(models.Model):
                 payslip.q_year = emp_salary.x_studio_year
 
                 payslip.q_salary = float(emp_salary.x_studio_salary or 0.0)
-                payslip.q_salary_total = float(emp_salary.x_studio_salary or 0.0) + basic_extrapaid
+                payslip.q_salary_total = float(emp_salary.x_studio_salary or 0.0) + float(emp_salary.x_studio_extrapaid or 0.0)
                 payslip.q_sso = emp_salary.x_studio_sso
                 payslip.q_withholding = emp_salary.x_studio_with_holding
 
