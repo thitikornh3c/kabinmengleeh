@@ -167,18 +167,7 @@ class HRPayslip(models.Model):
                 if year == line_year and month == line_month:
                     _logger.info(f"Repayment Line: ID={repayment.id}, Date={repayment.date}, Amount={repayment.amount}")
                     loan_line = repayment
-            if loan_line:
-                _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
-                for line in slip.line_ids:
-                    if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION' and loan_line:
-                        line_year = repayment.date.strftime('%Y')
-                        line_month = int(repayment.date.strftime('%m'))
-                        line.name = f"{line.name} ({line_month}/{line_year})"
-    
-                        loan = -loan_line.amount
-                        totalOther = totalOther + loan
-                        line.amount = loan
-                        line.total = loan     
+               
             # Access the custom input from employee record
             # custom_input = slip.employee_id.custom_input
             
@@ -191,6 +180,19 @@ class HRPayslip(models.Model):
             withholding_tax = 0
             contract_type_code = ''
             grossTotal = 0
+
+            if loan_line:
+                _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
+                for line in slip.line_ids:
+                    if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION' and loan_line:
+                        line_year = repayment.date.strftime('%Y')
+                        line_month = int(repayment.date.strftime('%m'))
+                        line.name = f"{line.name} ({line_month}/{line_year})"
+    
+                        loan = -loan_line.amount
+                        totalOther = totalOther + loan
+                        line.amount = loan
+                        line.total = loan  
 
             # Get contract
             contract = self.env['hr.contract'].search([
