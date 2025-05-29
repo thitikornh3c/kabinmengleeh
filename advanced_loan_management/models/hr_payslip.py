@@ -586,7 +586,7 @@ class HRPayslip(models.Model):
             ], limit=1)
 
         other_deduct = 0.0
-        for line in payslip.line_ids:
+        for line in self.line_ids:
             if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION':
                 other_deduct = other_deduct + float(line.amount)
             if line.salary_rule_id.code == 'DEDUCTION':
@@ -644,7 +644,7 @@ class HRPayslip(models.Model):
                     other_deduct = other_deduct + float(line.amount)
 
             other_paid = 0.0
-            for line in self.line_ids:
+            for line in payslip.line_ids:
                 if 'EXTRAPAID' in line.salary_rule_id.code:
                     other_paid += float(line.amount)
             
