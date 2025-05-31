@@ -442,7 +442,7 @@ class HRPayslip(models.Model):
                         if contract_type_code == 'จ่ายประกันสังคม': 
                             sso_amount = basic_amount * 0.05 
                             if sso_amount > 750:
-                                sso_amount = 750
+                                sso_amount = -750
                             else:
                                 sso_amount = -sso_amount
                             line.amount = sso_amount
@@ -467,11 +467,11 @@ class HRPayslip(models.Model):
                     if line.salary_rule_id.code == 'with_holding':
                         # workDataAmount = line.amount
                         line.amount = -withholding_tax
-                        line.total = withholding_tax
+                        line.total = -withholding_tax
                     if line.salary_rule_id.code == 'NET':
                         # workDataAmount = line.amount
                         
-                        sumTotal = line.amount - sso_amount - withholding_tax
+                        sumTotal = line.amount + sso_amount - withholding_tax
                         # sumTotal = amonthSalary - ((-totalOther) + sso_amount + withholding_tax)
                         line.amount = sumTotal
                         line.total = sumTotal
@@ -760,14 +760,14 @@ class HRPayslip(models.Model):
     #         if not hasattr(record, 'move_type'):
     #             record.move_type = None  # Default value if not present
     #     return records
-    # @api.model
-    # def create(self, vals):
-    #     # Override create method to automatically add loan deduction rule
-    #     res = super(HRPayslip, self).create(vals)
-    #     if res:
-    #         # Compute loan deductions and create corresponding salary lines
-    #         res.compute_loan_deductions()
-    #     return res
+    @api.model
+    def create(self, vals):
+        # Override create method to automatically add loan deduction rule
+        res = super(HRPayslip, self).create(vals)
+        if res:
+            # Compute loan deductions and create corresponding salary lines
+            res.compute_sheet()
+        return res
 
     def compute_loan_deductions(self):
         for slip in self:
