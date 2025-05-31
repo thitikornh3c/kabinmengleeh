@@ -455,11 +455,11 @@ class HRPayslip(models.Model):
                     #     line.name = f'{line.name} ({loan_contracts[0].id})'
                     #     # for loan in loan_contracts:
                         #     line.name = loan
-                    else:
-                        if line.salary_rule_id.code != 'NET':
-                            _logger.info(f"Processing other line of employee {line.salary_rule_id.code}: {line.amount}")
-                            totalOther = totalOther + sso_amount + line.amount
-                            # line.name = f'{line.name} {line.amount} {totalOther}'
+                    # else:
+                    #     if line.salary_rule_id.code != 'NET':
+                    #         _logger.info(f"Processing other line of employee {line.salary_rule_id.code}: {line.amount}")
+                    #         totalOther = totalOther + sso_amount + line.amount
+                    #         # line.name = f'{line.name} {line.amount} {totalOther}'
 
                 _logger.info(f"Processing payslip deduct cost of employee {totalOther}: {sso_amount} {withholding_tax}")
                 # Loop re calculate1
