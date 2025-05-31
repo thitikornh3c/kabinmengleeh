@@ -126,7 +126,10 @@ class HRPayslip(models.Model):
         return month_tax
       
     def calculate_withholding_tax_2(self, gross_salary, empId):
-        month_tax = gross_salary * 0.03
+        if empId == 7:
+            month_tax = gross_salary * 0.03
+        else:
+            month_tax = 0
         # return month_tax
         
         # year_gross_salary = gross_salary * 12 
