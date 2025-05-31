@@ -766,6 +766,7 @@ class HRPayslip(models.Model):
         res = super(HRPayslip, self).create(vals)
         if res:
             # Compute loan deductions and create corresponding salary lines
+            _logger.info(f'Create Slip ${res.employee_id.id}')
             res.compute_sheet()
         return res
 
