@@ -95,8 +95,22 @@ class HRPayslip(models.Model):
         
         return weeks
     
-    def round_half_up(self, n):
-        return int(Decimal(n).to_integral_value(rounding=ROUND_HALF_UP))
+    def round_half_up(self, v):
+        # amount = int(n)
+        # round = amount + n
+        # return int(Decimal(n).to_integral_value(rounding=ROUND_HALF_UP))
+        amount = int(v)
+        diff = amount - v  # fractional part, will be positive for negatives
+
+        if diff == 0.5:
+            if amount % 2 == 0:
+                return amount
+            else:
+                return amount - 1
+        elif diff < 0.5:
+            return amount
+        else:  # diff > 0.5
+            return amount - 1
 
     def calculate_withholding_tax(self, gross_salary, empId):
         month_tax = 0
