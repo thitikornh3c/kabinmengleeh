@@ -156,7 +156,7 @@ class HRPayslip(models.Model):
         
         # Revert each to draft using the proper method
         for entry in validated_entries:
-            entry.action_draft()
+            entry.set_to_draft()
 
         _logger.info(f"{len(validated_entries)} work entries reverted to draft.")
 
