@@ -151,7 +151,12 @@ class HRPayslip(models.Model):
     @api.model
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
-        
+
+        validated_entries = self.env['hr.work.entry'].search([('state', '=', 'validated')])
+        validated_entries.write({'state': 'draft'})
+        _logger.info(f"{len(validated_entries)} work entries reverted to draft.")
+
+
         for slip in self:
 
             year = slip.date_from.strftime('%Y')
