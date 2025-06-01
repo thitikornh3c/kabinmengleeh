@@ -6,7 +6,7 @@ _logger = logging.getLogger(__name__)
 class HrWorkEntry(models.Model):
     _inherit = 'hr.work.entry'
 
-    @api.multi
+    @api.model
     def clear_validated_entries(self):
         validated_entries = self.filtered(lambda e: e.state == 'validated')
         for entry in validated_entries:
