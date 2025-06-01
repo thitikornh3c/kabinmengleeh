@@ -152,13 +152,13 @@ class HRPayslip(models.Model):
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
 
-        validated_entries = self.env['hr.work.entry'].search([('state', '=', 'validated')])
+        # validated_entries = self.env['hr.work.entry'].search([('state', '=', 'validated')])
         
-        # Revert each to draft using the proper method
-        for entry in validated_entries:
-            entry.sudo().write({'state': 'draft'})
+        # # Revert each to draft using the proper method
+        # for entry in validated_entries:
+        #     entry.sudo().write({'state': 'draft'})
 
-        _logger.info(f"{len(validated_entries)} work entries reverted to draft.")
+        # _logger.info(f"{len(validated_entries)} work entries reverted to draft.")
 
 
         for slip in self:
