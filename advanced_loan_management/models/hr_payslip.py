@@ -2,6 +2,7 @@ from odoo import models, fields, api
 import logging
 import json
 from datetime import datetime, timedelta
+from decimal import Decimal, ROUND_HALF_UP
 
 _logger = logging.getLogger(__name__)
 
@@ -94,6 +95,9 @@ class HRPayslip(models.Model):
         
         return weeks
     
+    def round_half_up(n):
+        return int(Decimal(n).to_integral_value(rounding=ROUND_HALF_UP))
+
     def calculate_withholding_tax(self, gross_salary, empId):
         month_tax = 0
         # if empId == 23: 
@@ -319,6 +323,8 @@ class HRPayslip(models.Model):
                                 sso_amount = -750
                             else:
                                 sso_amount = -sso_amount
+
+                            sso_amount = self.round_half_up(sso_amount)
                             line.amount = sso_amount
                             line.total = sso_amount
                     # elif line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION' and loan_line:
@@ -465,6 +471,8 @@ class HRPayslip(models.Model):
                                 sso_amount = -750
                             else:
                                 sso_amount = -sso_amount
+                            
+                            sso_amount = self.round_half_up(sso_amount)
                             line.amount = sso_amount
                             line.total = sso_amount
                     # elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
