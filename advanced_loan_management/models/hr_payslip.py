@@ -262,9 +262,9 @@ class HRPayslip(models.Model):
                 leave105 = 0
                 leave110 = 0
                 leave120 = 0
-                isWeekLeave = False
                 weekBonus = 0
                 for week in week_ranges:
+                    isWeekLeave = False
                     for day in week:
                         for entry in work_entries:
                             if entry.date_start and entry.date_stop:
