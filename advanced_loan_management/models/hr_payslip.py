@@ -256,8 +256,10 @@ class HRPayslip(models.Model):
                 weekIndex = 1
                 for week in week_ranges:
                     weekDay = 0
+                    dayInWeek = 0
                     for day in week:
                         duration = 0
+                        dayInWeek = 0
                         for entry in work_entries:
                             # Calculate number of days in each work entry
                             if entry.date_start and entry.date_stop:
@@ -286,13 +288,14 @@ class HRPayslip(models.Model):
                                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                                 # workdays_count += delta_days 
                         weekDay = weekDay + duration
+                        dayInWeek = dayInWeek + 1
                         _logger.info(f"Summary Entry: {day} {duration}")
                         # if weekLeave != False:
                     if weekLeave == False:
                         workdays_count = workdays_count + weekDay + 1
                     else:
                         workdays_count = workdays_count + weekDay
-                    _logger.info(f"Week {weekIndex} : Duration {weekDay}")
+                    _logger.info(f"Week {weekIndex} : Day in Week {dayInWeek} Duration {weekDay}")
                     weekIndex = weekIndex + 1
 
                 _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
