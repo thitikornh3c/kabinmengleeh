@@ -318,13 +318,17 @@ class HRPayslip(models.Model):
                         amonthSalary = workdays_count * contract.wage #line.number_of_days * contract.wage
                         line.amount = amonthSalary
                     if line.work_entry_type_id.code == 'LEAVE90':
-                        line.number_of_days = leave90
+                        line.number_of_days = abs(leave90)
                     if line.work_entry_type_id.code == 'LEAVE100':
-                        line.number_of_days = leave100
+                        line.number_of_days = abs(leave100)
                         line.amount = contract.wage
                     if line.work_entry_type_id.code == 'LEAVE105':
-                        line.number_of_days = leave105
+                        line.number_of_days = abs(leave105)
                         line.amount = contract.wage
+                    if line.work_entry_type_id.code == 'LEAVE110':
+                        line.number_of_days = abs(leave110)
+                    if line.work_entry_type_id.code == 'LEAVE120':
+                        line.number_of_days = abs(leave120)
 
                 basic_amount = 0
                 for line in slip.line_ids:
