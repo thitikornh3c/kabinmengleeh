@@ -262,6 +262,7 @@ class HRPayslip(models.Model):
                 leave105 = 0
                 leave110 = 0
                 leave120 = 0
+                isWeekLeave = False
                 weekBonus = 0
                 for week in week_ranges:
                     for day in week:
@@ -271,7 +272,7 @@ class HRPayslip(models.Model):
                                 end_date = fields.Date.from_string(entry.date_stop)
                                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
                                     if (start_date.strftime('%a').upper() == 'MON' or start_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
-                                        weekBonus = weekBonus + 1
+                                        isWeekLeave = True
                                         
                                     if entry.code == 'LEAVE90': #Unpaid
                                         leave90 = leave90 + 0.5 #entry.duration
@@ -283,6 +284,8 @@ class HRPayslip(models.Model):
                                         leave110 = leave110 + 0.5#entry.duration
                                     elif entry.code == 'LEAVE120': #Paid Time Off
                                         leave120 = leave120 + 0.5#entry.duration
+                    if isWeekLeave == True:
+                        weekBonus = weekBonus + 1
                                         
                 # for week in week_ranges:
                 #     weekDay = 0
