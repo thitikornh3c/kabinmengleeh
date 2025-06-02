@@ -438,7 +438,6 @@ class HRPayslip(models.Model):
                 weekDay = 0
 
                 for week in week_ranges:
-                    isWeekLeave = False
                     for day in week:
                         for entry in work_entries:
                             if entry.date_start and entry.date_stop:
@@ -481,10 +480,9 @@ class HRPayslip(models.Model):
                 #     # if weekDay == 6:
                 #     #     workdays_count = workdays_count + weekDay + 1
                 #     # else:
-                    workdays_count = workdays_count + weekDay
                     _logger.info(f"Week {weekIndex} : Duration {weekDay}")
                     weekIndex = weekIndex + 1
-
+                workdays_count = weekDay
                 _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
 
                 # for entry in work_entries:
