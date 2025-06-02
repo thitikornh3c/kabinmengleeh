@@ -324,6 +324,7 @@ class HRPayslip(models.Model):
                 #     _logger.info(f"Week {weekIndex} : Duration {weekDay}")
                 #     weekIndex = weekIndex + 1
                 workdays_count = workdays_count - leave90
+                workdays_count = workdays_count - weekBonus
 
                 _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Day work {workdays_count}, WeekBonus -{weekBonus} Generic {leave100}, Compensatory {leave105}, Sick {leave110}, Paid {leave120}")
 
