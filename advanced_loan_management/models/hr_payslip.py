@@ -278,9 +278,9 @@ class HRPayslip(models.Model):
                                     _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
                                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                                 # workdays_count += delta_days 
-                        if weekLeave != False:
-                            weekDay = weekDay + 1
-                    if weekDay == 6:
+                        # if weekLeave != False:
+                        weekDay = duration
+                    if weekLeave != False:
                         workdays_count = workdays_count + weekDay + 1
                     else:
                         workdays_count = workdays_count + weekDay
