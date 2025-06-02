@@ -255,52 +255,52 @@ class HRPayslip(models.Model):
                     ('date_start', '>=', slip.date_from),
                     ('date_stop', '<=', slip.date_to)
                 ], order='id ASC')
-                workdays_count = 0
+                workdays_count = number_of_days
                 weekIndex = 1
                 leave90 = 0
                 leave100 = 0
                 leave105 = 0
                 leave110 = 0
                 leave120 = 0
-                for week in week_ranges:
-                    weekDay = 0
-                    for day in week:
-                        duration = 0
-                        for entry in work_entries:
-                            # Calculate number of days in each work entry
-                            if entry.date_start and entry.date_stop:
-                                start_date = fields.Date.from_string(entry.date_start)
-                                end_date = fields.Date.from_string(entry.date_stop)
-                                weekLeave = False
-                                # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
-                                if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
-                                    if (start_date.strftime('%a').upper() == 'MON' or start_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
-                                        weekLeave = True
+                # for week in week_ranges:
+                #     weekDay = 0
+                #     for day in week:
+                #         duration = 0
+                #         for entry in work_entries:
+                #             # Calculate number of days in each work entry
+                #             if entry.date_start and entry.date_stop:
+                #                 start_date = fields.Date.from_string(entry.date_start)
+                #                 end_date = fields.Date.from_string(entry.date_stop)
+                #                 weekLeave = False
+                #                 # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
+                #                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
+                #                     if (start_date.strftime('%a').upper() == 'MON' or start_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
+                #                         weekLeave = True
                                         
-                                    if entry.code == 'WORK100':
-                                        duration = duration + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE90':
-                                        leave90 = leave90 - 0.5#entry.duration
-                                    elif entry.code == 'LEAVE100':
-                                        leave100 = leave100 - 0.5#entry.duration
-                                    elif entry.code == 'LEAVE105':
-                                        leave105 = leave105 - 0.5#entry.duration
-                                    elif entry.code == 'LEAVE110':
-                                        leave110 = leave110 - 0.5#entry.duration
-                                    elif entry.code == 'LEAVE120':
-                                        leave120 = leave120 - 0.5#entry.duration
+                #                     if entry.code == 'WORK100':
+                #                         duration = duration + 0.5#entry.duration
+                #                     elif entry.code == 'LEAVE90':
+                #                         leave90 = leave90 - 0.5#entry.duration
+                #                     elif entry.code == 'LEAVE100':
+                #                         leave100 = leave100 - 0.5#entry.duration
+                #                     elif entry.code == 'LEAVE105':
+                #                         leave105 = leave105 - 0.5#entry.duration
+                #                     elif entry.code == 'LEAVE110':
+                #                         leave110 = leave110 - 0.5#entry.duration
+                #                     elif entry.code == 'LEAVE120':
+                #                         leave120 = leave120 - 0.5#entry.duration
                                         
-                                    _logger.info(f"Match Entry: {start_date.strftime('%a').upper()} {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
-                                # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
-                                # workdays_count += delta_days 
-                        weekDay = weekDay + duration
-                        _logger.info(f"Summary Entry: {day} {duration}")
-                        # if weekLeave != False:
-                    if weekDay > 4 and weekLeave == False:
-                        weekDay =  weekDay + 1
-                    workdays_count = workdays_count + weekDay
-                    _logger.info(f"Week {weekIndex} : Duration {weekDay}")
-                    weekIndex = weekIndex + 1
+                #                     _logger.info(f"Match Entry: {start_date.strftime('%a').upper()} {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
+                #                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
+                #                 # workdays_count += delta_days 
+                #         weekDay = weekDay + duration
+                #         _logger.info(f"Summary Entry: {day} {duration}")
+                #         # if weekLeave != False:
+                #     if weekDay > 4 and weekLeave == False:
+                #         weekDay =  weekDay + 1
+                #     workdays_count = workdays_count + weekDay
+                #     _logger.info(f"Week {weekIndex} : Duration {weekDay}")
+                #     weekIndex = weekIndex + 1
                  
 
                 _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
