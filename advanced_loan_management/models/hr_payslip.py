@@ -254,6 +254,11 @@ class HRPayslip(models.Model):
                 ], order='id ASC')
                 workdays_count = 0
                 weekIndex = 1
+                leave90 = 0
+                leave100 = 0
+                leave105 = 0
+                leave110 = 0
+                leave120 = 0
                 for week in week_ranges:
                     weekDay = 0
                     dayInWeek = 0
@@ -273,16 +278,16 @@ class HRPayslip(models.Model):
                                         
                                     if entry.code == 'WORK100':
                                         duration = duration + 0.5#entry.duration
-                                    # elif entry.code == 'LEAVE90':
-                                    #     duration = duration - 0.5#entry.duration
-                                    # elif entry.code == 'LEAVE100':
-                                    #     duration = duration - 0.5#entry.duration
-                                    # elif entry.code == 'LEAVE105':
-                                    #     duration = duration - 0.5#entry.duration
-                                    # elif entry.code == 'LEAVE110':
-                                    #     duration = duration - 0.5#entry.duration
-                                    # elif entry.code == 'LEAVE120':
-                                    #     duration = duration - 0.5#entry.duration
+                                    elif entry.code == 'LEAVE90':
+                                        leave90 = leave90 - 0.5#entry.duration
+                                    elif entry.code == 'LEAVE100':
+                                        leave100 = leave100 - 0.5#entry.duration
+                                    elif entry.code == 'LEAVE105':
+                                        leave105 = leave105 - 0.5#entry.duration
+                                    elif entry.code == 'LEAVE110':
+                                        leave110 = leave110 - 0.5#entry.duration
+                                    elif entry.code == 'LEAVE120':
+                                        leave120 = leave120 - 0.5#entry.duration
                                         
                                     _logger.info(f"Match Entry: {start_date.strftime('%a').upper()} {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
                                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
@@ -312,9 +317,13 @@ class HRPayslip(models.Model):
                         line.number_of_days = workdays_count
                         amonthSalary = workdays_count * contract.wage #line.number_of_days * contract.wage
                         line.amount = amonthSalary
+                    if line.work_entry_type_id.code == 'LEAVE90':
+                        line.number_of_days = leave90
                     if line.work_entry_type_id.code == 'LEAVE100':
+                        line.number_of_days = leave100
                         line.amount = contract.wage
                     if line.work_entry_type_id.code == 'LEAVE105':
+                        line.number_of_days = leave105
                         line.amount = contract.wage
 
                 basic_amount = 0
