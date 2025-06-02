@@ -288,7 +288,7 @@ class HRPayslip(models.Model):
                         weekDay = weekDay + duration
                         _logger.info(f"Summary Entry: {day} {duration}")
                         # if weekLeave != False:
-                    if weekLeave != False:
+                    if weekLeave == False:
                         workdays_count = workdays_count + weekDay + 1
                     else:
                         workdays_count = workdays_count + weekDay
