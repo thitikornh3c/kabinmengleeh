@@ -282,9 +282,9 @@ class HRPayslip(models.Model):
                                     _logger.info(f"Match Entry: {start_date.strftime('%a').upper()} {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
                                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                                 # workdays_count += delta_days 
-                        # if weekLeave != False:
+                            weekDay = weekDay + duration
                         _logger.info(f"Summary Entry: {day} {duration}")
-                        weekDay = weekDay + duration
+                        # if weekLeave != False:
                     if weekLeave != False:
                         workdays_count = workdays_count + weekDay + 1
                     else:
@@ -293,15 +293,6 @@ class HRPayslip(models.Model):
                     weekIndex = weekIndex + 1
 
                 _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
-
-                # for entry in work_entries:
-                #     # Calculate number of days in each work entry
-                #     if entry.date_start and entry.date_stop:
-                #         start_date = fields.Date.from_string(entry.date_start)
-                #         end_date = fields.Date.from_string(entry.date_stop)
-                #         _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
-                #         # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
-                #         # workdays_count += delta_days
 
 
                 # Set Workday sheet
