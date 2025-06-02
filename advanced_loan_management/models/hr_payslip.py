@@ -252,7 +252,7 @@ class HRPayslip(models.Model):
                 # Calculate difference in days (inclusive)
                 number_of_days = (end - start).days + 1
 
-                _logger.info(f"Processing payslip total days: {number_of_days}")
+                _logger.info(f"Processing1 payslip total days: {number_of_days}")
 
                 work_entries = self.env['hr.work.entry'].search([
                     ('employee_id', '=', slip.employee_id.id),
