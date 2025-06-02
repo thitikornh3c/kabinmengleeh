@@ -262,6 +262,28 @@ class HRPayslip(models.Model):
                 leave105 = 0
                 leave110 = 0
                 leave120 = 0
+                weekBonus = 0
+                for week in week_ranges:
+                    for day in week:
+                        for entry in work_entries:
+                            if entry.date_start and entry.date_stop:
+                                start_date = fields.Date.from_string(entry.date_start)
+                                end_date = fields.Date.from_string(entry.date_stop)
+                                if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
+                                    if (start_date.strftime('%a').upper() == 'MON' or start_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
+                                        weekBonus = weekBonus + 1
+                                        
+                                    if entry.code == 'LEAVE90': #Unpaid
+                                        leave90 = leave90 + 0.5 #entry.duration
+                                    elif entry.code == 'LEAVE100': #Generic
+                                        leave100 = leave100 + 0.5#entry.duration
+                                    elif entry.code == 'LEAVE105': #Compensatory
+                                        leave105 = leave105 + 0.5#entry.duration
+                                    elif entry.code == 'LEAVE110': #Sick Time Off
+                                        leave110 = leave110 + 0.5#entry.duration
+                                    elif entry.code == 'LEAVE120': #Paid Time Off
+                                        leave120 = leave120 + 0.5#entry.duration
+                                        
                 # for week in week_ranges:
                 #     weekDay = 0
                 #     for day in week:
@@ -303,7 +325,7 @@ class HRPayslip(models.Model):
                 #     weekIndex = weekIndex + 1
                  
 
-                _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
+                _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Day work {workdays_count}, Generic {leave100}, Compensatory {leave105}, Sick {leave110}, Paid {leave120}")
 
 
                 # Set Workday sheet
