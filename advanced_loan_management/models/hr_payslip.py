@@ -266,7 +266,7 @@ class HRPayslip(models.Model):
                                 weekLeave = False
                                 # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
                                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
-                                    if (day.strftime('%a').upper() == 'MON' or day.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
+                                    if (start_date.strftime('%a').upper() == 'MON' or start_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
                                         weekLeave = True
                                         
                                     if entry.code == 'WORK100':
