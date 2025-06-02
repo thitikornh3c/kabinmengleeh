@@ -329,7 +329,7 @@ class HRPayslip(models.Model):
                 workdays_count = workdays_count - leave90
                 workdays_count = workdays_count - weekBonus
 
-                _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Day work {workdays_count}, WeekBonus -{weekBonus} Generic {leave100}, Compensatory {leave105}, Sick {leave110}, Paid {leave120}")
+                _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Day work {workdays_count}, WeekBonus -{weekBonus} Unpaid {leave90}, Generic {leave100}, Compensatory {leave105}, Sick {leave110}, Paid {leave120}")
 
 
                 # Set Workday sheet
@@ -483,7 +483,8 @@ class HRPayslip(models.Model):
                     _logger.info(f"Week {weekIndex} : Duration {weekDay}")
                     weekIndex = weekIndex + 1
                 workdays_count = weekDay
-                _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
+                # _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Duration {workdays_count}")
+                _logger.info(f"Summary WorkDay of Emp {slip.employee_id.id} : Day work {workdays_count}, Unpaid {leave90}, Generic {leave100}, Compensatory {leave105}, Sick {leave110}, Paid {leave120}")
 
                 # for entry in work_entries:
                 #     # Calculate number of days in each work entry
