@@ -263,8 +263,12 @@ class HRPayslip(models.Model):
                             if entry.date_start and entry.date_stop:
                                 start_date = fields.Date.from_string(entry.date_start)
                                 end_date = fields.Date.from_string(entry.date_stop)
+                                weekLeave = False
                                 # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
                                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
+                                    if (day.strftime('%a').upper() == 'MON' or day.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
+                                        weekLeave = True
+                                        
                                     if entry.code == 'WORK100':
                                         duration = duration + entry.duration
                                     elif entry.code == 'LEAVE110':
@@ -274,7 +278,7 @@ class HRPayslip(models.Model):
                                     _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
                                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
                                 # workdays_count += delta_days 
-                        if duration > 4:
+                        if weekLeave != False:
                             weekDay = weekDay + 1
                     if weekDay == 6:
                         workdays_count = workdays_count + weekDay + 1
