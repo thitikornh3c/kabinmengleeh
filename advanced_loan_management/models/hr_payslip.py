@@ -245,6 +245,12 @@ class HRPayslip(models.Model):
                 endDate = slip.date_to    # End date
                 week_ranges = self.get_week_ranges(startDate, endDate)
 
+                # Convert to datetime objects
+                start = datetime.strptime(startDate, '%Y-%m-%d')
+                end = datetime.strptime(endDate, '%Y-%m-%d')
+
+                # Calculate difference in days (inclusive)
+                number_of_days = (end - start).days + 1
                 # _logger.info(f"Processing payslip for work entry: {week_ranges}")
 
                 work_entries = self.env['hr.work.entry'].search([
