@@ -429,29 +429,58 @@ class HRPayslip(models.Model):
                 ], order='id ASC')
                 workdays_count = 0
                 weekIndex = 1
+
+                leave90 = 0
+                leave100 = 0
+                leave105 = 0
+                leave110 = 0
+                leave120 = 0
+                weekDay = 0
+
                 for week in week_ranges:
-                    weekDay = 0
+                    isWeekLeave = False
                     for day in week:
-                        duration = 0
                         for entry in work_entries:
-                            # Calculate number of days in each work entry
                             if entry.date_start and entry.date_stop:
                                 start_date = fields.Date.from_string(entry.date_start)
                                 end_date = fields.Date.from_string(entry.date_stop)
-                                # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
                                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
                                     if entry.code == 'WORK100':
-                                        duration = duration + entry.duration
-                                    elif entry.code == 'LEAVE110':
-                                        duration = duration - entry.duration
-                                    _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
-                                # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
-                                # workdays_count += delta_days 
-                        if duration > 4:
-                            weekDay = weekDay + 1
-                    # if weekDay == 6:
-                    #     workdays_count = workdays_count + weekDay + 1
-                    # else:
+                                        weekDay = weekDay + 0.5
+                                        
+                                    if entry.code == 'LEAVE90': #Unpaid
+                                        leave90 = leave90 + 0.5 #entry.duration
+                                    elif entry.code == 'LEAVE100': #Generic
+                                        leave100 = leave100 + 0.5#entry.duration
+                                    elif entry.code == 'LEAVE105': #Compensatory
+                                        leave105 = leave105 + 0.5#entry.duration
+                                    elif entry.code == 'LEAVE110': #Sick Time Off
+                                        leave110 = leave110 + 0.5#entry.duration
+                                    elif entry.code == 'LEAVE120': #Paid Time Off
+                                        leave120 = leave120 + 0.5#entry.duration
+                # for week in week_ranges:
+                #     weekDay = 0
+                #     for day in week:
+                #         duration = 0
+                #         for entry in work_entries:
+                #             # Calculate number of days in each work entry
+                #             if entry.date_start and entry.date_stop:
+                #                 start_date = fields.Date.from_string(entry.date_start)
+                #                 end_date = fields.Date.from_string(entry.date_stop)
+                #                 # _logger.info(f"Processing payslip for work entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date}")
+                #                 if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
+                #                     if entry.code == 'WORK100':
+                #                         duration = duration + entry.duration
+                #                     elif entry.code == 'LEAVE110':
+                #                         duration = duration - entry.duration
+                #                     _logger.info(f"Match Entry: {entry.code} {entry.duration} {entry.date_start} {entry.date_stop} || {start_date} {end_date} - {duration}")
+                #                 # delta_days = (end_date - start_date).days + 1  # Include both start and end dates
+                #                 # workdays_count += delta_days 
+                #         if duration > 4:
+                #             weekDay = weekDay + 1
+                #     # if weekDay == 6:
+                #     #     workdays_count = workdays_count + weekDay + 1
+                #     # else:
                     workdays_count = workdays_count + weekDay
                     _logger.info(f"Week {weekIndex} : Duration {weekDay}")
                     weekIndex = weekIndex + 1
@@ -490,6 +519,17 @@ class HRPayslip(models.Model):
                         line.amount = 0
                     if line.work_entry_type_id.code == 'LEAVE105':
                         line.amount = 0
+
+                    if line.work_entry_type_id.code == 'LEAVE90':
+                        line.number_of_days = abs(leave90)
+                    if line.work_entry_type_id.code == 'LEAVE100':
+                        line.number_of_days = abs(leave100)
+                    if line.work_entry_type_id.code == 'LEAVE105':
+                        line.number_of_days = abs(leave105)
+                    if line.work_entry_type_id.code == 'LEAVE110':
+                        line.number_of_days = abs(leave110)
+                    if line.work_entry_type_id.code == 'LEAVE120':
+                        line.number_of_days = abs(leave120)
                 
                 if slip.company_id.id == 1:
                     withholding_tax = self.calculate_withholding_tax_2(amonthSalary,  slip.employee_id.id)
