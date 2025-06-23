@@ -1,14 +1,5 @@
 <odoo>
 
-  <!-- Action Window: Opens Merge Wizard -->
-  <record id="pos_order_merge_action" model="ir.actions.act_window">
-    <field name="name">Merge POS Orders</field>
-    <field name="res_model">merge.pos.orders.wizard</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field>
-    <field name="context">{'default_pos_order_ids': active_ids}</field>
-  </record>
-  
   <!-- Add to Action dropdown menu using server action -->
   <record id="pos_order_merge_server_action" model="ir.actions.server">
     <field name="name">Merge POS Orders</field>
@@ -17,13 +8,13 @@
     <field name="binding_type">action</field>
     <field name="state">code</field>
     <field name="code">
-      action = {
-          'type': 'ir.actions.act_window',
-          'res_model': 'merge.pos.orders.wizard',
-          'view_mode': 'form',
-          'target': 'new',
-          'context': {'default_pos_order_ids': records.ids},
-      }
+action = {
+    'type': 'ir.actions.act_window',
+    'res_model': 'merge.pos.orders.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'default_pos_order_ids': records.ids},
+}
     </field>
   </record>
 
