@@ -5,6 +5,7 @@
     "summary": "Merge multiple POS orders into one invoice",
     "depends": ["point_of_sale", "account"],
     "data": [
+        'security/ir.model.access.csv',
         "views/merge_wizard_view.xml",
         "views/pos_order_action.xml"
     ],
