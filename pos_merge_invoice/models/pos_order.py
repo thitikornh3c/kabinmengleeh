@@ -1,10 +1,12 @@
-from odoo import models, _
+from odoo import models, fields, _
 from odoo.exceptions import UserError
 from collections import defaultdict
 
 class PosOrder(models.Model):
     _inherit = 'pos.order'
 
+    invoice_id = fields.Many2one('account.move', string="Invoice")
+    
     def _merge_and_create_invoice(self):
         if not self:
             raise UserError(_("No POS Orders selected"))
