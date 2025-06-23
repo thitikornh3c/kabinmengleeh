@@ -1,28 +1,18 @@
 <odoo>
-  <record id="action_pos_order_merge_button" model="ir.actions.server">
+  <!-- Action Window that opens the wizard -->
+  <record id="pos_order_merge_action" model="ir.actions.act_window">
     <field name="name">Merge POS Orders</field>
-    <field name="model_id" ref="point_of_sale.model_pos_order"/>
-    <field name="binding_model_id" ref="point_of_sale.model_pos_order"/>
-    <field name="state">code</field>
-    <field name="code">
-      action = {
-          'type': 'ir.actions.act_window',
-          'res_model': 'merge.pos.orders.wizard',
-          'view_mode': 'form',
-          'target': 'new',
-          'context': {'default_pos_order_ids': active_ids},
-      }
-    </field>
+    <field name="res_model">merge.pos.orders.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="context">{'default_pos_order_ids': active_ids}</field>
   </record>
 
-  <record id="action_button_merge_pos_order" model="ir.ui.view">
-    <field name="name">pos.order.list</field>
+  <!-- Attach the action to the Action dropdown of POS orders -->
+  <record id="pos_order_merge_action_server" model="ir.values">
     <field name="model">pos.order</field>
-    <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
-    <field name="arch" type="xml">
-      <xpath expr="//tree" position="after">
-        <button name="%(action_pos_order_merge_button)d" string="Merge to Invoice" type="action" class="btn-primary" context="{'active_ids': active_ids}"/>
-      </xpath>
-    </field>
+    <field name="key2">client_action_multi</field>
+    <field name="name">Merge POS Orders</field>
+    <field name="value" eval="'ir.actions.act_window,' + str(ref('pos_order_merge_action'))"/>
   </record>
 </odoo>
