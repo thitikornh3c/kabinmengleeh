@@ -43,5 +43,10 @@ class PosOrder(models.Model):
         invoice = self.env['account.move'].create(invoice_vals)
         invoice.action_post()
 
-        self.write({'account_move': invoice.id})
+        # self.write({'account_move': invoice.id})
+        self.write({
+            'account_move': invoice.id,
+            'state': 'invoiced',
+            'is_invoiced': True,  # Optional, only if your model uses this
+        })
         return invoice
