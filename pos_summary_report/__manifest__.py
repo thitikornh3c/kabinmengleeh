@@ -5,13 +5,12 @@
     "category": "Point of Sale",
     "author": "ChatGPT",
     "depends": ["point_of_sale"],
-    "data": [
-        "security/ir.model.access.csv",
-        "report/pos_summary_report.xml",
-        "report/pos_summary_report_templates.xml",
-        "views/pos_summary_wizard_view.xml"
+    'data': [
+        'security/ir.model.access.csv',
+        'report/pos_summary_report.xml',
+        'report/pos_summary_report_templates.xml',
+        'wizard/pos_summary_wizard_views.xml'
     ],
-    "license": "LGPL-3",
-    "installable": True,
-    "application": False
+    'installable': True,
+    'application': False,
 }
