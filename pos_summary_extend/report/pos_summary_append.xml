@@ -1,5 +1,5 @@
 <odoo>
-  <template id="pos_summary_append_table" inherit_id="point_of_sale.pos_receipt">
+  <template id="pos_summary_append_table" inherit_id="point_of_sale.report_saledetails">
     <xpath expr="//div[@class='pos-report-body']" position="after">
       <h3>Grouped Sale Summary by Day</h3>
       <table class="table table-condensed">
