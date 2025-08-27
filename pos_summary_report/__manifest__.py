@@ -7,9 +7,9 @@
     "depends": ["point_of_sale"],
     "data": [
         "security/ir.model.access.csv",
-        "views/pos_summary_wizard_view.xml",
         "report/pos_summary_report.xml",
-        "report/pos_summary_report_templates.xml"
+        "report/pos_summary_report_templates.xml",
+        "views/pos_summary_wizard_view.xml"
     ],
     "license": "LGPL-3",
     "installable": True,
