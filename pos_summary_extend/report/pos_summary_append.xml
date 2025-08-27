@@ -1,45 +1,53 @@
-<data inherit_id="point_of_sale.report_saledetails" id="pos_summary_append_table">
-    <xpath expr="//div[@id='sales']" position="after">
-        <h3>Grouped Sale Summary by Day</h3>
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <t t-foreach="docs" t-as="doc">
-                    <t t-set="daily_summary" t-value="{}"/>
-                    <t t-foreach="doc.lines" t-as="line">
-                        <t t-set="day" t-value="line.order_id.date_order.date()"/>
-                        <t t-if="day not in daily_summary">
-                            <t t-set="daily_summary[day]" t-value="[]"/>
-                        </t>
-                        <t t-append="daily_summary[day]" t-value="{
-                            'product': line.product_id.name,
-                            'price': line.price_unit,
-                            'qty': line.qty,
-                            'total': line.price_subtotal_incl
-                        }"/>
-                    </t>
-                    <t t-foreach="daily_summary.items()" t-as="day_data">
-                        <t t-set="day_str" t-value="day_data[0]"/>
-                        <t t-foreach="day_data[1]" t-as="line_data">
-                            <tr>
-                                <td><t t-esc="day_str"/></td>
-                                <td><t t-esc="line_data['product']"/></td>
-                                <td><t t-esc="line_data['price']"/></td>
-                                <td><t t-esc="line_data['qty']"/></td>
-                                <td><t t-esc="line_data['total']"/></td>
+<odoo>
+    <data>
+        <!-- Inherit the original POS sales detail report -->
+        <template id="pos_summary_append_table" inherit_id="point_of_sale.report_saledetails">
+            
+            <!-- Example: Insert a custom summary table after the sales table -->
+            <xpath expr="//div[@id='sales']" position="after">
+                <div class="oe_structure"/>
+                <h3>Custom Summary</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th class="text-start">Category</th>
+                            <th class="text-start">Product</th>
+                            <th class="text-end">Quantity</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="products" t-as="category">
+                            <td><span t-out="category['name']">Category Name</span></td>
+                            <td/>
+                            <td class="text-end"><span t-out="category['qty']">0</span></td>
+                            <td class="text-end">
+                                <span t-out="category['total']">0.00</span>
+                                <span t-out="currency['symbol']">$</span>
+                            </td>
+
+                            <!-- Product lines -->
+                            <tr t-foreach="category['products']" t-as="line">
+                                <td/>
+                                <td><span t-out="line['product_name']">Product Name</span></td>
+                                <td class="text-end"><span t-out="line['quantity']">0</span></td>
+                                <td class="text-end">
+                                    <span t-out="line['base_amount']">0.00</span>
+                                    <span t-out="currency['symbol']">$</span>
+                                </td>
                             </tr>
-                        </t>
-                    </t>
-                </t>
-            </tbody>
-        </table>
-    </xpath>
-</data>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td/>
+                            <td class="text-end"><strong><span t-out="products_info['qty']">0</span></strong></td>
+                            <td class="text-end"><strong><span t-out="products_info['total']">0.00</span><span t-out="currency['symbol']">$</span></strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="oe_structure"/>
+            </xpath>
+
+        </template>
+    </data>
+</odoo>
