@@ -1,47 +1,45 @@
-<odoo>
-  <template id="pos_summary_append_table" inherit_id="point_of_sale.report_saledetails">
-    <xpath expr="//div[@class='pos-report-body']" position="after">
-      <h3>Grouped Sale Summary by Day</h3>
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <t t-foreach="docs" t-as="doc">
-            <t t-set="daily_summary" t-value="{}"/>
-            <t t-foreach="doc.lines" t-as="line">
-              <t t-set="day" t-value="line.order_id.date_order.date()"/>
-              <t t-if="day not in daily_summary">
-                <t t-set="daily_summary[day]" t-value="[]"/>
-              </t>
-              <t t-append="daily_summary[day]" t-value="{
-                  'product': line.product_id.name,
-                  'price': line.price_unit,
-                  'qty': line.qty,
-                  'total': line.price_subtotal_incl
-              }"/>
-            </t>
-            <t t-foreach="daily_summary.items()" t-as="day_data">
-              <t t-set="day_str" t-value="day_data[0]"/>
-              <t t-foreach="day_data[1]" t-as="line_data">
+<data inherit_id="point_of_sale.report_saledetails" id="pos_summary_append_table">
+    <xpath expr="//div[@id='sales']" position="after">
+        <h3>Grouped Sale Summary by Day</h3>
+        <table class="table table-condensed">
+            <thead>
                 <tr>
-                  <td><t t-esc="day_str"/></td>
-                  <td><t t-esc="line_data['product']"/></td>
-                  <td><t t-esc="line_data['price']"/></td>
-                  <td><t t-esc="line_data['qty']"/></td>
-                  <td><t t-esc="line_data['total']"/></td>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
                 </tr>
-              </t>
-            </t>
-          </t>
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="daily_summary" t-value="{}"/>
+                    <t t-foreach="doc.lines" t-as="line">
+                        <t t-set="day" t-value="line.order_id.date_order.date()"/>
+                        <t t-if="day not in daily_summary">
+                            <t t-set="daily_summary[day]" t-value="[]"/>
+                        </t>
+                        <t t-append="daily_summary[day]" t-value="{
+                            'product': line.product_id.name,
+                            'price': line.price_unit,
+                            'qty': line.qty,
+                            'total': line.price_subtotal_incl
+                        }"/>
+                    </t>
+                    <t t-foreach="daily_summary.items()" t-as="day_data">
+                        <t t-set="day_str" t-value="day_data[0]"/>
+                        <t t-foreach="day_data[1]" t-as="line_data">
+                            <tr>
+                                <td><t t-esc="day_str"/></td>
+                                <td><t t-esc="line_data['product']"/></td>
+                                <td><t t-esc="line_data['price']"/></td>
+                                <td><t t-esc="line_data['qty']"/></td>
+                                <td><t t-esc="line_data['total']"/></td>
+                            </tr>
+                        </t>
+                    </t>
+                </t>
+            </tbody>
+        </table>
     </xpath>
-  </template>
-</odoo>
+</data>
