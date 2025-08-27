@@ -20,4 +20,4 @@ class PosSummaryWizard(models.TransientModel):
         }
         return self.env.ref("pos_summary_report.action_pos_summary_report").report_action(None, data=data)
 
-        # return self.env.ref("pos_summary_report2.action_pos_summary_report").report_action(None, data=data)
+        # return self.env.ref("pos_summary_report.action_pos_summary_report").report_action(None, data=data)

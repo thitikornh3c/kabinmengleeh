@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 
 class PosSummaryReport(models.AbstractModel):
-    _name = 'report.pos_summary_report2.summary_template'
+    _name = 'report.pos_summary_report.summary_template'
     _description = 'POS Sales Summary Report (Styled)'
 
     @api.model

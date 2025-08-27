@@ -4,7 +4,7 @@
         model="pos.order"
         string="POS Sales Summary Styled"
         report_type="qweb-pdf"
-        name="pos_summary_report2.summary_template"
-        file="pos_summary_report2.summary_template"
+        name="pos_summary_report.summary_template"
+        file="pos_summary_report.summary_template"
     />
 </odoo>
