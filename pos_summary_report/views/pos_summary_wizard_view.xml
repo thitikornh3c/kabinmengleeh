@@ -25,8 +25,8 @@
     </record>
 
     <menuitem id="menu_pos_sales_summary_root"
-              name="POS Sales Summary"
-              parent="point_of_sale.menu_point_reporting"
-              action="action_pos_sales_summary_wizard"
-              sequence="60"/>
+            name="POS Sales Summary"
+            parent="point_of_sale.menu_point_root"
+            action="action_pos_sales_summary_wizard"
+            sequence="60"/>
 </odoo>
