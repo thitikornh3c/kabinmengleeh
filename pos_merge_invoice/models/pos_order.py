@@ -54,4 +54,5 @@ class PosOrder(models.Model):
             'state': 'invoiced',
             'is_invoiced': True,  # Optional, only if your model uses this
         })
+        self.recompute()
         return invoice

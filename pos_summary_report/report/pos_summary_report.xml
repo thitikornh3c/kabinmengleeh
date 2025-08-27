@@ -1,0 +1,10 @@
+<odoo>
+    <report
+        id="action_pos_summary_report"
+        model="pos.order"
+        string="POS Sales Summary Styled"
+        report_type="qweb-pdf"
+        name="pos_summary_report2.summary_template"
+        file="pos_summary_report2.summary_template"
+    />
+</odoo>
