@@ -2,7 +2,7 @@
     <data>
         <record id="action_pos_summary_report" model="ir.actions.report">
             <field name="name">POS Sales Summary Styled</field>
-            <field name="model">pos.order</field>
+            <field name="model">pos.summary.wizard</field> 
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">pos_sale_summary_report.summary_template</field>
             <field name="report_file">pos_sale_summary_report.summary_template</field>
