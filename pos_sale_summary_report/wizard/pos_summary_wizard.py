@@ -29,7 +29,6 @@ class PosSummaryWizard(models.TransientModel):
                 summary_by_date[date_str].append({
                     'product_name': line.product_id.name,
                     'qty': line.qty,
-                    'ids': self.config_ids.ids,
                     'total': line.price_subtotal,
                 })
 
@@ -37,6 +36,7 @@ class PosSummaryWizard(models.TransientModel):
         report_data = {
             'date_from': dt_from.strftime("%Y-%m-%d"),
             'date_to': dt_to.strftime("%Y-%m-%d"),
+            'ids': self.config_ids.ids,
             'summary_by_date': summary_by_date,
         }
         # data = {
