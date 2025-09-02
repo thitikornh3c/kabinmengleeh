@@ -1,5 +1,5 @@
 from odoo import models, fields
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 class PosSummaryWizard(models.TransientModel):
     _name = "pos.summary.wizard"
@@ -12,22 +12,25 @@ class PosSummaryWizard(models.TransientModel):
     def action_print(self):
         self.ensure_one()
 
-        # Convert wizard dates to UTC datetime strings for proper search
-        dt_from = fields.Datetime.to_string(datetime.combine(self.date_from, time.min))
-        dt_to = fields.Datetime.to_string(datetime.combine(self.date_to, time.max))
+        # Convert wizard dates (local) to UTC datetime for DB search
+        local_dt_from = datetime.combine(self.date_from, time.min)
+        local_dt_to = datetime.combine(self.date_to, time.max)
 
-        # Compute summary by date
+        # Adjust your timezone offset (Bangkok = UTC+7)
+        utc_dt_from = local_dt_from - timedelta(hours=7)
+        utc_dt_to = local_dt_to - timedelta(hours=7)
+
+        # Search POS orders within UTC range
+        orders = self.env['pos.order'].search([
+            ('date_order', '>=', utc_dt_from),
+            ('date_order', '<=', utc_dt_to),
+            ('config_id', 'in', self.config_ids.ids)
+        ])
+
+        # Group order lines by date (local)
         summary_by_date = {}
-        orders = self.env['pos.order'].search([])
-        # orders = self.env['pos.order'].search([
-        #     ('date_order', '>=', dt_from),
-        #     ('date_order', '<=', dt_to),
-        #     ('config_id', 'in', self.config_ids.ids)
-        # ])
-
         for order in orders:
-            # Convert order.date_order to local date string for grouping
-            local_date = fields.Date.to_string(order.date_order)  # 'YYYY-MM-DD'
+            local_date = fields.Date.to_string(order.date_order + timedelta(hours=7))  # convert UTC to local date
             if local_date not in summary_by_date:
                 summary_by_date[local_date] = []
             for line in order.lines:
@@ -37,14 +40,15 @@ class PosSummaryWizard(models.TransientModel):
                     'total': line.price_subtotal,
                 })
 
+        # Prepare data for QWeb template
         report_data = {
             'date_from': fields.Date.to_string(self.date_from),
             'date_to': fields.Date.to_string(self.date_to),
             'summary_by_date': summary_by_date,
-            'ids': self.ids,  # optional for reference
+            'ids': self.ids,
             'orders': [{
                 'name': order.name,
-                'date_order': fields.Datetime.to_string(order.date_order),
+                'date_order': fields.Datetime.to_string(order.date_order + timedelta(hours=7)),
                 'lines': [{
                     'product_name': line.product_id.name,
                     'qty': line.qty,
@@ -53,5 +57,6 @@ class PosSummaryWizard(models.TransientModel):
             } for order in orders]
         }
 
+        # Call the report
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
         return report_ref.report_action(self, data={'data': report_data})
