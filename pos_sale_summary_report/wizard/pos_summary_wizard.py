@@ -18,7 +18,7 @@ class PosSummaryWizard(models.TransientModel):
             "date_to": dt_to.strftime("%Y-%m-%d %H:%M:%S"),
             "config_ids": self.config_ids.ids,
         }
-        report_ref = self.env.ref("pos_summary_report.action_pos_summary_report")
+        report_ref = self.env.ref("pos_sale_summary_report.action_pos_summary_report")
         return report_ref.report_action(self, data=data)
         # report_ref = self.env.ref("pos_summary_report.action_pos_summary_report")
         # return report_ref.report_action(self, data=data)
