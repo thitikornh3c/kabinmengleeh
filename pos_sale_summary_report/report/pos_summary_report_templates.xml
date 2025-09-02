@@ -1,35 +1,36 @@
 <odoo>
-    <template id="summary_template">
-        <t t-call="web.basic_layout">
-            <t t-set="title">POS Summary Report</t>
-            <div class="page">
-                <h2>POS Summary Report</h2>
-                <p>Date From: <t t-esc="date_from"/> To: <t t-esc="date_to"/></p>
+  <template id="summary_template">
+    <t t-call="web.basic_layout">
+      <t t-set="doc" t-value="docs"/>
+      <div class="page">
+        <h2>POS Daily Summary Report</h2>
+        <p>Date From: <t t-esc="data['date_from']"/></p>
+        <p>Date To: <t t-esc="data['date_to']"/></p>
 
-                <table border="1" cellspacing="0" cellpadding="5">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Qty</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="summary.items()" t-as="line">
-                            <td><t t-esc="line[0]"/></td>
-                            <td><t t-esc="line[1]['qty']"/></td>
-                            <td><t t-esc="line[1]['total']"/></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Loop over each date -->
+        <t t-foreach="data['summary_by_date'].items()" t-as="date_group">
+          <t t-set="date" t-value="date_group[0]"/>
+          <t t-set="lines" t-value="date_group[1]"/>
 
-                <h3>Orders not invoiced:</h3>
-                <ul>
-                    <li t-foreach="not_invoiced" t-as="order">
-                        <t t-esc="order"/>
-                    </li>
-                </ul>
-            </div>
+          <p>Date: <t t-esc="date"/></p>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="lines" t-as="line">
+                <td><t t-esc="line['product_name']"/></td>
+                <td><t t-esc="line['qty']"/></td>
+                <td><t t-esc="line['total']"/></td>
+              </tr>
+            </tbody>
+          </table>
         </t>
-    </template>
+      </div>
+    </t>
+  </template>
 </odoo>
