@@ -33,13 +33,18 @@ class PosSummaryWizard(models.TransientModel):
                 })
 
         # Pass data to QWeb template
-        data = {
+        report_data = {
             'date_from': dt_from.strftime("%Y-%m-%d"),
             'date_to': dt_to.strftime("%Y-%m-%d"),
             'summary_by_date': summary_by_date,
         }
+        # data = {
+        #     'date_from': dt_from.strftime("%Y-%m-%d"),
+        #     'date_to': dt_to.strftime("%Y-%m-%d"),
+        #     'summary_by_date': summary_by_date,
+        # }
 
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
         # Pass docids=self.ids to properly link the wizard records
         # return report_ref.report_action(docids=self.ids, data=data)
-        return report_ref.report_action(docids=None, data={'data': data})
+        return report_ref.report_action(docids=None, data={'data': report_data})
