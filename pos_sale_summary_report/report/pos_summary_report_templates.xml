@@ -6,6 +6,11 @@
       <div class="page">
         <h2>POS Daily Summary Report</h2>
 
+        <t t-foreach="docs" t-as="doc">
+          <p>Date From: <t t-esc="doc.date_from"/></p>
+          <p>Date To: <t t-esc="doc.date_to"/></p>
+        </t>
+
         <t t-if="data">
           <!-- Safely use data -->
           <p>Date From: <t t-esc="data['date_from'] if data else ''"/></p>
