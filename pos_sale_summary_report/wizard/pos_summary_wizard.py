@@ -11,8 +11,8 @@ class PosSummaryWizard(models.TransientModel):
 
     def action_print(self):
         self.ensure_one()
-        dt_from = datetime.combine(self.date_from, time.min)
-        dt_to = datetime.combine(self.date_to, time.max)
+        dt_from = fields.Datetime.to_string(datetime.combine(self.date_from, time.min))
+        dt_to = fields.Datetime.to_string(datetime.combine(self.date_to, time.max))
 
         # Compute summary by date
         summary_by_date = {}
@@ -34,8 +34,10 @@ class PosSummaryWizard(models.TransientModel):
 
         # Pass data to QWeb template
         report_data = {
-            'date_from': dt_from.strftime("%Y-%m-%d"),
-            'date_to': dt_to.strftime("%Y-%m-%d"),
+            'date_from': fields.Date.to_string(self.date_from),
+            'date_to': fields.Date.to_string(self.date_to),
+            # 'date_from': dt_from.strftime("%Y-%m-%d"),
+            # 'date_to': dt_to.strftime("%Y-%m-%d"),
             'ids': self.config_ids.ids,
             'summary_by_date': summary_by_date,
         }
