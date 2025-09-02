@@ -33,9 +33,9 @@ class PosSummaryWizard(models.TransientModel):
                 })
 
         data = {
-            'date_from': dt_from.strftime("%Y-%m-%d"),
-            'date_to': dt_to.strftime("%Y-%m-%d"),
-            # 'summary_by_date': summary_by_date,
+            # 'date_from': dt_from.strftime("%Y-%m-%d"),
+            # 'date_to': dt_to.strftime("%Y-%m-%d"),
+            'summary_by_date': summary_by_date,
         }
 
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
