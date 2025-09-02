@@ -47,4 +47,4 @@ class PosSummaryWizard(models.TransientModel):
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
         # Pass docids=self.ids to properly link the wizard records
         # return report_ref.report_action(docids=self.ids, data=data)
-        return report_ref.report_action(docids=None, data={'data': report_data})
+        return report_ref.report_action(self, data={'data': report_data})
