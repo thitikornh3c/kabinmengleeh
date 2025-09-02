@@ -18,11 +18,12 @@ class PosSummaryWizard(models.TransientModel):
 
         # Compute summary by date
         summary_by_date = {}
-        orders = self.env['pos.order'].search([
-            ('date_order', '>=', dt_from),
-            ('date_order', '<=', dt_to),
-            ('config_id', 'in', self.config_ids.ids)
-        ])
+        orders = self.env['pos.order'].search([])
+        # orders = self.env['pos.order'].search([
+        #     ('date_order', '>=', dt_from),
+        #     ('date_order', '<=', dt_to),
+        #     ('config_id', 'in', self.config_ids.ids)
+        # ])
 
         for order in orders:
             # Convert order.date_order to local date string for grouping
