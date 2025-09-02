@@ -2,6 +2,9 @@
   <template id="summary_template">
     <t t-call="web.basic_layout">
       <t t-set="docs" t-value="docs"/>
+      <t t-set="doc" t-value="docs[0]"/> <!-- docs[0] is your wizard record -->
+      <t t-set="data" t-value="doc.data or {}"/> <!-- assign data explicitly if available -->
+
       <div class="page">
         <h2>POS Daily Summary Report</h2>
 
