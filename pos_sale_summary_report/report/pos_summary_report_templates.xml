@@ -16,9 +16,10 @@
         <!-- Summary table -->
         <t t-if="data.get('orders')">
           <t t-foreach="data['orders']" t-as="order">
-            <p>Order: <t t-esc="order.name"/> | Date: <t t-esc="order.date_order"/></p>
+            <p>Order: <t t-esc="order['name']"/> | Date: <t t-esc="order['date_order']"/></p>
           </t>
         </t>
+
         <p>summary_by_date: <t t-esc="data.get('summary_by_date', 'empty')"/></p>
 
         <t t-if="data.get('summary_by_date')">
