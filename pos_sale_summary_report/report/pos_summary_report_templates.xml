@@ -1,34 +1,36 @@
 <odoo>
   <template id="summary_template">
     <t t-call="web.basic_layout">
+      <t t-set="docs" t-value="docs"/>
       <div class="page">
         <h2>POS Daily Summary Report</h2>
 
+        <!-- Safely use data -->
         <p>Date From: <t t-esc="data.get('date_from','')"/></p>
         <p>Date To: <t t-esc="data.get('date_to','')"/></p>
 
-        <!-- Loop over each date -->
-        <t t-foreach="data.get('summary_by_date', {}).items()" t-as="date_group">
-          <t t-set="date" t-value="date_group[0]"/>
-          <t t-set="lines" t-value="date_group[1]"/>
-
-          <p>Date: <t t-esc="date"/></p>
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr t-foreach="lines" t-as="line">
-                <td><t t-esc="line['product_name']"/></td>
-                <td><t t-esc="line['qty']"/></td>
-                <td><t t-esc="line['total']"/></td>
-              </tr>
-            </tbody>
-          </table>
+        <t t-if="data">
+          <t t-foreach="data.get('summary_by_date', {}).items()" t-as="date_group">
+            <t t-set="date" t-value="date_group[0]"/>
+            <t t-set="lines" t-value="date_group[1]"/>
+            <p>Date: <t t-esc="date"/></p>
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Qty</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr t-foreach="lines" t-as="line">
+                  <td><t t-esc="line['product_name']"/></td>
+                  <td><t t-esc="line['qty']"/></td>
+                  <td><t t-esc="line['total']"/></td>
+                </tr>
+              </tbody>
+            </table>
+          </t>
         </t>
       </div>
     </t>

@@ -32,7 +32,7 @@ class PosSummaryWizard(models.TransientModel):
                     'qty': line.qty,
                     'total': line.price_subtotal,
                 })
-
+        
         data = {
             "date_from": dt_from.strftime("%Y-%m-%d"),
             "date_to": dt_to.strftime("%Y-%m-%d"),
