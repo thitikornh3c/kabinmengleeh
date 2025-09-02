@@ -1,17 +1,21 @@
-# Wizard
+from odoo import models, fields
+from datetime import datetime, time
+
 class PosSummaryWizard(models.TransientModel):
     _name = "pos.summary.wizard"
+    _description = "POS Sales Summary Wizard"
 
-    config_ids = fields.Many2many("pos.config")
-    date_from = fields.Date(default=fields.Date.context_today)
-    date_to = fields.Date(default=fields.Date.context_today)
-    summary_by_date = fields.Serialized('Summary by date')
+    config_ids = fields.Many2many("pos.config", string="POS Configurations")
+    date_from = fields.Date(string="From", required=True, default=fields.Date.context_today)
+    date_to = fields.Date(string="To", required=True, default=fields.Date.context_today)
+    summary_by_date = fields.Serialized(string="Summary by Date")  # store summary as dict
 
     def action_print(self):
         self.ensure_one()
         dt_from = datetime.combine(self.date_from, time.min)
         dt_to = datetime.combine(self.date_to, time.max)
 
+        # Compute summary_by_date
         summary_by_date = {}
         orders = self.env['pos.order'].search([
             ('date_order', '>=', dt_from),
@@ -28,6 +32,7 @@ class PosSummaryWizard(models.TransientModel):
                     'qty': line.qty,
                     'total': line.price_subtotal,
                 })
+
         # store summary in wizard field
         self.summary_by_date = summary_by_date
 
