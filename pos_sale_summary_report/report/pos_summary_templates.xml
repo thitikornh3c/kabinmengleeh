@@ -1,0 +1,29 @@
+<odoo>
+  <template id="summary_template">
+    <t t-call="web.basic_layout">
+      <t t-set="doc" t-value="docs"/>
+      <div class="page">
+        <h2>POS Daily Summary Report</h2>
+        <p>Date From: <t t-esc="data['date_from']"/></p>
+        <p>Date To: <t t-esc="data['date_to']"/></p>
+
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr t-foreach="data['lines']" t-as="line">
+              <td><t t-esc="line['product_name']"/></td>
+              <td><t t-esc="line['qty']"/></td>
+              <td><t t-esc="line['total']"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </t>
+  </template>
+</odoo>

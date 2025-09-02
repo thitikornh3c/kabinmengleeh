@@ -4,8 +4,8 @@
             <field name="name">POS Sales Summary Styled</field>
             <field name="model">pos.order</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">pos_summary_report.summary_template</field>
-            <field name="report_file">pos_summary_report.summary_template</field>
+            <field name="report_name">pos_sale_summary_report.summary_template</field>
+            <field name="report_file">pos_sale_summary_report.summary_template</field>
             <field name="print_report_name">'POS_Summary_' + object.name</field>
         </record>
     </data>
