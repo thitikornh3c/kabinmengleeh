@@ -7,9 +7,9 @@
               sequence="100"/>
 
     <menuitem id="menu_pos_summary_report"
-              name="POS Daily Summary"
-              parent="menu_pos_summary_report_root"
-              action="action_report_pos_summary"
-              sequence="10"/>
+          name="POS Daily Summary"
+          parent="menu_pos_summary_report_root"
+          action="point_of_sale.action_pos_pos_form"
+          sequence="10"/>
   </data>
 </odoo>
