@@ -41,7 +41,15 @@ class PosSummaryWizard(models.TransientModel):
             'date_to': fields.Date.to_string(self.date_to),
             'summary_by_date': summary_by_date,
             'ids': self.ids,  # optional for reference
-            'orders': orders,
+            'orders': [{
+                'name': order.name,
+                'date_order': fields.Datetime.to_string(order.date_order),
+                'lines': [{
+                    'product_name': line.product_id.name,
+                    'qty': line.qty,
+                    'total': line.price_subtotal,
+                } for line in order.lines],
+            } for order in orders]
         }
 
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
