@@ -1,3 +1,4 @@
+import json
 from odoo import models, fields
 from datetime import datetime, time
 
@@ -8,7 +9,7 @@ class PosSummaryWizard(models.TransientModel):
     config_ids = fields.Many2many("pos.config", string="POS Configurations")
     date_from = fields.Date(string="From", required=True, default=fields.Date.context_today)
     date_to = fields.Date(string="To", required=True, default=fields.Date.context_today)
-    summary_by_date = fields.Serialized(string="Summary by Date")  # store summary as dict
+    summary_by_date = fields.Text(string="Summary by Date")  # JSON serialized
 
     def action_print(self):
         self.ensure_one()
@@ -33,8 +34,7 @@ class PosSummaryWizard(models.TransientModel):
                     'total': line.price_subtotal,
                 })
 
-        # store summary in wizard field
-        self.summary_by_date = summary_by_date
+        self.summary_by_date = json.dumps(summary_by_date)
 
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
         return report_ref.report_action(self)
