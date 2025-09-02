@@ -11,8 +11,11 @@
         <!-- Show dates -->
         <p>Date From: <t t-esc="data.get('date_from','')"/></p>
         <p>Date To: <t t-esc="data.get('date_to','')"/></p>
+        <p>Sesson: <t t-esc="data.get('ids','')"/></p>
 
         <!-- Summary table -->
+        <p>summary_by_date: <t t-esc="data.get('summary_by_date', 'empty')"/></p>
+
         <t t-if="data.get('summary_by_date')">
           <t t-foreach="data['summary_by_date'].items()" t-as="date_group">
             <t t-set="date" t-value="date_group[0]"/>
