@@ -3,7 +3,8 @@
     <t t-call="web.basic_layout">
       <!-- <t t-set="docs" t-value="docs"/>
       <t t-set="data" t-value="data or {}"/> -->
-      <t t-set="data" t-value="data.get('data', {})"/>
+      <!-- <t t-set="data" t-value="data.get('data', {})"/> -->
+      <t t-set="data" t-value="data or {}"/> 
       <div class="page">
         <h2>POS Daily Summary Report</h2>
 
