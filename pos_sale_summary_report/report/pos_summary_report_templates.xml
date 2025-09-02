@@ -12,10 +12,9 @@
         <p>Date From: <t t-esc="data.get('date_from','')"/></p>
         <p>Date To: <t t-esc="data.get('date_to','')"/></p>
         <p>Sesson: <t t-esc="data.get('ids','')"/></p>
-
+        <p>Order: <t t-esc="data.get('orders','no-order')"/></p>
         <!-- Summary table -->
         <t t-if="data.get('orders')">
-          <p>Order: <t t-esc="data.get('orders','no-order')"/></p>
           <t t-foreach="data['orders']" t-as="order">
             <p>Order: <t t-esc="order.name"/> | Date: <t t-esc="order.date_order"/></p>
           </t>
