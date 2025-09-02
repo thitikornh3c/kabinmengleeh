@@ -2,10 +2,10 @@
   <template id="summary_template">
     <t t-call="web.basic_layout">
       <t t-set="docs" t-value="docs"/>
-      <t t-if="data">
-        <div class="page">
-          <h2>POS Daily Summary Report</h2>
+      <div class="page">
+        <h2>POS Daily Summary Report</h2>
 
+        <t t-if="data">
           <!-- Safely use data -->
           <p>Date From: <t t-esc="data['date_from'] if data else ''"/></p>
           <p>Date To: <t t-esc="data['date_to'] if data else ''"/></p>
@@ -33,8 +33,8 @@
               </table>
             </t>
           </t>
-        </div>
-      </t>
+        </t>
+      </div>
     </t>
   </template>
 </odoo>
