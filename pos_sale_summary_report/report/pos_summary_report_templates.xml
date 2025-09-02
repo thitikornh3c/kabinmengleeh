@@ -5,7 +5,8 @@
       <t t-set="data" t-value="data or {}"/>
       <div class="page">
         <h2>POS Daily Summary Report</h2>
-
+        <p><t t-esc="data"/></p>
+        <p><t t-esc="docs"/></p>
         <t t-foreach="docs" t-as="doc">
           <p>Date From: <t t-esc="doc.date_from"/></p>
           <p>Date To: <t t-esc="doc.date_to"/></p>
