@@ -1,27 +1,18 @@
 <odoo>
   <template id="summary_template">
     <t t-call="web.basic_layout">
-      <t t-set="docs" t-value="docs"/>
-      <t t-set="data" t-value="data or {}"/>
-      <div class="page">
-        <h2>POS Daily Summary Report</h2>
-        <p><t t-esc="data"/></p>
-        <p><t t-esc="docs"/></p>
-        <t t-foreach="docs" t-as="doc">
+      <t t-foreach="docs" t-as="doc">
+        <div class="page">
+          <h2>POS Daily Summary Report</h2>
           <p>Date From: <t t-esc="doc.date_from"/></p>
           <p>Date To: <t t-esc="doc.date_to"/></p>
-        </t>
 
-        <t t-if="data">
-          <!-- Safely use data -->
-          <p>Date From: <t t-esc="data['date_from'] if data else ''"/></p>
-          <p>Date To: <t t-esc="data['date_to'] if data else ''"/></p>
-
-          <t t-if="data">
-            <t t-foreach="data.get('summary_by_date', {}).items()" t-as="date_group">
+          <t t-if="doc.summary_by_date">
+            <t t-foreach="doc.summary_by_date.items()" t-as="date_group">
               <t t-set="date" t-value="date_group[0]"/>
               <t t-set="lines" t-value="date_group[1]"/>
               <p>Date: <t t-esc="date"/></p>
+
               <table class="table table-sm">
                 <thead>
                   <tr>
@@ -40,8 +31,9 @@
               </table>
             </t>
           </t>
-        </t>
-      </div>
+
+        </div>
+      </t>
     </t>
   </template>
 </odoo>
