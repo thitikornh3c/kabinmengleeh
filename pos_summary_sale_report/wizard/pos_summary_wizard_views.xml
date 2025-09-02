@@ -1,0 +1,30 @@
+<odoo>
+  <record id="view_pos_summary_wizard_form" model="ir.ui.view">
+    <field name="name">pos.summary.wizard.form</field>
+    <field name="model">pos.summary.wizard</field>
+    <field name="arch" type="xml">
+      <form string="POS Daily Sale Summary">
+        <group>
+          <field name="date_from"/>
+          <field name="date_to"/>
+        </group>
+        <footer>
+          <button name="action_print_report"
+                  string="Print PDF"
+                  type="object"
+                  class="btn-primary"/>
+          <button string="Cancel"
+                  class="btn-secondary"
+                  special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_pos_summary_wizard" model="ir.actions.act_window">
+    <field name="name">POS Daily Sale Summary</field>
+    <field name="res_model">pos.summary.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

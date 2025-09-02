@@ -1,1 +1,1 @@
-from . import pos_custom_report
+from . import pos_summary_report

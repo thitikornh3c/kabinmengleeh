@@ -1,0 +1,44 @@
+<odoo>
+  <template id="report_pos_summary_template">
+    <t t-call="web.html_container">
+      <t t-call="web.external_layout">
+        <div class="page">
+          <h2>POS Daily Sale Summary</h2>
+
+          <t t-foreach="grouped_sales.items()" t-as="day">
+            <h3>Date: <t t-esc="day[0]"/></h3>
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th class="text-end">Price</th>
+                  <th class="text-end">Qty</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr t-foreach="day[1]['products']" t-as="line">
+                  <td><t t-esc="line['product_name']"/></td>
+                  <td class="text-end"><t t-esc="line['price']"/></td>
+                  <td class="text-end"><t t-esc="line['quantity']"/></td>
+                  <td class="text-end"><t t-esc="line['total']"/> <t t-esc="currency.symbol"/></td>
+                </tr>
+              </tbody>
+            </table>
+          </t>
+
+          <h3>Sale Order (Invoiced)</h3>
+          <ul>
+            <li t-foreach="invoiced_orders" t-as="o"><t t-esc="o.name"/></li>
+          </ul>
+
+          <h3>Sale Order (Not Invoiced Yet)</h3>
+          <ul>
+            <li t-foreach="not_invoiced_orders" t-as="o"><t t-esc="o.name"/></li>
+          </ul>
+
+        </div>
+      </t>
+    </t>
+  </template>
+</odoo>
