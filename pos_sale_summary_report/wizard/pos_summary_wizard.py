@@ -1,4 +1,3 @@
-import json
 from odoo import models, fields
 from datetime import datetime, time
 
@@ -9,14 +8,13 @@ class PosSummaryWizard(models.TransientModel):
     config_ids = fields.Many2many("pos.config", string="POS Configurations")
     date_from = fields.Date(string="From", required=True, default=fields.Date.context_today)
     date_to = fields.Date(string="To", required=True, default=fields.Date.context_today)
-    summary_by_date = fields.Text(string="Summary by Date")  # JSON serialized
 
     def action_print(self):
         self.ensure_one()
         dt_from = datetime.combine(self.date_from, time.min)
         dt_to = datetime.combine(self.date_to, time.max)
 
-        # Compute summary_by_date
+        # Compute summary by date
         summary_by_date = {}
         orders = self.env['pos.order'].search([
             ('date_order', '>=', dt_from),
@@ -34,7 +32,13 @@ class PosSummaryWizard(models.TransientModel):
                     'total': line.price_subtotal,
                 })
 
-        self.summary_by_date = json.dumps(summary_by_date)
+        # Pass data to QWeb template
+        data = {
+            'date_from': dt_from.strftime("%Y-%m-%d"),
+            'date_to': dt_to.strftime("%Y-%m-%d"),
+            'summary_by_date': summary_by_date,
+        }
 
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
-        return report_ref.report_action(self)
+        # Pass docids=self.ids to properly link the wizard records
+        return report_ref.report_action(docids=self.ids, data=data)
