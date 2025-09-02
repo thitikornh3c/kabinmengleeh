@@ -1,8 +1,8 @@
 <odoo>
   <template id="summary_template">
     <t t-call="web.basic_layout">
-      <t t-set="docs" t-value="docs"/>
-      <t t-set="data" t-value="data or {}"/>
+      <!-- <t t-set="docs" t-value="docs"/>
+      <t t-set="data" t-value="data or {}"/> -->
 
       <div class="page">
         <h2>POS Daily Summary Report</h2>
