@@ -1,0 +1,21 @@
+<odoo>
+
+  <!-- Add to Action dropdown menu using server action -->
+  <record id="pos_order_merge_server_action" model="ir.actions.server">
+    <field name="name">Merge POS Orders</field>
+    <field name="model_id" ref="point_of_sale.model_pos_order"/>
+    <field name="binding_model_id" ref="point_of_sale.model_pos_order"/>
+    <field name="binding_type">action</field>
+    <field name="state">code</field>
+    <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'res_model': 'merge.pos.orders.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'default_pos_order_ids': records.ids},
+}
+    </field>
+  </record>
+
+</odoo>

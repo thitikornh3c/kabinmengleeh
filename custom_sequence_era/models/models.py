@@ -20,6 +20,10 @@ class CustomSequence(models.Model):
         """
         Override to customize the sequence prefix and suffix.
         """
+
+        if self.code in (None, "", False):
+            prefix, suffix = super()._get_prefix_suffix()
+            return prefix, suffix
         # Call the super method to get the default prefix and suffix
         # Get the current UTC time
         utc_now = datetime.utcnow()
@@ -28,10 +32,16 @@ class CustomSequence(models.Model):
         bangkok_time = utc_now + timedelta(hours=7)
 
         currentDate = bangkok_time.strftime("%d")
-        _logger.info(f"Sequnece Entry: {self.code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
+        company_id = self.env.context.get('company_id', self.env.company.id)
+        _logger.info(f"Sequnece of Company: {company_id}")
+        sequence_code = self.code
+        if company_id == 2:
+            sequence_code = sequence_code + '.h3c'
+        # invoice = self.search([('code', '=', 'account.move')], limit=1)
+        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
-            sequence = self.search([('code', '=', self.code)], limit=1)
+            sequence = self.search([('code', '=', sequence_code)], limit=1)
             sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
@@ -50,25 +60,34 @@ class CustomSequence(models.Model):
         # For example, include the Buddha Era year in the suffix
       
         # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
+        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date} {prefix} {suffix}")
 
         return prefix, suffix
     
     @api.model
     def next_by_code(self, code, **kwargs):
         """Override next_by_code to reset number_next if needed."""
-        sequence = self.search([('code', '=', code)], limit=1)
-        _logger.warning(f"Sequence code '{code}' {kwargs} not found.")
+
+        company_id = self.env.context.get('company_id', self.env.company.id)
+        _logger.info(f"Sequnece of Company: {company_id} {code}")
+        sequence_code = code
+        if company_id == 2:
+            sequence_code = sequence_code + '.h3c'
+
+        sequence = self.search([('code', '=', sequence_code)], limit=1)
+        _logger.warning(f"Sequence code '{sequence_code}' {kwargs} not found.")
         
         if sequence:
             # Call _get_prefix_suffix to update number_next if needed
             sequence._get_prefix_suffix()
 
             # Call the original next_by_code to get the next number
-            next_number = super(CustomSequence, sequence).next_by_code(code, **kwargs)
+            next_number = super(CustomSequence, sequence).next_by_code(sequence_code, **kwargs)
+            _logger.warning(f"Sequence next_number '{next_number}'")
 
             # Combine the prefix and next number to form the full sequence value
             # prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
             return f"{next_number}"  # Adjust as needed
 
         # Handle case where sequence is not found
-        return super(CustomSequence, self).next_by_code(code, **kwargs)
+        return super(CustomSequence, self).next_by_code(sequence_code, **kwargs)

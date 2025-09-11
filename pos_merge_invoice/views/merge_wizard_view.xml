@@ -1,0 +1,24 @@
+<odoo>
+  <record id="view_merge_pos_orders_wizard" model="ir.ui.view">
+    <field name="name">merge.pos.orders.wizard.form</field>
+    <field name="model">merge.pos.orders.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Merge POS Orders">
+        <group>
+          <field name="pos_order_ids" widget="many2many_tags"/>
+        </group>
+        <footer>
+          <button name="action_merge_and_invoice" type="object" string="Merge and Create Invoice" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_merge_pos_orders_wizard" model="ir.actions.act_window">
+    <field name="name">Merge POS Orders</field>
+    <field name="res_model">merge.pos.orders.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

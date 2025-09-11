@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+    <template id="report_pos_summary_template">
+      <t t-call="web.html_container">
+        <t t-foreach="grouped_sales.items()" t-as="sale">
+          <h3>Date: <span t-esc="sale[0]"/></h3>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">QTY</th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="sale[1]['products']" t-as="line">
+                <td><span t-esc="line['product_name']"/></td>
+                <td class="text-end"><span t-esc="line['price']"/></td>
+                <td class="text-end"><span t-esc="line['quantity']"/></td>
+                <td class="text-end">
+                  <span t-esc="line['total']"/> <span t-esc="currency.symbol"/>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td/>
+                <td class="text-end"><strong><span t-esc="sale[1]['qty']"/></strong></td>
+                <td class="text-end">
+                  <strong><span t-esc="sale[1]['total']"/></strong> <span t-esc="currency.symbol"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </t>
+
+        <h3>Sale Order (Invoiced)</h3>
+        <ul>
+          <li t-foreach="invoiced_orders" t-as="so">
+            <span t-esc="so.name"/>
+          </li>
+        </ul>
+
+        <h3>Sale Order (Not Invoiced Yet)</h3>
+        <ul>
+          <li t-foreach="not_invoiced_orders" t-as="so">
+            <span t-esc="so.name"/>
+          </li>
+        </ul>
+      </t>
+    </template>
+  </data>
+</odoo>

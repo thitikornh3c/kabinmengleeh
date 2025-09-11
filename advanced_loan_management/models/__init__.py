@@ -19,7 +19,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-from . import hr_salary_rule, loan_type, loan_documents, loan_request, repayment_lines, \
+from . import hr_salary_rule, hr_work_entry, loan_type, loan_documents, loan_request, repayment_lines, \
     res_config_settings, account_move, res_partner, account_payment_register, hr_payslip
 
 

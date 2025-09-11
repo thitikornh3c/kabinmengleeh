@@ -1,0 +1,64 @@
+<div>
+<t t-name="account.document_tax_totals_template">
+    <t t-set="withholding_percent" t-value="1"/>
+    
+    <!-- Untaxed Amount -->
+    <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+        <tr class="border-black o_subtotal">
+            <td><strong style="color: #000">จำนวนไม่รวมภาษี</strong></td>
+            <td class="text-end">
+                <span t-out="subtotal['formatted_amount']"/>
+            </td>
+        </tr>
+
+        <!-- Tax Breakdown (e.g., VAT) -->
+        <t t-set="groups" t-value="tax_totals['groups_by_subtotal'][subtotal['name']]"/>
+        <t t-foreach="groups" t-as="group">
+            <t t-if="'หัก ณ ที่จ่าย' not in group['tax_group_name']">
+                <tr>
+                    <td><strong><span t-out="group['tax_group_name']"/></strong></td>
+                    <td class="text-end">
+                        <span t-out="group['formatted_tax_group_amount']"/>
+                    </td>
+                </tr>
+            </t>
+        </t>
+        <!--<t t-foreach="groups" t-as="group">-->
+        <!--    <tr class="border-black">-->
+        <!--        <td><strong><span t-out="group['tax_group_name']"/></strong></td>-->
+        <!--        <td class="text-end">-->
+        <!--            <span t-out="group['formatted_tax_group_amount']"/>-->
+        <!--        </td>-->
+        <!--    </tr>-->
+        <!--</t>-->
+
+        <!-- Total with Tax -->
+        <tr>
+            <td><b style="color: #000;">ราคาทั้งหมด</b></td>
+            <td class="text-end">
+                <span t-out="tax_totals['formatted_amount_total']"/>
+            </td>
+        </tr>
+
+        <!-- Withholding Tax (1%) -->
+        <t t-set="withholding_amount" t-value="float(subtotal['amount']) * withholding_percent / 100"/>
+        <tr class="border-black">
+            <td><strong>หัก ณ ที่จ่าย <t t-out="withholding_percent"/>%</strong></td>
+            <td class="text-end">
+                <span>
+                    -<t t-esc="'{:,.2f}'.format(withholding_amount)"/>
+                </span> ฿
+            </td>
+        </tr>
+
+        <!-- Final Total after Withholding -->
+        <t t-set="total_after_withholding" t-value="float(tax_totals['amount_total']) - withholding_amount"/>
+        <tr class="border-black">
+                <td style="background-color: #fff; color: #000 !important;"><b style=" color: #000 !important;">Total</b></td>
+                <td class="text-end" style="background-color: #fff; color: #000;">
+                    <span t-out="tax_totals['formatted_amount_total']">31.05</span>
+                </td>
+            </tr>
+    </t>
+</t>
+</div>

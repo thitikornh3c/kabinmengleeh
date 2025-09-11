@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <!-- Custom Report Action -->
+        <report
+            id="action_report_pos_summary"
+            model="pos.order"
+            string="POS Daily Summary Report"
+            report_type="qweb-pdf"
+            name="pos_daily_summary_report.report_pos_summary_template"
+            file="pos_daily_summary_report.report_pos_summary_template"
+            print_report_name="'POS_Summary_' + (object.name or '')"
+        />
+    </data>
+</odoo>
