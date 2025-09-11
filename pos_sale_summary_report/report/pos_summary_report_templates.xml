@@ -46,6 +46,28 @@
           </t>
         </t>
 
+        <h6>Order not create Invoice</h6>
+        <t t-if="data.get('pending_orders')">
+          <h4>Orders Pending Invoicing (with VAT products)</h4>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Tax ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="data['pending_orders']" t-as="po">
+                <td><t t-esc="po['name']"/></td>
+                <td><t t-esc="po['date_order']"/></td>
+                <td><t t-esc="po['customer']"/></td>
+                <td><t t-esc="po['vat']"/></td>
+              </tr>
+            </tbody>
+          </table>
+        </t>
       </div>
     </t>
   </template>

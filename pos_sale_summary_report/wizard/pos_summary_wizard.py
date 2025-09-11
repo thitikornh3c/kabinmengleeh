@@ -40,6 +40,19 @@ class PosSummaryWizard(models.TransientModel):
                     'total': line.price_subtotal,
                 })
 
+
+        pending_invoicing_orders = self.env['pos.order'].search([
+            ('partner_id', '!=', False),
+            ('account_move', '=', False),
+        ]).filtered(lambda o: any(line.tax_ids for line in o.lines))
+        pending_orders_data = [{
+            'name': order.name,
+            'date_order': fields.Datetime.to_string(order.date_order.astimezone(user_tz)),
+            'customer': order.partner_id.name if order.partner_id else '',
+            'vat': order.partner_id.vat or '',
+            'amount_total': order.amount_total,
+            'amount_tax': order.amount_tax,
+        } for order in pending_invoicing_orders]
         # Prepare data for QWeb template
         report_data = {
             'date_from': fields.Date.to_string(self.date_from),
@@ -54,8 +67,10 @@ class PosSummaryWizard(models.TransientModel):
                     'qty': line.qty,
                     'total': line.price_subtotal,
                 } for line in order.lines],
-            } for order in orders]
+            } for order in orders],
+            'waiting_invoice': pending_orders_data
         }
+        
 
         # Call the report
         report_ref = self.env.ref('pos_sale_summary_report.action_pos_summary_report')
