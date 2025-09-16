@@ -1,5 +1,5 @@
 {
-    "name": "POS Custom Sale Report by H3C",
+    "name": "POS Custom Sale Report by H3C 18",
     "version": "17.0.1.0.0",
     "author": "Your Name",
     "category": "Point of Sale",
