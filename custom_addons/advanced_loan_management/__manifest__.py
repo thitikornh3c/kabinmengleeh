@@ -3,8 +3,8 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Megha (odoo@cybrosys.com)
+#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Gayathri V (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU AFFERO
 #    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
@@ -21,7 +21,7 @@
 ################################################################################
 {
     'name': 'Loan Management',
-    "version": "18.0.1.0.0",
+    'version': '18.0.1.0.0',
     'summary': 'Helps You To Manage Loan Requests/Disbursement/'
                'Repayments/Amortization Operations',
     'description': 'Module Allows To Create different types of loans,'
@@ -32,7 +32,7 @@
     'company': "Cybrosys Techno Solutions",
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['mail', 'account', 'base', 'hr_payroll'],
+    'depends': ['mail', 'account', 'base',],
     'demo': ['data/loan_journal_data.xml'],
     'data': [
         'security/loan_management_groups.xml',
@@ -51,7 +51,7 @@
         'report/loan_management_reports.xml',
         'report/loan_report_templates.xml',
     ],
-    'images': ['static/description/banner.jpg'],
+    'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,

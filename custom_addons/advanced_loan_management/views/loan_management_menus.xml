@@ -5,9 +5,9 @@
                 web_icon="advanced_loan_management,static/description/icon.png"/>
         <menuitem id="loan_management_loan" name="Loan" sequence="10"
                   parent="loan_management_menu_root"/>
-        <menuitem id="loan_management_request" name="Loan requests"
+        <menuitem id="loan_management_request" name="Loan Requests"
                   parent="loan_management_loan" action="loan_request_action"/>
-        <menuitem id="loan_management_type" name="Loan types"
+        <menuitem id="loan_management_type" name="Loan Types"
                   parent="loan_management_loan" action="loan_type_action"/>
         <menuitem id="loan_management_lines" name="Repayments"
                   parent="loan_management_loan" action="repayment_line_action"/>

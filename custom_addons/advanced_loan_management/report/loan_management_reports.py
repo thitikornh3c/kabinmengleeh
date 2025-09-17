@@ -3,8 +3,8 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Megha (odoo@cybrosys.com)
+#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Gayathri V (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU AFFERO
 #    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
@@ -43,7 +43,7 @@ class LoanDetails(models.AbstractModel):
             'Loan_Type': loan_id.loan_type_id.name,
             'Tenure': loan_id.tenure,
             'Tenure_type': loan_id.loan_type_id.tenure_plan,
-            'Interest_Rate': str(loan_id.interest_rate),
+            'Interest_Rate': str(loan_id.interest_rate * 100),
             'Loan_Amount': str(loan_id.loan_amount),
         }
         """Fetching values for the report using query and returns the value"""

@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 ################################################################################
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Megha (odoo@cybrosys.com)
+#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Gayathri V (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU AFFERO
 #    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
@@ -28,11 +29,11 @@ class LoanTypes(models.Model):
     _inherit = ['mail.thread']
     _description = 'Loan Type'
 
-    name = fields.Char(string='Name', help="LoanType Name")
-    loan_amount = fields.Integer(string='Loan Amount', help="Loan Amount")
+    name = fields.Char(string='Name', help="LoanType Name", required=True)
+    loan_amount = fields.Integer(string='Loan Amount', help="Loan Amount", required=True)
     tenure = fields.Integer(string='Tenure', default='1',
                             help="Amortization period")
-    tenure_plan = fields.Char(string="Tenure Plan", default='monthly',
+    tenure_plan = fields.Char(string="Tenure Plan", default='Monthly',
                               readonly='True', help="EMI payment plan")
     interest_rate = fields.Float(string='Interest Rate',
                                  help="Loan Interest Rate")
@@ -50,7 +51,7 @@ class LoanTypes(models.Model):
                                  readonly=True, help="Company Name",
                                  default=lambda self: self.env.company, )
 
-    @api.depends('processing_fee')
+    @api.depends('processing_fee', 'loan_amount')
     def _compute_disbursal_amount(self):
         """Calculating amount for disbursing"""
         self.disbursal_amount = self.loan_amount - self.processing_fee

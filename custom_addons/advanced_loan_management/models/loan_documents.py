@@ -3,8 +3,8 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Megha (odoo@cybrosys.com)
+#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Gayathri V (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU AFFERO
 #    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
@@ -29,7 +29,7 @@ class LoanDocuments(models.Model):
     _rec_name = 'loan_proofs'
 
     loan_proofs = fields.Char(string="Proofs", help="Document name "
-                                                    "for identification")
+                                                    "for identification", required=True)
     company_id = fields.Many2one('res.company', string='Company',
                                  readonly=True,
                                  help="Company Name",

@@ -3,8 +3,8 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Megha (odoo@cybrosys.com)
+#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Gayathri V (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU AFFERO
 #    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
@@ -19,8 +19,14 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-from . import hr_salary_rule, hr_work_entry, loan_type, loan_documents, loan_request, repayment_lines, \
-    res_config_settings, account_move, res_partner, account_payment_register, hr_payslip
+from . import account_move
+from . import account_payment_register
+from . import loan_documents
+from . import loan_request
+from . import loan_type
+from . import repayment_lines
+from . import res_config_settings
+from . import res_partner
 
 
 

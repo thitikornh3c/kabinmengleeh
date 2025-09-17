@@ -16,8 +16,9 @@ Company
 
 Credits
 -------
-* Developer: (V17) Megha K ,
-            Contact : odoo@cybrosys.com
+* Developers: (V17) Megha K ,
+             (V18) Gayathri V,
+Contact : odoo@cybrosys.com
 
 Contacts
 --------

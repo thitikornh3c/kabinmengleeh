@@ -40,7 +40,7 @@
                                     <t t-esc="data['Loan_Amount']"/>
                                 </td>
                                 <td align="center">
-                                    <t t-esc="data['Interest_Rate']"/>
+                                    <t t-esc="data['Interest_Rate']"/> %
                                 </td>
                             </tbody>
                         </table>

@@ -3,8 +3,8 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Megha (odoo@cybrosys.com)
+#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Gayathri V (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU AFFERO
 #    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
@@ -50,30 +50,15 @@ class LoanRequest(models.Model):
     disbursal_amount = fields.Float(string="Disbursal Amount",
                                     help="Total loan amount "
                                          "available to disburse")
-    tenure = fields.Integer(string="Tenure", #default=1,
+    tenure = fields.Integer(string="Tenure", default=1,
                             help="Installment period")
-    
-    paid_per_mount_amount = fields.Float(
-        string="Paid per Month",
-        help="Total amount (including interest) to be paid monthly"
-    )
-    # paid_per_mount_amount = fields.Float(
-    #     string="Paid per Month",
-    #     help="Amount to be paid each month"
-    # )
-        
     interest_rate = fields.Float(string="Interest Rate", help="Interest "
                                                               "percentage")
-    date = fields.Date(string="Date", default=fields.Date.today(), help="Date")
-    partner_id = fields.Many2one(
-        'hr.employee',
-        string="Employee",
-        required=True,
-        help="Employee"
-    )
-    # partner_id = fields.Many2one('res.partner', string="Partner",
-    #                              required=True,
-    #                              help="Partner")
+    date = fields.Date(string="Date", default=fields.Date.today(),
+                       readonly=True, help="Date")
+    partner_id = fields.Many2one('res.partner', string="Partner",
+                                 required=True,
+                                 help="Partner")
     repayment_lines_ids = fields.One2many('repayment.line',
                                           'loan_id',
                                           string="Loan Line", index=True,
@@ -105,7 +90,7 @@ class LoanRequest(models.Model):
     request = fields.Boolean(string="Request",
                              help="For monitoring the record")
     state = fields.Selection(string='State',
-    selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
+                selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'),
                    ('waiting', 'Waiting For Approval'),
                    ('approved', 'Approved'), ('disbursed', 'Disbursed'),
                    ('rejected', 'Rejected'), ('closed', 'Closed')],
@@ -117,26 +102,25 @@ class LoanRequest(models.Model):
         loan_count = self.env['loan.request'].search(
             [('partner_id', '=', vals['partner_id']),
              ('state', 'not in', ('draft', 'rejected', 'closed'))])
-        # ALREADY HAVE TRANSACTION
-        # if loan_count:
-        #     for rec in loan_count:
-        #         if rec.state != 'closed':
-        #             raise UserError(
-        #                 _('The partner has already an ongoing loan.'))
-        # else:
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code(
-                'increment_loan_ref')
-        res = super().create(vals)
-        return res
+        if loan_count:
+            for rec in loan_count:
+                if rec.state != 'closed':
+                    raise UserError(
+                        _('The partner has already an ongoing loan.'))
+        else:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code(
+                    'increment_loan_ref')
+            res = super().create(vals)
+            return res
 
     @api.onchange('loan_type_id')
     def _onchange_loan_type_id(self):
         """Changing field values based on the chosen loan type"""
         type_id = self.loan_type_id
-        # self.loan_amount = type_id.loan_amount
-        # self.disbursal_amount = type_id.disbursal_amount
-        # self.tenure = type_id.tenure
+        self.loan_amount = type_id.loan_amount
+        self.disbursal_amount = type_id.disbursal_amount
+        self.tenure = type_id.tenure
         self.interest_rate = type_id.interest_rate
         self.documents_ids = type_id.documents_ids
 
@@ -145,22 +129,20 @@ class LoanRequest(models.Model):
         self.write({'state': "confirmed"})
         partner = self.partner_id
         loan_no = self.name
-
-        if partner.work_email: 
-            subject = 'Loan Confirmation'
-            message = (f"Dear {partner.name},<br/> This is a confirmation mail "
-                    f"for your loan{loan_no}. We have submitted your loan "
-                    f"for approval.")
-            outgoing_mail = self.company_id.email
-            mail_values = {
-                'subject': subject,
-                'email_from': outgoing_mail,
-                'author_id': self.env.user.partner_id.id,
-                'email_to': partner.work_email,
-                'body_html': message,
-            }
-            mail = self.env['mail.mail'].sudo().create(mail_values)
-            mail.send()
+        subject = 'Loan Confirmation'
+        message = (f"Dear {partner.name},<br/> This is a confirmation mail "
+                   f"for your loan{loan_no}. We have submitted your loan "
+                   f"for approval.")
+        outgoing_mail = self.company_id.email
+        mail_values = {
+            'subject': subject,
+            'email_from': outgoing_mail,
+            'author_id': self.env.user.partner_id.id,
+            'email_to': partner.email,
+            'body_html': message,
+        }
+        mail = self.env['mail.mail'].sudo().create(mail_values)
+        mail.send()
 
     def action_request_for_loan(self):
         """Change the state to waiting for approval"""
@@ -257,82 +239,27 @@ class LoanRequest(models.Model):
             """
         self.request = True
         for loan in self:
-            if loan.tenure > 0:
-                loan.repayment_lines_ids.unlink()
-                date_start = datetime.strptime(str(loan.date),'%Y-%m-%d') + relativedelta(months=1)
-                amount = loan.loan_amount / loan.tenure
-                interest = loan.loan_amount * loan.interest_rate
-                interest_amount = interest / loan.tenure
-                total_amount = amount + interest_amount
-                partner = self.partner_id
-                for rand_num in range(1, loan.tenure + 1):
-                    self.env['repayment.line'].create({
-                        'name': f"{loan.name}/{rand_num}",
-                        'partner_id': partner.id,
-                        'date': date_start,
-                        'amount': amount,
-                        'interest_amount': interest_amount,
-                        'total_amount': total_amount,
-                        'interest_account_id': 87,
-                        'repayment_account_id': 88,
-                        'loan_id': loan.id})
-                    date_start += relativedelta(months=1)
-            elif loan.paid_per_mount_amount > 0:
-                loan.repayment_lines_ids.unlink()
-                date_start = datetime.strptime(str(loan.date), '%Y-%m-%d') + relativedelta(months=1)
-                
-                paid_per_month = loan.paid_per_mount_amount  # Make sure this field exists
-                interest = loan.loan_amount * loan.interest_rate
-                total_loan = loan.loan_amount + interest
-                
-                partner = loan.partner_id  # assuming you're in the loan model, not repayment
-                
-                remaining_amount = total_loan
-                counter = 1
-
-                while remaining_amount > 0:
-                    this_month_amount = min(paid_per_month, remaining_amount)
-                    interest_amount = 0  # Optional: calculate interest per line if needed
-                    repayment_amount = this_month_amount - interest_amount
-                    total_amount = this_month_amount
-                    
-                    self.env['repayment.line'].create({
-                        'name': f"{loan.name}/{counter}",
-                        'partner_id': partner.id,
-                        'date': date_start,
-                        'amount': repayment_amount,
-                        'interest_amount': interest_amount,
-                        'total_amount': total_amount,
-                        'interest_account_id': 87,
-                        'repayment_account_id': 88,
-                        'loan_id': loan.id,
-                    })
-
-                    remaining_amount -= this_month_amount
-                    date_start += relativedelta(months=1)
-                    counter += 1
-                # loan.repayment_lines_ids.unlink()
-                # date_start = datetime.strptime(str(loan.date), '%Y-%m-%d') + relativedelta(months=1)
-                # amount = loan.loan_amount / loan.tenure
-                # interest = loan.loan_amount * loan.interest_rate
-                # interest_amount = interest / loan.tenure
-                # total_amount = amount + interest_amount
-                
-                # # ✅ Set paid per month amount
-                # loan.paid_per_mount_amount = total_amount
-
-                # partner = self.partner_id
-                # for rand_num in range(1, loan.tenure + 1):
-                #     self.env['repayment.line'].create({
-                #         'name': f"{loan.name}/{rand_num}",
-                #         'partner_id': partner.id,
-                #         'date': date_start,
-                #         'amount': amount,
-                #         'interest_amount': interest_amount,
-                #         'total_amount': total_amount,
-                #         'interest_account_id': 87,
-                #         'repayment_account_id': 88,
-                #         'loan_id': loan.id
-                #     })
-                #     date_start += relativedelta(months=1)
+            loan.repayment_lines_ids.unlink()
+            date_start = datetime.strptime(str(loan.date),'%Y-%m-%d') + relativedelta(months=1)
+            amount = loan.loan_amount / loan.tenure
+            interest = loan.loan_amount * loan.interest_rate
+            interest_amount = interest / loan.tenure
+            total_amount = amount + interest_amount
+            partner = self.partner_id
+            for rand_num in range(1, loan.tenure + 1):
+                self.env['repayment.line'].create({
+                    'name': f"{loan.name}/{rand_num}",
+                    'partner_id': partner.id,
+                    'date': date_start,
+                    'amount': amount,
+                    'interest_amount': interest_amount,
+                    'total_amount': total_amount,
+                    'interest_account_id': self.env.ref('advanced_loan_management.'
+                                                        'loan_management_'
+                                                        'inrst_accounts').id,
+                    'repayment_account_id': self.env.ref('advanced_loan_management.'
+                                                         'demo_'
+                                                         'loan_accounts').id,
+                    'loan_id': loan.id})
+                date_start += relativedelta(months=1)
         return True
