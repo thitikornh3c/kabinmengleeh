@@ -18,7 +18,7 @@ class CustomSequence(models.Model):
 
     def _get_prefix_suffix(self):
         """
-        Override to customize the sequence prefix and suffix.
+        Override to customize the sequence prefix and suffix. 1
         """
 
         if self.code in (None, "", False):
