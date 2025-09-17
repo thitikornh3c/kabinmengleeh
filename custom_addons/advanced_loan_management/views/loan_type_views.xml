@@ -38,7 +38,6 @@
     <record id="loan_type_view_tree" model="ir.ui.view">
         <field name="name">loan.type.view.tree</field>
         <field name="model">loan.type</field>
-        <field name="priority" eval="8"/>
         <field name="arch" type="xml">
             <tree string="Loan Type">
                 <field name="name"/>
