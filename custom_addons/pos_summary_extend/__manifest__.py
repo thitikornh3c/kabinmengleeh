@@ -1,6 +1,6 @@
 {
     "name": "POS Sales Summary Extend by H3C",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "summary": "Append daily grouped product summary to standard POS Sale Detail report",
     "category": "Point of Sale",
     "author": "ChatGPT",
