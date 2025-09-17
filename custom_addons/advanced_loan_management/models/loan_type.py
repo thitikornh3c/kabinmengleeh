@@ -30,7 +30,8 @@ class LoanTypes(models.Model):
     _description = 'Loan Type'
 
     name = fields.Char(string='Name', help="LoanType Name", required=True)
-    loan_amount = fields.Integer(string='Loan Amount', help="Loan Amount", required=True)
+    # loan_amount = fields.Integer(string='Loan Amount', help="Loan Amount", required=True)
+    loan_amount = fields.Integer(string='Loan Amount', help="Loan Amount", required=False, default=0)
     tenure = fields.Integer(string='Tenure', default='1',
                             help="Amortization period")
     tenure_plan = fields.Char(string="Tenure Plan", default='Monthly',
