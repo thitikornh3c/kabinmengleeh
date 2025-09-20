@@ -4,7 +4,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class HrWorkEntry(models.Model):
-    _inherit = 'hr.attendance'
+    _inherit = 'hr.attendance.log'
 
     @api.model
     def clear_validated_entries(self):
