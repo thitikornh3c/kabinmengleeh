@@ -27,11 +27,9 @@ from . import loan_type
 from . import repayment_lines
 from . import res_config_settings
 from . import res_partner
-
-
-# from . import hr_salary_rule, hr_work_entry, loan_type, loan_documents, loan_request, repayment_lines, \
-#     res_config_settings, account_move, res_partner, account_payment_register, hr_payslip
-
+from . import hr_salary_rule
+from . import hr_work_entry
+from . import hr_payslip
 
 
 
