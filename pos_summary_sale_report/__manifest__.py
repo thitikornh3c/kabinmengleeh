@@ -1,6 +1,6 @@
 {
-    "name": "POS Custom Sale Report by H3C 18",
-    'version': '18.0.1.0.0',
+    "name": "POS Custom Sale Report by H3C",
+    "version": "18.0.1.0.0",
     "author": "Your Name",
     "category": "Point of Sale",
     "depends": ["point_of_sale", "sale_management"],

@@ -1,8 +1,0 @@
-<odoo>
-    <!-- Define Loan Deduction Salary Rule -->
-    <record id="salary_rule_loan_deduction" model="hr.salary.rule">
-        <field name="name">Loan Deduction</field>
-        <field name="code">LOAN_DEDUCTION</field>
-        <field name="sequence" eval="10"/>
-    </record>
-</odoo>
