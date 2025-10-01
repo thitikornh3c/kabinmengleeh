@@ -823,7 +823,7 @@ class HRPayslip(models.Model):
                 ('x_studio_slip', '=', payslip.id),
             ], limit=1)
 
-            # other_deduct = 0.0
+            # other_deduct = 0.0 18.0.1
             # for line in payslip.line_ids:
             #     if line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION':
             #         other_deduct = other_deduct + float(line.amount)
