@@ -1,15 +1,14 @@
 <odoo>
-    <record id="view_account_pnd53_form_inherit" model="ir.ui.view">
-        <field name="name">account.pnd53.form.inherit</field>
-        <field name="model">account.pnd53</field>
-        <field name="inherit_id" ref="your_module_id.view_account_pnd53_form"/>
+    <record id="action_send_pnd53_api_button" model="ir.ui.view">
+        <field name="name">account.report.pnd53.send.api</field>
+        <field name="model">account.report</field>
         <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="action_export_pnd53_pdf"
-                        string="Export PND PDF"
+            <header>
+                <button name="action_send_pnd53_to_api"
+                        string="Send PND53 to Node API"
                         type="object"
-                        class="btn-primary"/>
-            </xpath>
+                        class="oe_highlight"/>
+            </header>
         </field>
     </record>
 </odoo>
