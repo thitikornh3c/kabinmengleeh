@@ -4,6 +4,9 @@ from odoo import models, fields, api
 class AccountPND53(models.Model):
     _inherit = 'account.report'
 
+    name = fields.Char('Description')
+    date = fields.Date('Date')
+
     @api.model
     def action_export_pnd53_pdf(self):
         report = self.search([('name', '=', 'PND53')], limit=1)
