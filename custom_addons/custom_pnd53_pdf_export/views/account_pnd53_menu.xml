@@ -1,4 +1,4 @@
 <odoo>
     <menuitem id="account_pnd53_menu_root" name="Tax Return" parent="account.menu_finance_reports"/>
-    <menuitem id="account_pnd53_menu" name="PND53" parent="account_pnd53_menu_root" action="account.action_account_report"/>
+    <menuitem id="account_pnd53_menu" name="PND53" parent="account_pnd53_menu_root"/>
 </odoo>
