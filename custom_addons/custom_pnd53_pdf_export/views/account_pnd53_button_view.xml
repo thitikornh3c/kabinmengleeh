@@ -2,14 +2,17 @@
     <record id="account_pnd53_report_button" model="ir.ui.view">
         <field name="name">account.report.pnd53.button</field>
         <field name="model">account.report</field>
+        <field name="inherit_id" ref="account.view_account_report_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="action_export_pnd53_pdf"
-                        type="object"
-                        string="Export PDF"
-                        class="btn-primary"
-                        attrs="{'invisible': [('name','!=','PND53')]}"/>
-            </xpath>
+            <form>
+                <header>
+                    <button name="action_export_pnd53_pdf"
+                            type="object"
+                            string="Export PDF"
+                            class="btn-primary"
+                            attrs="{'invisible': [('name','!=','PND53')]}"/>
+                </header>
+            </form>
         </field>
     </record>
 </odoo>
