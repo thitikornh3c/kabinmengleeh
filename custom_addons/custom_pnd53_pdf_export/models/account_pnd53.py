@@ -1,5 +1,5 @@
 import requests
-from odoo import models, api
+from odoo import models, fields, api
 
 class AccountPND53(models.Model):
     _inherit = 'account.report'
