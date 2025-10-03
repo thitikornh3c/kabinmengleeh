@@ -3,6 +3,8 @@ from odoo import models, fields, api
 from datetime import datetime
 import io
 import csv
+import logging
+_logger = logging.getLogger(__name__)
 
 class AccountPND53Report(models.Model):
     _inherit = 'account.report'
@@ -18,8 +20,8 @@ class AccountPND53Report(models.Model):
 
         options = self.get_options({
             'date': {
-                'date_from': f'{year}-{month:02d}-01',
-                'date_to': f'{year}-{month:02d}-31',  # adjust for month end if needed
+                'date_from': f'2025-09-01',
+                'date_to': f'2025-09-30',  # adjust for month end if needed
             }
         })
         lines = self._get_lines(options)
@@ -55,7 +57,7 @@ class AccountPND53Report(models.Model):
             ])
 
         csv_content = csv_file.getvalue()
-
+        _logger.info(f"Content {csv_content}")
         url = "https://odoo.h3creation.com/api/v1/account/pnd53/print"
         files = {"file": ("pnd53.csv", csv_content, "text/csv")}
         try:
