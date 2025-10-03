@@ -36,24 +36,26 @@ class AccountPND53Report(models.Model):
         ])
 
         for i, line in enumerate(lines, start=1):
-            partner = line.get('partner', {})
+            move = line.get('move_id')
+            partner = move.partner_id if move else None
+
             writer.writerow([
                 i,
-                partner.get('vat', ''),
-                partner.get('company_type', ''),  # Title
-                partner.get('name', ''),          # Contact Name
-                partner.get('street', ''),
-                partner.get('street2', ''),
-                partner.get('city', ''),
-                partner.get('state_id', {}).get('name', ''),
-                partner.get('zip', ''),
-                partner.get('branch_no', ''),     # if custom field
-                line.get('date', ''),
-                ','.join([str(t.get('amount', '')) for t in line.get('taxes', [])]),  # Tax Rate
-                line.get('balance', 0.0),         # Total Amount
-                line.get('wht_amount', 0.0),     # WHT Amount (if available)
-                line.get('wht_condition', ''),   # WHT Condition (if available)
-                line.get('tax_type', 'Service')  # Tax Type
+                partner.vat if partner else '',
+                partner.company_type if partner else '',
+                partner.name if partner else '',
+                partner.street if partner else '',
+                partner.street2 if partner else '',
+                partner.city if partner else '',
+                partner.state_id.name if partner and partner.state_id else '',
+                partner.zip if partner else '',
+                getattr(partner, 'branch_no', '') if partner else '',
+                move.date if move else '',
+                ','.join([str(t.amount) for t in move.tax_line_ids]) if move else '',
+                line.get('balance', 0.0),
+                getattr(move, 'wht_amount', 0.0),
+                getattr(move, 'wht_condition', ''),
+                getattr(move, 'tax_type', 'Service')
             ])
 
         csv_content = csv_file.getvalue()
