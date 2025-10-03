@@ -35,30 +35,37 @@ class AccountPND53Report(models.Model):
             'WHT Condition', 'Tax Type'
         ])
 
-        for i, line in enumerate(lines, start=1):
-            move = line.get('move_id')
-            partner = move.partner_id if move else None
+        # for i, line in enumerate(lines, start=1):
+        #     move = line.get('move_id')
+        #     partner = move.partner_id if move else None
 
-            writer.writerow([
-                i,
-                partner.vat if partner else '',
-                partner.company_type if partner else '',
-                partner.name if partner else '',
-                partner.street if partner else '',
-                partner.street2 if partner else '',
-                partner.city if partner else '',
-                partner.state_id.name if partner and partner.state_id else '',
-                partner.zip if partner else '',
-                getattr(partner, 'branch_no', '') if partner else '',
-                move.date if move else '',
-                ','.join([str(t.amount) for t in move.tax_line_ids]) if move else '',
-                line.get('balance', 0.0),
-                getattr(move, 'wht_amount', 0.0),
-                getattr(move, 'wht_condition', ''),
-                getattr(move, 'tax_type', 'Service')
-            ])
+        #     writer.writerow([
+        #         i,
+        #         partner.vat if partner else '',
+        #         partner.company_type if partner else '',
+        #         partner.name if partner else '',
+        #         partner.street if partner else '',
+        #         partner.street2 if partner else '',
+        #         partner.city if partner else '',
+        #         partner.state_id.name if partner and partner.state_id else '',
+        #         partner.zip if partner else '',
+        #         getattr(partner, 'branch_no', '') if partner else '',
+        #         move.date if move else '',
+        #         ','.join([str(t.amount) for t in move.tax_line_ids]) if move else '',
+        #         line.get('balance', 0.0),
+        #         getattr(move, 'wht_amount', 0.0),
+        #         getattr(move, 'wht_condition', ''),
+        #         getattr(move, 'tax_type', 'Service')
+        #     ])
 
-        csv_content = csv_file.getvalue()
+        # csv_content = csv_file.getvalue()
+        # Mock CSV string
+        csv_content = """No.,Tax ID,Title,Contact Name,Street,Street2,City,State,Zip,Branch Number,Invoice/Bill Date,Tax Rate,Total Amount,WHT Amount,WHT Condition,Tax Type
+        1,0103561015785,บริษัท,ห้างหุ้นส่วนจำกัด เค.จี.งานศิลป์,30/16 ตรอกหมู่บ้านฝนทองนิเวศน์ (ซอย 2) แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพมหานคร 10220,,,,,,02/09/2025,3.00,6000.00,180.00,1,Service
+        2,0105564011723,บริษัท,บริษัท วงศ์ธาดา จำกัด,88/217 ถนนเลียบคลองสอง เเขวงบางชัน เขตคลองสามวา กรุงเทพมหานคร 10510,,,,,,15/09/2025,3.00,3000.00,90.00,1,Service
+        3,0101122334455,บริษัท,บริษัท ตัวอย่าง จำกัด,123/45 ถนนสุขุมวิท แขวงคลองตัน เขตคลองเตย กรุงเทพมหานคร 10110,,,,,,20/09/2025,3.00,4500.00,135.00,1,Service
+        """
+
         _logger.info(f"Content {csv_content}")
         url = "https://odoo.h3creation.com/api/v1/account/pnd53/print"
         files = {"file": ("pnd53.csv", csv_content, "text/csv")}
