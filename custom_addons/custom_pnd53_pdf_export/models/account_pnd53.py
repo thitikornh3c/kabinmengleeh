@@ -15,7 +15,13 @@ class AccountPND53Report(models.Model):
         month = self._context.get('pnd53_month', today.month)
         year = self._context.get('pnd53_year', today.year)
 
-        options = self.get_options({'date': f'{year}-{month:02d}-01'})
+        # options = self.get_options({'date': f'{year}-{month:02d}-01'})
+        options = self.get_options({
+            'date': {
+                'date_from': f'2025-08-01',
+                'date_to': f'2025-08-31',  # or last day of month
+            }
+        })
         lines = self._get_lines(options)
 
         csv_rows = [[line.get('name', ''), line.get('balance', 0)] for line in lines]
