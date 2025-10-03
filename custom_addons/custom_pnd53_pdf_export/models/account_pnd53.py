@@ -51,12 +51,15 @@ class AccountPND53Report(models.Model):
             'context': {'default_message': link_text}
         }
 
-class MessageWizard(models.TransientModel):
-    _name = 'pnd53.message.wizard'
-    _description = 'Display PND53 PDF Links'
+class PND53MessageWizard(models.TransientModel):
+    _name = "pnd53.message.wizard"
+    _description = "Display PDF links"
 
-    message = fields.Text('Message', readonly=True, default=lambda self: self._context.get('default_message', ''))
-
+    message = fields.Text(
+        string="Message",
+        readonly=True,
+        default=lambda self: self._context.get("default_message", "")
+    )
 # import requests
 # from odoo import models, fields, api
 

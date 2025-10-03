@@ -6,8 +6,8 @@
     "category": "Accounting",
     "summary": "Add Export PDF button for PND53 / PND3 using external API",
     "data": [
+        "views/account_pnd53_menu.xml",
         "views/account_pnd53_button_view.xml",
-        "views/pnd53_message_wizard_view.xml",
     ],
     "assets": {
         "web.assets_backend": [
