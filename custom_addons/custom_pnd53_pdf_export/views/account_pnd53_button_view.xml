@@ -2,7 +2,7 @@
     <record id="account_pnd53_report_button" model="ir.ui.view">
         <field name="name">account.report.pnd53.button</field>
         <field name="model">account.report</field>
-        <field name="inherit_id" ref="account.view_account_report_form"/>
+        <field name="inherit_id" ref="account_reports.account_report_form"/> 
         <field name="arch" type="xml">
             <form>
                 <header>
