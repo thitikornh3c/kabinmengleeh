@@ -2,7 +2,7 @@ import requests
 from odoo import models, api
 
 class AccountPND53(models.Model):
-    _inherit = "l10n_th_withholding_reports.wizard.pnd53"
+    _inherit = "l10n_th.pnd53.wizard"
     
     @api.model
     def action_export_pnd53_pdf(self):
