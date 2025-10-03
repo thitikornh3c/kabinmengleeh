@@ -1,5 +1,5 @@
 import requests
-from odoo import models, api
+from odoo import models, fields, api
 from datetime import datetime
 
 class AccountPND53Report(models.Model):
