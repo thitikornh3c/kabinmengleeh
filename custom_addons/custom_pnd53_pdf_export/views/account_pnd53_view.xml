@@ -1,14 +1,39 @@
 <odoo>
-    <record id="action_send_pnd53_api_button" model="ir.ui.view">
-        <field name="name">account.report.pnd53.send.api</field>
-        <field name="model">account.report</field>
+    <!-- Form View for PND53 -->
+    <record id="view_account_pnd53_form" model="ir.ui.view">
+        <field name="name">account.pnd53.form</field>
+        <field name="model">account.pnd53</field>
         <field name="arch" type="xml">
-            <header>
-                <button name="action_send_pnd53_to_api"
-                        string="Send PND53 to Node API"
-                        type="object"
-                        class="oe_highlight"/>
-            </header>
+            <form string="PND53">
+                <!-- Header buttons must be inside a form -->
+                <header>
+                    <button name="action_print_pdf"
+                            type="object"
+                            string="Export PDF"
+                            class="btn-primary"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="company_id"/>
+                    </group>
+                </sheet>
+            </form>
         </field>
     </record>
+
+    <!-- Action to open the form view -->
+    <record id="action_account_pnd53" model="ir.actions.act_window">
+        <field name="name">PND53</field>
+        <field name="res_model">account.pnd53</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menuitem to access it -->
+    <menuitem id="menu_account_pnd53_root"
+              name="PND53"
+              parent="account.menu_finance"
+              action="action_account_pnd53"/>
 </odoo>
