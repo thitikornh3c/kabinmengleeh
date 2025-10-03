@@ -9,8 +9,7 @@
                     <button name="action_export_pnd53_pdf"
                             type="object"
                             string="Export PDF"
-                            class="btn-primary"
-                            attrs="{'invisible': [('name','!=','PND53')]}"/>
+                            class="btn-primary"/>
                 </header>
             </form>
         </field>
