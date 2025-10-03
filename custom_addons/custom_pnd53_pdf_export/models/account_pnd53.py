@@ -65,13 +65,15 @@ class AccountPND53Report(models.Model):
         2,0105564011723,บริษัท,บริษัท วงศ์ธาดา จำกัด,88/217 ถนนเลียบคลองสอง เเขวงบางชัน เขตคลองสามวา กรุงเทพมหานคร 10510,,,,,,15/09/2025,3.00,3000.00,90.00,1,Service
         3,0101122334455,บริษัท,บริษัท ตัวอย่าง จำกัด,123/45 ถนนสุขุมวิท แขวงคลองตัน เขตคลองเตย กรุงเทพมหานคร 10110,,,,,,20/09/2025,3.00,4500.00,135.00,1,Service"""
 
-        _logger.info(f"Content {csv_content}")
+        _logger.info(f"Content PND53 {csv_content}")
         url = "https://odoo.h3creation.com/api/v1/account/pnd53/print"
         files = {"file": ("pnd53.csv", csv_content, "text/csv")}
         try:
             response = requests.post(url, files=files, timeout=30)
             response.raise_for_status()
             data = response.json()
+
+            _logger.info(f"Response PND53 {data}")
             paths = data.get('paths', [])
         except Exception as e:
             return {
