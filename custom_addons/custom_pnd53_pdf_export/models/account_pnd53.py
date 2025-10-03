@@ -2,8 +2,8 @@ import requests
 from odoo import models, api
 
 class AccountPND53(models.Model):
-    _inherit = "account.pnd53"   # 👈 replace with correct model name (wizard / report)
-
+    _inherit = "l10n_th_pnd.wizard.pnd53"
+    
     @api.model
     def action_export_pnd53_pdf(self):
         # Get CSV content using same Odoo wizard method
@@ -14,9 +14,8 @@ class AccountPND53(models.Model):
             content = content.decode("utf-8")
 
         files = {"file": (filename or "pnd53.csv", content, "text/csv")}
-        url = "http://your-node-server/api/v1/account/pnd53/print"
+        url = "https://https://odoo.h3creation.com/api/v1/account/pnd53/print"
 
-        import requests
         response = requests.post(url, files=files, timeout=60)
         response.raise_for_status()
         links = response.json()
