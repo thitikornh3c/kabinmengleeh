@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action to open the PND53 report form -->
+    <record id="action_pnd53_report" model="ir.actions.act_window">
+        <field name="name">PND53 Report</field>
+        <field name="res_model">account.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_account_pnd53_form"/>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Menu item under Accounting > Reporting -->
+    <menuitem id="menu_pnd53_report"
+              name="PND53 Report"
+              parent="account.menu_finance_reports"
+              action="action_pnd53_report"
+              sequence="10"/>
+</odoo>
