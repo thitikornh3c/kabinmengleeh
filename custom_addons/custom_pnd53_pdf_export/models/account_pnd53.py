@@ -55,7 +55,7 @@ class MessageWizard(models.TransientModel):
     _name = 'pnd53.message.wizard'
     _description = 'Display PND53 PDF Links'
 
-    message = models.Text('Message', readonly=True, default=lambda self: self._context.get('default_message', ''))
+    message = fields.Text('Message', readonly=True, default=lambda self: self._context.get('default_message', ''))
 
 # import requests
 # from odoo import models, fields, api
