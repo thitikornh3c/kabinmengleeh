@@ -8,6 +8,7 @@
     "data": [
         "views/account_pnd53_menu.xml",
         "views/account_pnd53_button_view.xml",
+        "views/pnd53_message_wizard_view.xml"
     ],
     "assets": {
         "web.assets_backend": [
