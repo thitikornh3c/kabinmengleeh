@@ -5,8 +5,8 @@
         <field name="arch" type="xml">
             <form string="PND53 PDF Links">
                 <sheet>
-                    <!-- Render the message field as HTML -->
-                    <field name="message" readonly="1" widget="html"/>
+                    <!-- Render links as HTML -->
+                    <field name="message" readonly="1" widget="html" nolabel="1"/>
                     <footer>
                         <button string="Close" class="btn-primary" special="cancel"/>
                     </footer>

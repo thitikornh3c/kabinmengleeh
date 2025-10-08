@@ -89,14 +89,25 @@ class AccountPND53Report(models.Model):
         base_url = "https://odoo.h3creation.com"
         link_text = "<br/>".join([f'<a href="{base_url}{p}" target="_blank">{p.split("/")[-1]}</a>' for p in paths])
 
+        wizard = self.env['pnd53.message.wizard'].create({
+            'message': link_text
+        })
+
         return {
             'type': 'ir.actions.act_window',
-            'name': 'PND53 PDF Links',
             'res_model': 'pnd53.message.wizard',
             'view_mode': 'form',
+            'res_id': wizard.id,
             'target': 'new',
-            'context': {'default_message': link_text}
         }
+        # return {
+        #     'type': 'ir.actions.act_window',
+        #     'name': 'PND53 PDF Links',
+        #     'res_model': 'pnd53.message.wizard',
+        #     'view_mode': 'form',
+        #     'target': 'new',
+        #     'context': {'default_message': link_text}
+        # }
 
 
 class PND53MessageWizard(models.TransientModel):
