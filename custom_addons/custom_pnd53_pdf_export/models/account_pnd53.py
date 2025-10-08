@@ -114,9 +114,9 @@ class AccountPND53Report(models.Model):
 class PND53MessageWizard(models.TransientModel):
     _name = "pnd53.message.wizard"
     _description = "Display PDF links"
-
-    message = fields.Html(
-        string="Message",
-        readonly=True,
-        default=lambda self: self._context.get("default_message", "")
-    )
+    message = fields.Text(string="Message")
+    # message = fields.Html(
+    #     string="Message",
+    #     readonly=True,
+    #     default=lambda self: self._context.get("default_message", "")
+    # )
