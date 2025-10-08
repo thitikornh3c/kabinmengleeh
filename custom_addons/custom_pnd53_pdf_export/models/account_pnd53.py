@@ -9,6 +9,11 @@ _logger = logging.getLogger(__name__)
 class AccountPND53Report(models.Model):
     _inherit = 'account.report'
 
+    def button_export_pnd53(self):
+        """Button to trigger PND53 export wizard"""
+        return self.action_export_pnd53_pdf()
+
+
     def action_export_pnd53_pdf(self):
         self.ensure_one()
         if self.name != 'PND53':

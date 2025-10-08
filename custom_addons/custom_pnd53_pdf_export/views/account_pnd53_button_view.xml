@@ -1,15 +1,35 @@
-<odoo>
-    <!-- Server Action to export PND53 PDF -->
+<!-- <odoo>
+    # Server Action to export PND53 PDF
     <record id="action_export_pnd53_pdf_server" model="ir.actions.server">
         <field name="name">Export PND53 PDF</field>
         <field name="model_id" ref="account.model_account_report"/>
         <field name="state">code</field>
         <field name="code">
+# Call your custom export method
 report = env['account.report'].search([('name', '=', 'PND53')], limit=1)
 if report:
-    action = report.action_export_pnd53_pdf()
-    if action:
-        return action
+    report.action_export_pnd53_pdf()
+        </field>
+    </record>
+    <menuitem id="menu_account_pnd53_pdf"
+              name="Export PND53 PDF"
+              parent="account.menu_finance_reports"
+              action="action_export_pnd53_pdf_server"
+              sequence="10"/>
+</odoo> -->
+<odoo>
+    <!-- Add button on Account Report form -->
+    <record id="view_account_report_form_pnd53" model="ir.ui.view">
+        <field name="name">account.report.pnd53.form</field>
+        <field name="model">account.report</field>
+        <field name="inherit_id" ref="account.view_account_report_form"/>
+        <field name="arch" type="xml">
+            <header>
+                <button name="button_export_pnd53"
+                        string="Export PND53 PDF"
+                        type="object"
+                        class="btn-primary"/>
+            </header>
         </field>
     </record>
 
@@ -17,6 +37,6 @@ if report:
     <menuitem id="menu_account_pnd53_pdf"
               name="Export PND53 PDF"
               parent="account.menu_finance_reports"
-              action="action_export_pnd53_pdf_server"
+              action="account.action_account_report"
               sequence="10"/>
 </odoo>
