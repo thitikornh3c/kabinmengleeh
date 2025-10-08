@@ -6,45 +6,37 @@
             <form string="Export PND">
                 <field name="state" invisible="1"/>
                 
-                <!-- STATE: INPUT (Date Selection - Step 2) -->
+                <!-- STATE: INPUT (Date Selection) -->
                 <group>
-                    <attribute name="invisible">
-                        [('state', '!=', 'input')]
-                    </attribute>
+                    <!-- Removed attribute name="invisible" from date_from and date_to -->
                     <p>Select the date range for the PND export:</p>
                     <field name="date_from"/>
                     <field name="date_to"/>
                 </group>
 
-                <!-- STATE: RESULT (Link Display - Step 3) -->
-                <group>
+                <!-- STATE: RESULT (Link Display - Visible when state == 'result') -->
+                <div class="oe_form_sheet_width">
                     <attribute name="invisible">
                         [('state', '!=', 'result')]
                     </attribute>
                     <field name="result_message" nolabel="1" widget="html"/>
-                </group>
+                </div>
 
                 <footer>
-                    <!-- Submit Button (Step 3: Calls API and changes state) -->
+                    <!-- Submit Button (Always visible) -->
                     <button string="Submit" 
                             name="action_confirm_export_pnd53" 
                             type="object" 
-                            class="oe_highlight">
-                        <attribute name="invisible">
-                            [('state', '!=', 'input')]
-                        </attribute>
-                    </button>
+                            class="oe_highlight"/>
                     
-                    <!-- Cancel/Close Button (Step 4) -->
+                    <!-- Cancel/Close Button (Always visible) -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
-    <!-- 
-    Action Window: This record must be defined before the menu item uses it.
-    -->
+    <!-- Action Window definition remains unchanged -->
     <record id="action_pnd53_export_wizard" model="ir.actions.act_window">
         <field name="name">Export PND</field>
         <field name="res_model">pnd53.export.wizard</field>
