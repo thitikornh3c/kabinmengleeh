@@ -92,6 +92,7 @@ class AccountPND53Report(models.Model):
         wizard = self.env['pnd53.message.wizard'].create({
             'message': link_text
         })
+        _logger.info(f"Returning action window for wizard {wizard.id}")
 
         return {
             'type': 'ir.actions.act_window',
