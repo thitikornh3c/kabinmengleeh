@@ -7,10 +7,15 @@
     "summary": "Add Export PDF button for PND53 / PND3 using external API",
     "data": [
         "security/ir.model.access.csv",
-        # "views/account_pnd53_menu.xml",
-        "views/account_pnd53_button_view.xml", # Now launches the wizard action
-        "views/pnd53_export_wizard_view.xml",  # NEW DATE WIZARD VIEW
-        "views/pnd53_message_wizard_view.xml", # Kept for backward compatibility
+       
+        # 1. DEFINE WIZARD ACTION FIRST (Fixes the ParseError)
+        "views/pnd53_export_wizard_view.xml",  
+        
+        # 2. CALL ACTION SECOND (Menu item uses the action defined above)
+        "views/account_pnd53_button_view.xml",
+        
+        "views/account_pnd53_menu.xml",
+        "views/pnd53_message_wizard_view.xml",
     ],
     # "assets": {
     #     "web.assets_backend": [
