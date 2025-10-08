@@ -114,7 +114,8 @@ class AccountPND53Report(models.Model):
 class PND53MessageWizard(models.TransientModel):
     _name = "pnd53.message.wizard"
     _description = "Display PDF links"
-    message = fields.Text(string="Message")
+    # message = fields.Text(string="Message")
+    message = fields.Html(string="PND53 PDF Links", readonly=True)
     # message = fields.Html(
     #     string="Message",
     #     readonly=True,
