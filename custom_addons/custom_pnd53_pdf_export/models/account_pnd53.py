@@ -127,28 +127,52 @@
 #     #     default=lambda self: self._context.get("default_message", "")
 #     # )
 
+# import requests
+# from odoo import models, fields, api
+# from datetime import datetime
+# import io
+# import csv
+# import logging
+# # We keep this file minimal, primarily for Odoo structure compatibility
+# # and defining helper methods if needed, but the main logic is in the wizard now.
+
+# _logger = logging.getLogger(__name__)
+
+# # NOTE: Keeping the class here as a placeholder in case other parts of your zip rely on it.
+# # Its original method `action_export_pnd53_pdf` is no longer needed since the menu
+# # calls the wizard directly via XML action, but we keep the file for structure.
+
+# class AccountPND53Report(models.Model):
+#     _inherit = 'account.report'
+
+#     # This method is now only called if you still use the old button mechanism.
+#     # We rely on the Menuitem + Wizard action for the new required flow.
+#     def action_export_pnd53_pdf(self):
+#         # Old code path for compatibility, launching the new wizard
+#         return {
+#             'type': 'ir.actions.act_window',
+#             'name': _('Export PND'),
+#             'res_model': 'pnd53.export.wizard',
+#             'view_mode': 'form',
+#             'target': 'new',
+#         }
+
+
 import requests
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import datetime
 import io
 import csv
 import logging
-# We keep this file minimal, primarily for Odoo structure compatibility
-# and defining helper methods if needed, but the main logic is in the wizard now.
-
 _logger = logging.getLogger(__name__)
-
-# NOTE: Keeping the class here as a placeholder in case other parts of your zip rely on it.
-# Its original method `action_export_pnd53_pdf` is no longer needed since the menu
-# calls the wizard directly via XML action, but we keep the file for structure.
 
 class AccountPND53Report(models.Model):
     _inherit = 'account.report'
 
-    # This method is now only called if you still use the old button mechanism.
-    # We rely on the Menuitem + Wizard action for the new required flow.
     def action_export_pnd53_pdf(self):
-        # Old code path for compatibility, launching the new wizard
+        # This method is called by the old server action in your manifest. 
+        # Since we are using a direct wizard call from the menu, 
+        # this code path is deprecated but kept minimal for backward compatibility if needed.
         return {
             'type': 'ir.actions.act_window',
             'name': _('Export PND'),
@@ -156,3 +180,16 @@ class AccountPND53Report(models.Model):
             'view_mode': 'form',
             'target': 'new',
         }
+
+
+# *** FIX FOR MODEL NOT FOUND ERROR ***
+# The view pnd53_message_wizard_view.xml requires this model to exist.
+class PND53MessageWizard(models.TransientModel):
+    _name = "pnd53.message.wizard"
+    _description = "Display PDF links"
+
+    message = fields.Html(
+        string="Message",
+        readonly=True,
+    )
+
