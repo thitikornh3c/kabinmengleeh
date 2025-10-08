@@ -11,11 +11,11 @@
         "views/account_pnd53_button_view.xml",
         "views/pnd53_message_wizard_view.xml"
     ],
-    "assets": {
-        "web.assets_backend": [
-            "custom_pnd53_pdf_export/static/src/js/download_pnd53.js",
-        ],
-    },
+    # "assets": {
+    #     "web.assets_backend": [
+    #         "custom_pnd53_pdf_export/static/src/js/download_pnd53.js",
+    #     ],
+    # },
     "installable": True,
     "application": False,
 }
