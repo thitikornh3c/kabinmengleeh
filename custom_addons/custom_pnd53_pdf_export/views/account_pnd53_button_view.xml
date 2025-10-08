@@ -18,25 +18,12 @@ if report:
               sequence="10"/>
 </odoo> -->
 <odoo>
-    <!-- Add button on Account Report form -->
-    <record id="view_account_report_form_pnd53" model="ir.ui.view">
-        <field name="name">account.report.pnd53.form</field>
-        <field name="model">account.report</field>
-        <field name="inherit_id" ref="account.view_account_report_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="button_export_pnd53"
-                        string="Export PND53 PDF"
-                        type="object"
-                        class="btn-primary"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Menu Item under Accounting -> Reports -->
+    <!-- Server Action (Removed, now launching Wizard action directly) -->
+    
+    <!-- Menu Item under Accounting -> Reports, launching the new wizard action -->
     <menuitem id="menu_account_pnd53_pdf"
-              name="Export PND53 PDF"
+              name="Export PND"
               parent="account.menu_finance_reports"
-              action="account.action_account_report"
+              action="action_pnd53_export_wizard" 
               sequence="10"/>
 </odoo>
