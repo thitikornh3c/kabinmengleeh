@@ -1,0 +1,44 @@
+<odoo>
+    <record id="view_pnd53_export_wizard_form" model="ir.ui.view">
+        <field name="name">pnd53.export.wizard.form</field>
+        <field name="model">pnd53.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export PND">
+                <field name="state" invisible="1"/>
+                
+                <!-- STATE: INPUT (Date Selection) -->
+                <group attrs="{'invisible': [('state', '!=', 'input')]}">
+                    <p>Select the date range for the PND 53 report data export.</p>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+
+                <!-- STATE: RESULT (Link Display) -->
+                <group attrs="{'invisible': [('state', '!=', 'result')]}">
+                    <field name="result_message" nolabel="1" widget="html"/>
+                </group>
+
+                <footer>
+                    <button string="Submit" 
+                            name="action_confirm_export_pnd53" 
+                            type="object" 
+                            class="oe_highlight" 
+                            attrs="{'invisible': [('state', '!=', 'input')]}"/>
+                    
+                    <!-- Close button for both states -->
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- 
+    Step 1: Action called by the menu item 
+    -->
+    <record id="action_pnd53_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export PND</field>
+        <field name="res_model">pnd53.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
