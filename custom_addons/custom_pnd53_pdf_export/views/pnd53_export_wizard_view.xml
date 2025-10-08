@@ -16,9 +16,9 @@
 
                 <!-- STATE: RESULT (Link Display - Visible when state == 'result') -->
                 <div class="oe_form_sheet_width">
-                    <attribute name="invisible">
+                    <!-- <attribute name="invisible">
                         [('state', '!=', 'result')]
-                    </attribute>
+                    </attribute> -->
                     <field name="result_message" nolabel="1" widget="html"/>
                 </div>
 
