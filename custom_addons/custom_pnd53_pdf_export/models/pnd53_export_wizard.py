@@ -62,14 +62,18 @@ class PND53ExportWizard(models.TransientModel):
         # In a real module, you would retrieve data here using self.date_from and self.date_to
         
         # Example Mock Row (adjust as needed for API expectation)
-        writer.writerow([
-            1, '1234567890123', 'Mr.', 'John Doe', '123 Main St', '', 'Bangkok', 'BKK', '10110',
-            '00000', datetime.now().strftime('%Y-%m-%d'), 3.0, 10000.00, 300.00,
-            '3%', 'PND53'
-        ])
-
-        csv_content = csv_file.getvalue()
+        # writer.writerow([
+        #     1, '1234567890123', 'Mr.', 'John Doe', '123 Main St', '', 'Bangkok', 'BKK', '10110',
+        #     '00000', datetime.now().strftime('%Y-%m-%d'), 3.0, 10000.00, 300.00,
+        #     '3%', 'PND53'
+        # ])
+        csv_content = """No.,Tax ID,Title,Contact Name,Street,Street2,City,State,Zip,Branch Number,Invoice/Bill Date,Tax Rate,Total Amount,WHT Amount,WHT Condition,Tax Type
+        1,0103561015785,บริษัท,ห้างหุ้นส่วนจำกัด เค.จี.งานศิลป์,30/16 ตรอกหมู่บ้านฝนทองนิเวศน์ (ซอย 2) แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพมหานคร 10220,,,,,,02/09/2025,3.00,6000.00,180.00,1,Service
+        2,0105564011723,บริษัท,บริษัท วงศ์ธาดา จำกัด,88/217 ถนนเลียบคลองสอง เเขวงบางชัน เขตคลองสามวา กรุงเทพมหานคร 10510,,,,,,15/09/2025,3.00,3000.00,90.00,1,Service
+        3,0101122334455,บริษัท,บริษัท ตัวอย่าง จำกัด,123/45 ถนนสุขุมวิท แขวงคลองตัน เขตคลองเตย กรุงเทพมหานคร 10110,,,,,,20/09/2025,3.00,4500.00,135.00,1,Service"""
+        # csv_content = csv_file.getvalue()
         
+        _logger.info(f"Content PND53 {csv_content}")
         # --- API Call (Using URL from your original request) ---
         url = "https://odoo.h3creation.com/api/v1/account/pnd53/print"
         files = {"file": ("pnd53_data.csv", csv_content.encode('utf-8'), "text/csv")}
