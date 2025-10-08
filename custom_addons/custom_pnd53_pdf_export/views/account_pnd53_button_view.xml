@@ -5,6 +5,7 @@
         <field name="model_id" ref="account.model_account_report"/>
         <field name="state">code</field>
         <field name="code">
+# Call your custom export method
 report = env['account.report'].search([('name', '=', 'PND53')], limit=1)
 if report:
     action = report.action_export_pnd53_pdf()
