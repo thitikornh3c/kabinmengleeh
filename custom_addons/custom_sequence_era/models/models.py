@@ -126,7 +126,7 @@ class CustomSequence(models.Model):
         sequence = self.search([('code', '=', sequence_code)], limit=1)
         _logger.warning(f"Sequence code '{sequence_code}' {kwargs} not found.")
         
-        if sequence:
+        if 'sale.order' in code:
             # Call _get_prefix_suffix to update number_next if needed
             sequence._get_prefix_suffix_buddha_era()
 
@@ -137,7 +137,7 @@ class CustomSequence(models.Model):
             # Combine the prefix and next number to form the full sequence value
             # prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
             return f"{next_number}"  # Adjust as needed
-        else:
+        elif 'account.move' in code:
             # Call _get_prefix_suffix to update number_next if needed
             sequence._get_prefix_suffix_normal()
 
