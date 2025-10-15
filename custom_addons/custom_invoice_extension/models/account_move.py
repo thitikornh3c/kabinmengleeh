@@ -4,66 +4,64 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     bank_no = fields.Char(related='company_id.x_studio_bankno', string="Bank No", store=False)
-    # bank_no = fields.Char(related='company_id.bank_no', string="Bank No", store=False)
     amount_total_words = fields.Char(compute='_compute_amount_total_words', store=False)
 
     def _compute_amount_total_words(self):
         for record in self:
-            record.amount_total_words = self.amount_to_words(record.amount_total)
+            lang = record.partner_id.lang or 'th_TH'  # default to Thai
+            record.amount_total_words = self.amount_to_words(record.amount_total, lang)
 
-    def amount_to_words(self, amount):
+    def amount_to_words(self, amount, lang='th_TH'):
+        """
+        Convert amount to words based on language.
+        lang: 'th_TH' for Thai, 'en_US' for English
+        """
+        if lang.startswith('en'):
+            # ภาษาอังกฤษ
+            return self.amount_to_words_en(amount)
+        else:
+            # ภาษาไทย
+            return self.amount_to_words_th(amount)
+
+    def amount_to_words_th(self, amount):
         units = ["", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"]
         teens = ["สิบ", "สิบเอ็ด", "สิบสอง", "สิบสาม", "สิบสี่", "สิบห้า", "สิบหก", "สิบเจ็ด", "สิบแปด", "สิบเก้า"]
         tens = ["", "สิบ", "ยี่สิบ", "สามสิบ", "สี่สิบ", "ห้าสิบ", "หกสิบ", "เจ็ดสิบ", "แปดสิบ", "เก้าสิบ"]
-        thousands = ["", "พัน", "หมื่น", "แสน", "ล้าน"]
 
         def convert_integer(n):
             if n == 0:
                 return "ศูนย์"
             words = []
-            if n >= 1000000:
-                words.append(units[n // 1000000] + "ล้าน")
-                n %= 1000000
-            if n >= 100000:
-                words.append(units[n // 100000] + "แสน")
-                n %= 100000
-            if n >= 10000:
-                words.append(units[n // 10000] + "หมื่น")
-                n %= 10000
-            if n >= 1000:
-                words.append(units[n // 1000] + "พัน")
-                n %= 1000
-            if n >= 100:
-                words.append(units[n // 100] + "ร้อย")
-                n %= 100
-            if n >= 20:
-                words.append(tens[n // 10])
-                n %= 10
-            if 10 <= n < 20:
-                words.append(teens[n - 10])
-                n = 0
-            if n > 0:
-                words.append(units[n])
-            return ''.join(words)
-
-        def convert_fraction(n):
-            if n == 0:
-                return ""
-            words = []
-            if n >= 10:
-                words.append(tens[n // 10])
-                n %= 10
-            if n > 0:
-                words.append(units[n])
+            thousands = ["", "พัน", "หมื่น", "แสน", "ล้าน"]
+            unit_idx = 0
+            while n > 0:
+                part = n % 10
+                if unit_idx == 0 and part == 1 and n > 10:
+                    words.insert(0, "เอ็ด")
+                elif unit_idx == 1 and part > 0:
+                    if part == 1:
+                        words.insert(0, "สิบ")
+                    elif part == 2:
+                        words.insert(0, "ยี่สิบ")
+                    else:
+                        words.insert(0, units[part] + "สิบ")
+                elif part > 0:
+                    words.insert(0, units[part] + (thousands[unit_idx] if unit_idx < len(thousands) else ""))
+                n //= 10
+                unit_idx += 1
             return ''.join(words)
 
         integer_part = int(amount)
         fraction_part = int(round((amount - integer_part) * 100))
-
         integer_words = convert_integer(integer_part)
-        fraction_words = convert_fraction(fraction_part)
-
+        fraction_words = ''
         if fraction_part > 0:
+            fraction_words = self.amount_to_words_th(fraction_part)
             return f"{integer_words}บาท{fraction_words}สตางค์"
         else:
             return f"{integer_words}บาทถ้วน"
+
+    def amount_to_words_en(self, amount):
+        # ใช้ built-in Odoo helper
+        from odoo.tools.amount_to_text_en import amount_to_text_en
+        return amount_to_text_en(amount, currency=self.currency_id.name)
