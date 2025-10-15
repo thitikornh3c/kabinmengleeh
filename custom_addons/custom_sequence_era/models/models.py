@@ -64,7 +64,7 @@ class CustomSequence(models.Model):
 
         return prefix, suffix
     
-    def _get_prefix_suffix(self):
+    def _get_prefix_suffix_normal(self):
         """
         Override to customize the sequence prefix and suffix. 1
         """
@@ -139,7 +139,7 @@ class CustomSequence(models.Model):
             return f"{next_number}"  # Adjust as needed
         else:
             # Call _get_prefix_suffix to update number_next if needed
-            sequence._get_prefix_suffix()
+            sequence._get_prefix_suffix_normal()
 
             # Call the original next_by_code to get the next number
             next_number = super(CustomSequence, sequence).next_by_code(sequence_code, **kwargs)
