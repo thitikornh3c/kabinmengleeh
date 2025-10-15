@@ -50,7 +50,11 @@ class CustomSequence(models.Model):
         be_year = self._get_buddha_era_year()
 
         # Optionally modify the prefix
-        if self.prefix:
+        if self.prefix.startswith("SQ"):
+            prefix = f"{self.prefix}{be_year}{currentDate}"
+        elif self.prefix.startswith("INV"):
+            prefix = f"{self.prefix}{bangkok_time.strftime('%y')}{currentDate}"
+        else:
             prefix = f"{self.prefix}{be_year}{currentDate}"
 
         self.x_studio_last_date = currentDate
@@ -75,7 +79,7 @@ class CustomSequence(models.Model):
             sequence_code = sequence_code + '.h3c'
 
         sequence = self.search([('code', '=', sequence_code)], limit=1)
-        _logger.warning(f"Sequence code '{sequence_code}' {kwargs} not found.")
+        _logger.warning(f"Sequence code '{sequence_code}' {sequence} not found.")
         
         if sequence:
             # Call _get_prefix_suffix to update number_next if needed
