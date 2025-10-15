@@ -2,108 +2,92 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from datetime import datetime, timedelta
 import logging
-
 _logger = logging.getLogger(__name__)
 
 class CustomSequence(models.Model):
     _inherit = 'ir.sequence'
 
-    # ---------------------------------------------------------------
-    # Helper functions
-    # ---------------------------------------------------------------
+    # last_reset_date = fields.Datetime(string='Last Reset Date', readonly=True)
+                                  
     def _get_buddha_era_year(self):
-        """Return Buddhist Era year + month (e.g. '6805' for May 2568 BE)."""
+        # Calculate Buddha Era year
         current_year = datetime.now().year
         be_year = current_year + 543
         month_date = datetime.now().strftime("%m")
         return f"{str(be_year)[2:4]}{month_date}"
 
-    def _get_bangkok_time(self):
-        """Return datetime in Bangkok timezone (UTC+7)."""
+    def _get_prefix_suffix(self):
+        """
+        Override to customize the sequence prefix and suffix. 1
+        """
+
+        if self.code in (None, "", False):
+            prefix, suffix = super()._get_prefix_suffix()
+            return prefix, suffix
+        # Call the super method to get the default prefix and suffix
+        # Get the current UTC time
         utc_now = datetime.utcnow()
-        return utc_now + timedelta(hours=7)
 
-    # ---------------------------------------------------------------
-    # Custom Prefix Generators
-    # ---------------------------------------------------------------
-    def _get_prefix_suffix_buddha_era(self):
-        """Custom prefix for sale orders or Buddhist Era documents."""
-        bangkok_time = self._get_bangkok_time()
-        current_day = bangkok_time.strftime("%d")
+        # Bangkok is UTC+7
+        bangkok_time = utc_now + timedelta(hours=7)
 
+        currentDate = bangkok_time.strftime("%d")
         company_id = self.env.context.get('company_id', self.env.company.id)
+        _logger.info(f"Sequnece of Company: {company_id}")
         sequence_code = self.code
         if company_id == 2:
-            sequence_code += '.h3c'
-
-        sequence = self.search([('code', '=', sequence_code)], limit=1)
-        if sequence and current_day != sequence.x_studio_last_date:
+            sequence_code = sequence_code + '.h3c'
+        # invoice = self.search([('code', '=', 'account.move')], limit=1)
+        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
+    
+        if currentDate != self.x_studio_last_date:
+            sequence = self.search([('code', '=', sequence_code)], limit=1)
             sequence.number_next = 1
-            sequence.x_studio_last_date = current_day
 
-        prefix, suffix = ('', '')
-        if sequence:
-            prefix, suffix = super(CustomSequence, sequence)._get_prefix_suffix()
+        prefix, suffix = super()._get_prefix_suffix()
+        # next_by_code = super().next_by_code(self.code)
+        # _logger.info(f"Sequnece Entry: {next_by_code}")
+        be_year = self._get_buddha_era_year()
 
-            be_year = self._get_buddha_era_year()
-            if sequence.prefix:
-                prefix = f"{sequence.prefix}{be_year}{current_day}"
+        # Optionally modify the prefix
+        if self.prefix:
+            prefix = f"{self.prefix}{be_year}{currentDate}"
 
-        _logger.info(f"[SEQ-BE] {sequence_code}: prefix={prefix}, next={sequence.number_next if sequence else 'N/A'}")
+        self.x_studio_last_date = currentDate
+        # self.number_next = 1
+        # prefix = f"{self.code}{be_year}"
+        # Customize the suffix
+        # For example, include the Buddha Era year in the suffix
+      
+        # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
+        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date} {prefix} {suffix}")
+
         return prefix, suffix
-
-    def _get_prefix_suffix_inv(self):
-        """Custom prefix for invoice pattern INV%y%m%d%03d (reset daily)."""
-        bangkok_time = self._get_bangkok_time()
-        current_day = bangkok_time.strftime("%d")
-        year = bangkok_time.strftime("%y")
-        month = bangkok_time.strftime("%m")
-
-        company_id = self.env.context.get('company_id', self.env.company.id)
-        sequence_code = self.code
-        if company_id == 2:
-            sequence_code += '.h3c'
-
-        sequence = self.search([('code', '=', sequence_code)], limit=1)
-        if sequence and current_day != sequence.x_studio_last_date:
-            sequence.number_next = 1
-            sequence.x_studio_last_date = current_day
-
-        prefix, suffix = ('', '')
-        if sequence:
-            prefix, suffix = super(CustomSequence, sequence)._get_prefix_suffix()
-
-            if sequence.prefix:
-                prefix = f"{sequence.prefix}{year}{month}{current_day}"
-
-        _logger.info(f"[SEQ-INV] {sequence_code}: prefix={prefix}, next={sequence.number_next if sequence else 'N/A'}")
-        return prefix, suffix
-
-    # ---------------------------------------------------------------
-    # Override next_by_code
-    # ---------------------------------------------------------------
+    
     @api.model
     def next_by_code(self, code, **kwargs):
-        """Override next_by_code to apply different sequence patterns."""
+        """Override next_by_code to reset number_next if needed."""
+
         company_id = self.env.context.get('company_id', self.env.company.id)
+        _logger.info(f"Sequnece of Company: {company_id} {code}")
         sequence_code = code
         if company_id == 2:
-            sequence_code += '.h3c'
+            sequence_code = sequence_code + '.h3c'
 
         sequence = self.search([('code', '=', sequence_code)], limit=1)
-        _logger.info(f"[SEQ] next_by_code called for {sequence_code}")
+        _logger.warning(f"Sequence code '{sequence_code}' {kwargs} not found.")
+        
+        if sequence:
+            # Call _get_prefix_suffix to update number_next if needed
+            sequence._get_prefix_suffix()
 
-        if not sequence:
-            _logger.warning(f"[SEQ] Sequence code '{sequence_code}' not found, fallback to super()")
-            return super(CustomSequence, self).next_by_code(sequence_code, **kwargs)
+            # Call the original next_by_code to get the next number
+            next_number = super(CustomSequence, sequence).next_by_code(sequence_code, **kwargs)
+            _logger.warning(f"Sequence next_number '{next_number}'")
 
-        # Choose the prefix rule
-        if 'account.move' in sequence.code:
-            sequence._get_prefix_suffix_inv()
-        elif 'sale.order' in sequence.code:
-            sequence._get_prefix_suffix_buddha_era()
+            # Combine the prefix and next number to form the full sequence value
+            # prefix, _ = sequence._get_prefix_suffix()  # Get the updated prefix
+            return f"{next_number}"  # Adjust as needed
 
-        # Generate next number
-        next_number = super(CustomSequence, sequence).next_by_code(sequence_code, **kwargs)
-        _logger.info(f"[SEQ] Generated {next_number} for {sequence_code}")
-        return next_number
+        # Handle case where sequence is not found
+        return super(CustomSequence, self).next_by_code(sequence_code, **kwargs)
