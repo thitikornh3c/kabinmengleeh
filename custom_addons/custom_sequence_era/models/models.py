@@ -74,8 +74,8 @@ class CustomSequence(models.Model):
         prefix, suffix = super()._get_prefix_suffix()
 
         if prefix.startswith("INV"):
+            sequence = self.search([('code', '=', self.code)], limit=1)
             if currentDate != self.x_studio_last_date:
-                sequence = self.search([('code', '=', self.code)], limit=1)
                 sequence.number_next = 1
             else:
                 full_number = self._get_next_invoice_number(sequence)
