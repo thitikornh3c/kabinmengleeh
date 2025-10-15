@@ -41,8 +41,9 @@ class CustomSequence(models.Model):
         _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
         if currentDate != self.x_studio_last_date:
-            sequence = self.search([('code', '=', sequence_code)], limit=1)
-            sequence.number_next = 1
+            if self.prefix.startswith("INV"):
+                sequence = self.search([('code', '=', self.code)], limit=1)
+                sequence.number_next = 1
 
         prefix, suffix = super()._get_prefix_suffix()
         # next_by_code = super().next_by_code(self.code)
