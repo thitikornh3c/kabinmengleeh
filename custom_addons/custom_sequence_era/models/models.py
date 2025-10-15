@@ -16,6 +16,37 @@ class CustomSequence(models.Model):
         month_date = datetime.now().strftime("%m")
         return f"{str(be_year)[2:4]}{month_date}"
 
+    def _get_next_invoice_number(self, sequence):
+        """Return the next INV number, filling gaps if any."""
+        now = datetime.utcnow() + timedelta(hours=7)
+        current_date = now.strftime("%Y%m%d")
+
+        # Reset daily if needed
+        if self.x_studio_last_date != current_date:
+            self.number_next = 1
+            self.x_studio_last_date = current_date
+
+        prefix = sequence.prefix or ''
+        padding = 3  # INV running digits
+
+        # Get all existing numbers for today
+        model = self.env['account.move']  # adjust for invoice model
+        domain = [
+            ('name', 'like', f"{prefix}{current_date}%")
+        ]
+        existing_numbers = model.search(domain).mapped('name')
+
+        # Find first missing number
+        for i in range(1, 999):
+            candidate = f"{prefix}{current_date}{str(i).zfill(padding)}"
+            if candidate not in existing_numbers:
+                sequence.number_next = i + 1
+                return candidate
+
+        # fallback if somehow full
+        sequence.number_next += 1
+        return f"{prefix}{current_date}{str(sequence.number_next - 1).zfill(padding)}"
+    
     def _get_prefix_suffix(self):
         """
         Override to customize the sequence prefix and suffix. 1
@@ -40,11 +71,14 @@ class CustomSequence(models.Model):
         # invoice = self.search([('code', '=', 'account.move')], limit=1)
         _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
-        if currentDate != self.x_studio_last_date:
-            if self.prefix.startswith("INV"):
+        if prefix.startswith("INV"):
+            if currentDate != self.x_studio_last_date:
                 sequence = self.search([('code', '=', self.code)], limit=1)
                 sequence.number_next = 1
-
+            else:
+                full_number = self._get_next_invoice_number(sequence)
+                sequence.number_next = full_number
+                
         prefix, suffix = super()._get_prefix_suffix()
         # next_by_code = super().next_by_code(self.code)
         # _logger.info(f"Sequnece Entry: {next_by_code}")
