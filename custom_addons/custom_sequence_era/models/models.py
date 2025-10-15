@@ -71,6 +71,8 @@ class CustomSequence(models.Model):
         # invoice = self.search([('code', '=', 'account.move')], limit=1)
         _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
     
+        prefix, suffix = super()._get_prefix_suffix()
+
         if prefix.startswith("INV"):
             if currentDate != self.x_studio_last_date:
                 sequence = self.search([('code', '=', self.code)], limit=1)
@@ -79,7 +81,6 @@ class CustomSequence(models.Model):
                 full_number = self._get_next_invoice_number(sequence)
                 sequence.number_next = full_number
                 
-        prefix, suffix = super()._get_prefix_suffix()
         # next_by_code = super().next_by_code(self.code)
         # _logger.info(f"Sequnece Entry: {next_by_code}")
         be_year = self._get_buddha_era_year()
