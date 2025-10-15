@@ -25,38 +25,57 @@ class AccountMove(models.Model):
 
     def amount_to_words_th(self, amount):
         units = ["", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"]
-        teens = ["สิบ", "สิบเอ็ด", "สิบสอง", "สิบสาม", "สิบสี่", "สิบห้า", "สิบหก", "สิบเจ็ด", "สิบแปด", "สิบเก้า"]
-        tens = ["", "สิบ", "ยี่สิบ", "สามสิบ", "สี่สิบ", "ห้าสิบ", "หกสิบ", "เจ็ดสิบ", "แปดสิบ", "เก้าสิบ"]
 
-        def convert_integer(n):
+        def convert_number(n):
+            n = int(n)
+            digit = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน"]
+            word = ""
+            num_str = str(n)
+            num_len = len(num_str)
+            for i, c in enumerate(num_str):
+                num = int(c)
+                pos = num_len - i - 1
+                if num == 0:
+                    continue
+                if pos == 0:
+                    if num == 1 and num_len > 1:
+                        word += "เอ็ด"
+                    else:
+                        word += units[num]
+                elif pos == 1:
+                    if num == 1:
+                        word += "สิบ"
+                    elif num == 2:
+                        word += "ยี่สิบ"
+                    else:
+                        word += units[num] + "สิบ"
+                else:
+                    word += units[num] + digit[pos]
+            return word
+
+        def thai_number(n):
+            n = int(n)
             if n == 0:
                 return "ศูนย์"
-            words = []
-            thousands = ["", "พัน", "หมื่น", "แสน", "ล้าน"]
-            unit_idx = 0
+            parts = []
+            group = 0
             while n > 0:
-                part = n % 10
-                if unit_idx == 0 and part == 1 and n > 10:
-                    words.insert(0, "เอ็ด")
-                elif unit_idx == 1 and part > 0:
-                    if part == 1:
-                        words.insert(0, "สิบ")
-                    elif part == 2:
-                        words.insert(0, "ยี่สิบ")
-                    else:
-                        words.insert(0, units[part] + "สิบ")
-                elif part > 0:
-                    words.insert(0, units[part] + (thousands[unit_idx] if unit_idx < len(thousands) else ""))
-                n //= 10
-                unit_idx += 1
-            return ''.join(words)
+                part = n % 1000000
+                n //= 1000000
+                if part > 0:
+                    text = convert_number(part)
+                    if group > 0:
+                        text += "ล้าน"
+                    parts.insert(0, text)
+                group += 1
+            return ''.join(parts)
 
         integer_part = int(amount)
         fraction_part = int(round((amount - integer_part) * 100))
-        integer_words = convert_integer(integer_part)
-        fraction_words = ''
+
+        integer_words = thai_number(integer_part)
         if fraction_part > 0:
-            fraction_words = self.amount_to_words_th(fraction_part)
+            fraction_words = thai_number(fraction_part)
             return f"{integer_words}บาท{fraction_words}สตางค์"
         else:
             return f"{integer_words}บาทถ้วน"
