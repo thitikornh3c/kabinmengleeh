@@ -62,6 +62,41 @@ class AccountMove(models.Model):
             return f"{integer_words}บาทถ้วน"
 
     def amount_to_words_en(self, amount):
-        # ใช้ built-in Odoo helper
-        from odoo.tools.amount_to_text_en import amount_to_text_en
-        return amount_to_text_en(amount, currency=self.currency_id.name)
+        units = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"]
+        teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen",
+                "Sixteen","Seventeen","Eighteen","Nineteen"]
+        tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"]
+        thousands = ["","Thousand","Million","Billion"]
+
+        def convert_hundred(n):
+            word = ""
+            if n >= 100:
+                word += units[n//100] + " Hundred "
+                n %= 100
+            if 10 <= n < 20:
+                word += teens[n-10] + " "
+            else:
+                if n >= 20:
+                    word += tens[n//10] + " "
+                    n %= 10
+                if n > 0:
+                    word += units[n] + " "
+            return word.strip()
+
+        if amount == 0:
+            return "Zero Baht"
+
+        integer_part = int(amount)
+        fraction_part = int(round((amount - integer_part) * 100))
+        words = []
+        i = 0
+        while integer_part > 0:
+            n = integer_part % 1000
+            if n != 0:
+                words.insert(0, convert_hundred(n) + (" " + thousands[i] if i>0 else ""))
+            integer_part //= 1000
+            i += 1
+        result = " ".join(words) + " Baht"
+        if fraction_part > 0:
+            result += f" and {convert_hundred(fraction_part)} Satang"
+        return result
