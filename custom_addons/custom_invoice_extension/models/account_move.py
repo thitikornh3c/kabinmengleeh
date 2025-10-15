@@ -96,7 +96,12 @@ class AccountMove(models.Model):
                 words.insert(0, convert_hundred(n) + (" " + thousands[i] if i>0 else ""))
             integer_part //= 1000
             i += 1
-        result = " ".join(words) + " Baht"
+        result = " ".join(words) + " Baht net"
         if fraction_part > 0:
-            result += f" and {convert_hundred(fraction_part)} Satang"
-        return result
+            fraction_words = self.amount_to_words_th(fraction_part)
+            return f"{result}Baht {fraction_words} Satang"
+        else:
+            return f"{result} Baht net"
+        # if fraction_part > 0:
+        #     result += f" and {convert_hundred(fraction_part)} Satang"
+        # return result
