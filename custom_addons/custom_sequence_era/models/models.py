@@ -78,8 +78,8 @@ class CustomSequence(models.Model):
             if currentDate != self.x_studio_last_date:
                 sequence.number_next = 1
             else:
-                full_number = self._get_next_invoice_number(sequence)
-                sequence.number_next = full_number
+                self._get_next_invoice_number(sequence)
+                # sequence.number_next = full_number
                 
         # next_by_code = super().next_by_code(self.code)
         # _logger.info(f"Sequnece Entry: {next_by_code}")
