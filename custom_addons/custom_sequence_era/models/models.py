@@ -79,6 +79,13 @@ class CustomSequence(models.Model):
                 sequence.number_next = 1
             else:
                 self._get_next_invoice_number(sequence)
+
+        if prefix.startswith("REC"):
+            sequence = self.search([('code', '=', self.code)], limit=1)
+            if currentDate != self.x_studio_last_date:
+                sequence.number_next = 1
+            else:
+                self._get_next_invoice_number(sequence)
                 # sequence.number_next = full_number
                 
         # next_by_code = super().next_by_code(self.code)
