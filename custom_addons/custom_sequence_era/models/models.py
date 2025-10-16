@@ -90,6 +90,8 @@ class CustomSequence(models.Model):
             prefix = f"{self.prefix}{be_year}{currentDate}"
         elif self.prefix.startswith("INV"):
             prefix = f"{self.prefix}{bangkok_time.strftime('%Y')}{currentDate}"
+        elif self.prefix.startswith("REC"):
+            prefix = f"{self.prefix}{bangkok_time.strftime('%Y')}{currentDate}"
         else:
             prefix = f"{self.prefix}{be_year}{currentDate}"
 
