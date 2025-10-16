@@ -44,7 +44,7 @@ class CustomSequence(models.Model):
                 return candidate
 
         # fallback if somehow full
-        sequence.number_next += 1
+        # sequence.number_next += 1
         return f"{prefix}{current_date}{str(sequence.number_next - 1).zfill(padding)}"
     
     def _get_prefix_suffix(self):
