@@ -101,10 +101,14 @@ class AccountPNDReport(models.TransientModel):
                 writer.update_page_form_field_values(page, {field_name: str(value)})
                 # ถ้า PyPDF2 รุ่นใหม่อาจต้องใช้ appearance update
                 for f in writer.pages[0]['/Annots']:
-                    if f.get_object()['/T'] == field_name:
-                        f.get_object().update({
-                            "/Q": 1  # Q=1 คือ center
+                    annot = f.get_object()
+                    if annot.get('/T') == field_name:
+                        annot.update({
+                            '/Q': 1  # 0=left, 1=center, 2=right
                         })
+                        # Rebuild appearance
+                        if '/AP' in annot:
+                            del annot['/AP']  # ลบ appearance เดิม เพื่อสร้างใหม่
         except Exception:
             pass
     def _fill_pnd_pdf(self, pnd_type, partner, moves):
