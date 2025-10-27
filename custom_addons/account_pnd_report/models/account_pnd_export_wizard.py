@@ -6,6 +6,7 @@ from odoo.tools import date_utils
 import io
 import csv
 import logging
+from PyPDF2 import PdfReader, PdfWriter
 
 _logger = logging.getLogger(__name__)
 
