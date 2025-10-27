@@ -122,7 +122,7 @@ class AccountPNDExportWizard(models.TransientModel):
             'context': self.env.context,
         }
     
-    def _fill_pnd_pdf(self, pnd_type, partner, moves):
+    def _fill_pnd_pdf(self):
             """Fill Thai RD official PDF template"""
             template_path = (
                 self.env['ir.config_parameter']
