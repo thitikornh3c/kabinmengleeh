@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_pnd_message_wizard_form" model="ir.ui.view">
+        <field name="name">pnd.message.wizard.form</field>
+        <field name="model">pnd.message.wizard</field>
+        <field name="arch" type="xml">
+            <form string="PND53 PDF Links">
+                <sheet>
+                    <field name="message" readonly="1" widget="html" nolabel="1"/>
+                </sheet>
+                <footer>
+                    <button string="Close" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

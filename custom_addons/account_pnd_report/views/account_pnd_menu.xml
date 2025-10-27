@@ -1,0 +1,4 @@
+<odoo>
+    <menuitem id="account_pnd_menu_root" name="Tax Return" parent="account.menu_finance_reports"/>
+    <menuitem id="account_pnd_menu" name="PND Report" parent="account_pnd_menu_root"/>
+</odoo>
