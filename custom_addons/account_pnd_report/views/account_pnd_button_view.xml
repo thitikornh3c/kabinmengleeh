@@ -2,7 +2,7 @@
     <!-- Server Action (Removed, now launching Wizard action directly) -->
     <!-- Menu Item under Accounting -> Reports, launching the new wizard action -->
     <menuitem id="menu_account_pnd_pdf"
-              name="Export PND"
+              name="Export PND PDF"
               parent="account.menu_finance_reports"
               action="action_pnd_export_wizard" 
               sequence="10"/>
