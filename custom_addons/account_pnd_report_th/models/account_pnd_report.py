@@ -105,22 +105,48 @@ class AccountPNDReport(models.TransientModel):
             writer.add_page(page)
 
         total_amount = abs(sum(moves.mapped('balance')))
-        tax_amount = abs(sum(moves.mapped('tax_line_id.amount')))
+        wht_amount = abs(sum(moves.mapped('tax_line_id.amount')))
 
+        # ถ้า Invoice/Bill Date ต้องเป็นวันที่ล่าสุดของ partner_moves
+        latest_move = partner_moves.sorted('date', reverse=True)[:1]
+        invoice_date = latest_move.date if latest_move else ''
+
+         # format D/M/Y
+        date_parts = str(invoice_date).split('-')  # YYYY-MM-DD
+        if len(date_parts) == 3:
+            year = date_parts[0]
+            month = date_parts[1]
+            day = date_parts[2]
+        else:
+            year = month = day = ''
+            
         # Text field values
         data_dict = {
             'form_type': 'PND3' if pnd_type == 'pnd3' else 'PND53',
             'TaxID': partner.vat or '',
             'PartnerName': partner.name or '',
-            'TotalAmount': f"{total_amount:,.2f}",
-            'TaxAmount': f"{tax_amount:,.2f}",
-            'name1': partner.name or '',
-            'id1': self.format_vat_th(partner.vat),
-            # 'add1': partner.street or '',  # ถ้ามี address
+
+            'name1': 'ห้างหุ้นส่วนจำกัด อินดิเพนเดนท์ มัฟฟิน',
+            'id1': self.format_vat_th('0253562000217'),
+            'add1': self.format_vat_th('200/24 หมู่บ้าน โครงการ เค ปาร์ค กบินทร์บุรี 2 ๓ ๓ หมู่ที่ 9 ต.เมืองเก่า อ.กบินทร์บุรี จ.ปราจีนบุรี'),
+
+            'name2': partner.name or '',
+            'id1_2': self.format_vat_th(partner.vat),
+            'add2': partner.street or '',  # ถ้ามี address
+
+            'date14.0': invoice_date,
+            'pay1.13.0': "{:,.2f}".format(total_amount),
+            'tax1.13.0': "{:,.2f}".format(wht_amount),
+            'pay1.14': "{:,.2f}".format(total_amount),
+            'tax1.14': "{:,.2f}".format(wht_amount),
+            
+            'date_pay': day,
+            'month_pay': month,
+            'year_pay': year,
         }
 
         # Checkbox fields (ตัวอย่าง chk7)
-        checkbox_list = ['chk7'] if pnd_type == 'pnd53' else []
+        checkbox_list = ['chk7', 'chk8'] if pnd_type == 'pnd53' else []
 
         # Update text fields
         try:
