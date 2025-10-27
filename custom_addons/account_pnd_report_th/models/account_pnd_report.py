@@ -73,9 +73,9 @@ class AccountPNDReport(models.TransientModel):
             'domain': [('id', 'in', created.ids)],
             'target': 'current',
         }
-
+    
     def _fill_pnd_pdf(self, pnd_type, partner, moves):
-        """Fill Thai RD official PDF template"""
+        """Fill Thai RD official PDF template with text fields + checkbox"""
         template_path = get_module_resource(
             'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
         )
@@ -89,19 +89,65 @@ class AccountPNDReport(models.TransientModel):
         total_amount = abs(sum(moves.mapped('balance')))
         tax_amount = abs(sum(moves.mapped('tax_line_id.amount')))
 
+        # Text field values
         data_dict = {
             'form_type': 'PND3' if pnd_type == 'pnd3' else 'PND53',
             'TaxID': partner.vat or '',
             'PartnerName': partner.name or '',
             'TotalAmount': f"{total_amount:,.2f}",
             'TaxAmount': f"{tax_amount:,.2f}",
+            'name1': partner.name or '',
+            'id1': partner.vat or '0 2535 62000 21 7',
+            # 'add1': partner.street or '',  # ถ้ามี address
         }
 
+        # Checkbox fields (ตัวอย่าง chk7)
+        checkbox_list = ['chk7'] if pnd_type == 'pnd53' else []
+
+        # Update text fields
         try:
             writer.update_page_form_field_values(writer.pages[0], data_dict)
-        except Exception:
-            pass  # ignore if PDF template has no form fields
+        except Exception as e:
+            _logger.warning("Failed to fill PDF text fields: %s", e)
+
+        # Check checkboxes
+        for field in checkbox_list:
+            try:
+                writer.update_page_form_field_values(writer.pages[0], {field: '/Yes'})
+            except Exception as e:
+                _logger.warning("Failed to check PDF checkbox %s: %s", field, e)
 
         output_stream = io.BytesIO()
         writer.write(output_stream)
         return output_stream.getvalue()
+    # def _fill_pnd_pdf(self, pnd_type, partner, moves):
+    #     """Fill Thai RD official PDF template"""
+    #     template_path = get_module_resource(
+    #         'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
+    #     )
+
+    #     reader = PdfReader(template_path)
+    #     writer = PdfWriter()
+
+    #     for page in reader.pages:
+    #         writer.add_page(page)
+
+    #     total_amount = abs(sum(moves.mapped('balance')))
+    #     tax_amount = abs(sum(moves.mapped('tax_line_id.amount')))
+
+    #     data_dict = {
+    #         'form_type': 'PND3' if pnd_type == 'pnd3' else 'PND53',
+    #         'TaxID': partner.vat or '',
+    #         'PartnerName': partner.name or '',
+    #         'TotalAmount': f"{total_amount:,.2f}",
+    #         'TaxAmount': f"{tax_amount:,.2f}",
+    #     }
+
+    #     try:
+    #         writer.update_page_form_field_values(writer.pages[0], data_dict)
+    #     except Exception:
+    #         pass  # ignore if PDF template has no form fields
+
+    #     output_stream = io.BytesIO()
+    #     writer.write(output_stream)
+    #     return output_stream.getvalue()
