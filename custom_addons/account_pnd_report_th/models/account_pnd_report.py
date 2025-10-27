@@ -148,6 +148,7 @@ class AccountPNDReport(models.TransientModel):
         for page in reader.pages:
             writer.add_page(page)
 
+        _logger.info(f'move {move}')
         total_amount = abs(move.balance)
         wht_amount = abs(move.tax_line_id.amount)
 
@@ -178,12 +179,12 @@ class AccountPNDReport(models.TransientModel):
             'id1_2': self.format_vat_th(partner.vat),
             'add2': partner.street or '',  # ถ้ามี address
 
-            'date14.0': invoice_date,
+            'date14.0': invoice_date.strftime('%d/%m/%Y'),
             'pay1.13.0': "{:,.2f}".format(total_amount),
             'tax1.13.0': "{:,.2f}".format(wht_amount),
             'pay1.14': "{:,.2f}".format(total_amount),
             'tax1.14': "{:,.2f}".format(wht_amount),
-            
+
             'date_pay': day,
             'month_pay': month,
             'year_pay': year,
