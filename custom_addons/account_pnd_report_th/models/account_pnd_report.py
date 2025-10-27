@@ -108,7 +108,7 @@ class AccountPNDReport(models.TransientModel):
         wht_amount = abs(sum(moves.mapped('tax_line_id.amount')))
 
         # ถ้า Invoice/Bill Date ต้องเป็นวันที่ล่าสุดของ partner_moves
-        latest_move = partner_moves.sorted('date', reverse=True)[:1]
+        latest_move = moves.sorted('date', reverse=True)[:1]
         invoice_date = latest_move.date if latest_move else ''
 
          # format D/M/Y
