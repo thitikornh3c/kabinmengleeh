@@ -37,19 +37,20 @@ class AccountPNDReport(models.TransientModel):
         }
 
         tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
-        moves = self.env['account.move.line'].read_group(
-            [('date', '>=', wizard.date_start),
-            ('date', '<=', wizard.date_end),
-            ('tax_line_id', '!=', False)],
-            ['move_id', 'partner_id', 'balance', 'tax_line_id'],
-            ['move_id']
-        )
-        # moves = self.env['account.move.line'].search([
-        #     ('date', '>=', wizard.date_start),
+        # moves = self.env['account.move.line'].read_group(
+        #     [('date', '>=', wizard.date_start),
         #     ('date', '<=', wizard.date_end),
-        #     ('tax_line_id', '!=', False),
-        #     # ('tax_line_id.name', 'ilike', wizard.pnd_type),
-        # ])
+        #     ('tax_line_id', '!=', False)],
+        #     ['move_id', 'partner_id', 'balance', 'tax_line_id'],
+        #     ['move_id']
+        # )
+        moves = self.env['account.move.line'].search([
+            ('date', '>=', wizard.date_start),
+            ('date', '<=', wizard.date_end),
+            ('tax_line_id', '!=', False),
+            # ('tax_line_id.name', 'ilike', wizard.pnd_type),
+        ])
+        moves = moves.filtered(lambda l: l.tax_line_id and l.move_id)
         _logger.info("PND Report Wizard: date_start=%s, date_end=%s, pnd_type=%s", 
                     wizard.date_start, wizard.date_end, wizard.pnd_type, tax_names)
         _logger.info("Found %d account.move.line(s) for PND report", len(moves))
