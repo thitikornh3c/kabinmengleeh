@@ -54,6 +54,10 @@ class AccountPNDReport(models.TransientModel):
 
         for partner in partners:
             partner_moves = moves.filtered(lambda m: m.partner_id == partner)
+
+            _logger.info(f"Partner all fields: {partner}")
+            _logger.info(f"Partner Move all fields: {partner_moves}")
+
             pdf_bytes = self._fill_pnd_pdf(wizard.pnd_type, partner, partner_moves)
 
             file_name = f"pnd_{wizard.pnd_type}_{partner.vat or partner.id}.pdf"
