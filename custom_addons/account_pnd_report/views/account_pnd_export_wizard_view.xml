@@ -1,7 +1,7 @@
 <odoo>
     <record id="view_pnd_export_wizard_form" model="ir.ui.view">
-        <field name="name">pnd.export.wizard.form</field>
-        <field name="model">pnd.export.wizard</field>
+        <field name="name">account.pnd.export.wizard.form</field>
+        <field name="model">account.pnd.export.wizard</field>
         <field name="arch" type="xml">
             <form string="Export PND">
                 <field name="state" invisible="1"/>
@@ -39,9 +39,9 @@
     <!-- Action Window definition remains unchanged -->
     <record id="action_pnd_export_wizard" model="ir.actions.act_window">
         <field name="name">Export PND</field>
-        <field name="res_model">pnd.export.wizard</field>
+        <field name="res_model">account.pnd.export.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="view_id" ref="view_pnd53_export_wizard_form"/>
+        <field name="view_id" ref="view_pnd_export_wizard_form"/>
     </record>
 </odoo>

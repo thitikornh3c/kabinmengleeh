@@ -3,7 +3,7 @@
         <field name="name">account.pnd.message.wizard.form</field>
         <field name="model">account.pnd.message.wizard</field>
         <field name="arch" type="xml">
-            <form string="PND53 PDF Links">
+            <form string="PND PDF Links">
                 <sheet>
                     <field name="message" readonly="1" widget="html" nolabel="1"/>
                 </sheet>

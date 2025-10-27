@@ -9,14 +9,14 @@ _logger = logging.getLogger(__name__)
 class AccountPNDReport(models.Model):
     _inherit = 'account.report'
 
-    def action_export_pnd53_pdf(self):
+    def action_export_pnd_pdf(self):
         # This method is called by the old server action in your manifest. 
         # Since we are using a direct wizard call from the menu, 
         # this code path is deprecated but kept minimal for backward compatibility if needed.
         return {
             'type': 'ir.actions.act_window',
             'name': _('Export PND'),
-            'res_model': 'pnd53.export.wizard',
+            'res_model': 'account.pnd.export.wizard',
             'view_mode': 'form',
             'target': 'new',
         }
