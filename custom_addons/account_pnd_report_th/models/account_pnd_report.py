@@ -92,6 +92,21 @@ class AccountPNDReport(models.TransientModel):
         
         return f"{vat_clean[0]} {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
     
+    def set_text_field_centered(self, writer, page, field_name, value):
+        try:
+            field = writer.get_fields()[field_name]
+            if field:
+                writer.update_page_form_field_values(page, {field_name: str(value)})
+                # alignment = 1 คือ center
+                writer.update_page_form_field_values(page, {field_name: str(value)})
+                # ถ้า PyPDF2 รุ่นใหม่อาจต้องใช้ appearance update
+                for f in writer.pages[0]['/Annots']:
+                    if f.get_object()['/T'] == field_name:
+                        f.get_object().update({
+                            "/Q": 1  # Q=1 คือ center
+                        })
+        except Exception:
+            pass
     def _fill_pnd_pdf(self, pnd_type, partner, moves):
         """Fill Thai RD official PDF template with text fields + checkbox"""
         template_path = get_module_resource(
@@ -139,10 +154,6 @@ class AccountPNDReport(models.TransientModel):
             'tax1.13.0': "{:,.2f}".format(wht_amount),
             'pay1.14': "{:,.2f}".format(total_amount),
             'tax1.14': "{:,.2f}".format(wht_amount),
-            
-            'date_pay': day,
-            'month_pay': month,
-            'year_pay': year,
         }
 
         # Checkbox fields (ตัวอย่าง chk7)
@@ -151,6 +162,9 @@ class AccountPNDReport(models.TransientModel):
         # Update text fields
         try:
             writer.update_page_form_field_values(writer.pages[0], data_dict)
+            self.set_text_field_centered(writer, writer.pages[0], 'date_pay', day)
+            self.set_text_field_centered(writer, writer.pages[0], 'month_pay', month)
+            self.set_text_field_centered(writer, writer.pages[0], 'year_pay', year)
         except Exception as e:
             _logger.warning("Failed to fill PDF text fields: %s", e)
 
