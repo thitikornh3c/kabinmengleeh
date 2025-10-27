@@ -121,7 +121,7 @@ class AccountPNDReport(models.TransientModel):
         # ลบช่องว่างหรือเครื่องหมายใดๆ
         vat_clean = ''.join(c for c in vat if c.isdigit())
         if len(vat_clean) != 13:
-            return vat  # ถ้าไม่ใช่ 13 หลัก คืนค่าเดิม
+            return vat
         
         return f"{vat_clean[0]} {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
     
