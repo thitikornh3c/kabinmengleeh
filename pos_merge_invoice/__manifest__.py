@@ -1,6 +1,5 @@
 {
     "name": "POS Merge Orders to Invoice",
-    'version': '18.0.1.0.0',
     "category": "Point of Sale",
     "summary": "Merge multiple POS orders into one invoice",
     "depends": ["point_of_sale", "account"],
