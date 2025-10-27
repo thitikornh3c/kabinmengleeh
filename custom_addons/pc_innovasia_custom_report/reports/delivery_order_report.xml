@@ -1,0 +1,14 @@
+<odoo>
+    <!--Delivery Order no Price with stamp template-->
+    <record id="innovasia_inventory_packing_list_action" model="ir.actions.report">
+        <field name="name">Innovasia Packing List</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pc_innovasia_custom_report.innovasia_packing_list_report</field>
+        <field name="report_file">pc_innovasia_custom_report.innovasia_packing_list_report</field>
+        <field name="print_report_name">'%s_%s_%s_%s_Delivery Order' % (object.partner_id.ref, object.scheduled_date.strftime('%y%m%d'), object.name, (object.partner_id.commercial_company_name if object.partner_id.commercial_company_name else object.partner_id.name))</field>
+        <field name="paperformat_id" ref="pc_innovasia_custom_report.paperformat_custom_report"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>    
+</odoo>

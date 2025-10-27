@@ -1,0 +1,6 @@
+<odoo>
+    <record id="jp_report_access" model="res.groups">
+        <field name="name">Custom Report Access</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+</odoo>

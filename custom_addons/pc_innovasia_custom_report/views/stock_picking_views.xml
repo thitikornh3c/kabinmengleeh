@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_picking_view_inherit_pc_reports" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.pc.reports</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="pc_show_price_on_report" groups="pc_innovasia_custom_report.jp_report_access"/>
+                <field name="pc_show_sign_stamp" groups="pc_innovasia_custom_report.jp_report_access"/>
+                <field name="pc_sign_by" groups="pc_innovasia_custom_report.jp_report_access"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

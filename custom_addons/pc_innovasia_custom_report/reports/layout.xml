@@ -1,0 +1,400 @@
+<odoo>
+    <template id="innovasia_report_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="pc_innovasia_custom_report.innovasia_report_layout_boxed"><t t-out="0"/></t>
+    </template>
+    <template id="innovasia_report_layout_th">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="pc_innovasia_custom_report.innovasia_report_layout_boxed_th"><t t-out="0"/></t>
+    </template>
+    <template id="innovasia_report_layout_invoice">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="pc_innovasia_custom_report.innovasia_report_layout_boxed_invoice"><t t-out="0"/></t>
+    </template>
+    <template id="innovasia_report_layout_packing_list">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="pc_innovasia_custom_report.innovasia_report_layout_boxed_packing_list"><t t-out="0"/></t>
+    </template> 
+    <template id="innovasia_report_layout_boxed">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style" style="margin-bottom:0px !important">
+            <div class="o_boxed_header">
+                <div class="row mb8">
+                    <div class="col-6">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                    </div>
+                    <div class="col-3"/>                  
+                    <div class="col-3 text-start" style="margin-top:80px !important;">
+                        <div>
+                            <span>Effective Date: </span>
+                            <span t-field="o.x_studio_effective_date" style="display: inline;"
+                                t-options-widget="&quot;date&quot;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
+            <div class="text-center">
+                <div t-field="company.report_footer">Company Report Footer</div>
+                <div t-if="report_type == 'pdf'">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
+                    <span t-out="o.name">(document name)</span>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="innovasia_report_layout_boxed_th">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style" style="margin-bottom:0px !important; padding-right: 26px">
+            <style>
+                .header {
+                text-align: right;
+                }
+                .header_info * {
+                text-align: left;
+                }
+                .text-left {
+                text-align: left;
+                }
+                .o_shape_bubble_1 {
+                top: -870px;
+                right: -450px;
+                }
+                .header {
+                position: relative;
+                }
+                .label-left {
+                width: 120px;
+                text-align: left;
+                display: block;
+                font-weight: bold;
+                }
+                .label-right {
+                color: #4b565e;
+                flex: 1;
+                text-align: left;
+                }
+                .divider {
+                height: 1px;
+                width: 100%;
+                border-bottom: 1px solid #dcdcdc;
+                margin-top: 8px;
+                margin-bottom: 8px;
+                }
+                .border-bottom-divider {
+                border-bottom: 1px solid #dcdcdc;
+                }
+                .o_boxed_header {
+                    position: relative;
+                }
+                .header_info *, .header_detail * {
+                    font-size: 16px !important;
+                    color: #4b565e !important;
+                }
+                .header_detail h4 span {
+                    font-size: 24px !important
+                }
+                .footer-line p {
+                    font-size: 13px;
+                    margin-bottom: 0px !important;
+                }
+                .o_report_layout_boxed table thead {
+                    border-bottom: 1px solid #495057
+                }
+            </style>
+            <!--<svgxmlns="http://www.w3.org/2000/svg" width="1100" height="1100" class="o_shape_bubble_1 z-n1 position-fixed">-->
+            <!--    <circle cx="550" cy="550" r="550" fill-opacity=".1" fill="#275986"/>-->
+            <!--</svg>-->
+            <div class="o_boxed_header pt-4 pb-2">
+                <!--<div style="position:fixed; top: 0px; right:left; z-index:10;">-->
+                <!--  <svg xmlns="http://www.w3.org/2000/svg" t-attf-class="o_shape_bubble_1 z-n1 {{report_type == 'pdf' and 'position-fixed' or 'position-absolute'}}" width="1100" height="1100">-->
+                <!--    <circle cx="550" cy="550" r="550" fill-opacity=".1" fill="#275986"/>-->
+                <!--  </svg>-->
+                <!--</div>-->
+                <!--<div class="paper-color" style="border-top: 80px solid #f4963a; border-left: 80px solid transparent; position:fixed; top: 0px; right:0; width:0px; height:0px; z-index:10;"/>-->
+                <div class="row mb-3" style="padding-right: 26.46 px;">
+                    <div class="col-6 text-left">
+                        <img class="text-left" t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                        
+                    </div>
+                    <div class="col-6 header_detail">
+                        <div class="header_info text-start mt-3">
+                            <!-- Company Information -->
+                            <t t-if="doc.company_id.pc_local_address">
+                                <t t-if="doc.company_id.country_id != doc.partner_id.country_id">
+                                    <span t-field="doc.company_id.partner_id.name"/>
+                                    <br/>
+                                    <span t-field="doc.company_id.partner_id.street"/>
+                                    <br/>
+                                    <t t-if="doc.company_id.partner_id.street2">
+                                        <span t-field="doc.company_id.partner_id.street2"/>
+                                        <br/>
+                                    </t>
+                                    <span t-field="doc.company_id.partner_id.city"/>
+                                    <span t-field="doc.company_id.partner_id.state_id.name"/>
+                                    <span t-field="doc.company_id.partner_id.zip"/>
+                                    <br/>
+                                    <span t-field="doc.company_id.partner_id.country_id"/>
+                                    <br/>
+                                    <span style="display:inline-block">Tax ID</span>
+                                    <span t-out="doc.company_id.vat if doc.company_id.vat else '0105529036316'"/>
+                                </t>
+                                <t t-else="">
+                                    <span t-field="doc.company_id.pc_local_address"/>
+                                </t>
+                            </t>
+                            <!--<t t-else="">-->
+                            <!--    <span class="text-size" t-field="doc.company_id.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>-->
+                            <!--</t>-->
+                            <!--<br/>-->
+                            <!--<span style="display:inline-block">Tax ID</span>-->
+                            <!--<span t-field="doc.company_id.vat"/>-->
+                        </div>
+                    </div>
+                    <!--<div class="col-3"/>-->
+                    <!--<div class="col-3 text-start" style="margin-top:80px !important;">-->
+                    <!--    <div>-->
+                    <!--        <span>Effective Date: </span>-->
+                    <!--        <span t-field="o.x_studio_effective_date" style="display: inline;" t-options-widget="&quot;date&quot;"/>-->
+                    <!--    </div>-->
+                    <!--</div>-->
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left">
+                    <div class="header_info text-start mt-3" style="padding-right: 24px;">
+                        
+                            <!-- Customer Information -->
+                            <p class="mt-3">
+                                <strong>Client</strong>
+                            </p>
+                            <t t-if="doc.partner_invoice_id.company_type == 'person'">
+                                <span t-field="doc.partner_invoice_id.display_name"/>
+                                <br/>
+                            </t>
+                            <t t-else="">
+                                <span t-field="doc.partner_invoice_id.name"/>
+                                <br/>
+                            </t>
+                            <span t-field="doc.partner_invoice_id.street"/>
+                            <t t-if="doc.partner_invoice_id.street2">
+                                <br/>
+                                <span t-field="doc.partner_invoice_id.street2"/>
+                            </t>
+                            <br/>
+                            <span t-field="doc.partner_invoice_id.city"/>
+                            <span t-field="doc.partner_invoice_id.state_id.name"/>
+                            <span t-field="doc.partner_invoice_id.zip"/>
+                            <span t-field="doc.partner_invoice_id.country_id"/>
+                            <br/>
+                            <span>VAT</span>
+                            <span t-field="doc.partner_invoice_id.vat"/>
+                    </div>
+                    </div>
+                    <div class="col-6 header_detail">
+                        <h4 class="mt-2 text-start" style="font-size: 24px !important; text-transform: unset !important">
+                            <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
+                            <span t-elif="doc.state in ['draft','sent']">Quotation </span>
+                            <span t-else="">Quotation</span>
+                            <!--<br/>-->
+                            <!--<span style="color: #000000 !important;">No.</span>-->
+                            <!--<span t-field="doc.name" style="color: #000000 !important;">#SO0000</span>-->
+                            <!--<t t-if="doc.x_studio_version">-->
+                            <!--    <span> _</span>-->
+                            <!--    <span t-field="doc.x_studio_version"/>-->
+                            <!--</t>-->
+                            <span>No. <span t-field="doc.name"/></span>
+                            
+                        </h4>
+                        <!--<div class="divider"/>-->
+                        <table class="table table-sm table-borderless mt-1">
+                            <!--<tr>-->
+                            <!--    <td class="text-start pt-3" style="width: 120px; border-top: 1px solid #dcdcdc">-->
+                            <!--        <span>Document No.</span>-->
+                            <!--    </td>-->
+                            <!--    <td class="text-start pt-3" style="border-top: 1px solid #dcdcdc">-->
+                            <!--        <span t-field="doc.name" style="color: #000000 !important;"/>-->
+                            <!--    </td>-->
+                            <!--</tr>-->
+                            <tr>
+                                <td class="text-start pt-2" style="width: 120px; font-weight: bold;">
+                                    <span>Date</span>
+                                </td>
+                                <td class="text-start pt-2">
+                                    <t t-if="doc.date_order">
+                                        <span t-field="doc.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}">2023-12-31</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start" style="width: 120px; font-weight: bold;">
+                                    <span>Seller</span>
+                                </td>
+                                <td class="text-start">
+                                    <t t-if="doc.user_id.name">
+                                        <span t-field="doc.user_id">Mitchell Admin</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start" style="width: 120px; font-weight: bold; border-bottom: 1px solid #dcdcdc">
+                                    <span>Reference</span>
+                                </td>
+                                <td class="text-start" style="border-bottom: 1px solid #dcdcdc">
+                                    <t t-if="doc.design_firm_source_id">
+                                        <span t-field="doc.design_firm_source_id">design_firm_source_id</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start pt-2" style="width: 120px;font-weight: bold;">
+                                    <span>Project</span>
+                                </td>
+                                <td class="text-start pt-2">
+                                    <t t-if="doc.client_order_ref">
+                                        <span t-field="doc.client_order_ref">client_order_ref</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+        <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
+            <div class="text-center pt-2">
+                <div class="footer-line"><span t-field="company.report_footer"/></div>
+                <div t-if="report_type == 'pdf'">
+                        Page: 
+                    <span class="page"/> / 
+                    <span class="topage"/>
+                </div>
+                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
+                    <span t-out="o.name">(document name)</span>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="innovasia_report_layout_boxed_invoice">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style" style="margin-bottom:0px !important">
+            <div class="o_boxed_header">
+                <div class="row mb8">
+                    <div class="col-6">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                    </div>                    
+                    <div class="col-3"/>
+                    <div class="col-3 text-start" style="margin-top:80px !important;">
+                        <div>
+                            <span>Invoice Date: </span>
+                            <span t-field="o.invoice_date" style="display: inline;"
+                                t-options-widget="&quot;date&quot;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
+            <div class="text-center">
+                <div t-field="company.report_footer">Company Report Footer</div>
+                <div t-if="report_type == 'pdf'">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
+                    <span t-out="o.name">(document name)</span>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="innovasia_report_layout_boxed_packing_list">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style" style="margin-bottom:0px !important">
+            <div class="o_boxed_header">
+                <div class="row mb8">
+                    <div class="col-6">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
+            <div class="text-center">
+                <div t-field="company.report_footer">Company Report Footer</div>
+                <div t-if="report_type == 'pdf'">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+                <div t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted">
+                    <span t-out="o.name">(document name)</span>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

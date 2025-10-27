@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_innovasia_quo_order_report,pc_innovasia_custom_report.access_innovasia_quo_order_report,sale.model_sale_order,pc_innovasia_custom_report.jp_report_access,1,0,0,0

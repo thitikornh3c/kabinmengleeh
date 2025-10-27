@@ -1,0 +1,691 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* pc_innovasia_custom_report
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-19 16:50+0000\n"
+"PO-Revision-Date: 2024-11-19 16:50+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,print_report_name:pc_innovasia_custom_report.innovasia_invoice_action
+msgid ""
+"'%s_%s_%s_%s_Invoice' % (object.partner_id.ref, "
+"object.invoice_date.strftime('%y%m%d'), object.name, "
+"(object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+msgstr ""
+"'%s_%s_%s_%s_%s様_請求書' % (object.partner_id.ref, "
+"object.invoice_date.strftime('%y%m%d'), "
+"int(object.amount_total),object.name, "
+"(object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,print_report_name:pc_innovasia_custom_report.innovasia_inventory_packing_list_action
+msgid ""
+"'%s_%s_%s_%s_Delivery Order' % (object.partner_id.ref, "
+"object.scheduled_date.strftime('%y%m%d'), object.name, "
+"(object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+msgstr ""
+"'%s_%s_%s_%s_%s様_納品書' % (object.partner_id.ref, "
+"object.scheduled_date.strftime('%y%m%d'), "
+"int(object.sale_id.amount_total),object.name, "
+"(object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,print_report_name:pc_innovasia_custom_report.innovasia_sale_quotation_action
+msgid ""
+"'%s_%s_%s_Quotation' % (object.date_order.strftime('%y%m%d'), object.name, "
+"(object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+msgstr ""
+"'%s_%s_%s様_見積書' % (object.x_studio_effective_date.strftime('%y%m%d'), "
+"object.name, (object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,print_report_name:pc_innovasia_custom_report.innovasia_sale_proforma_invoice_action
+msgid ""
+"'%s_%s_%s_Pro-Forma Invoice' % (object.date_order.strftime('%y%m%d'), "
+"object.name, (object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+msgstr ""
+"'%s_%s_%s様_見積送り状' % (object.date_order.strftime('%y%m%d'), "
+"object.name, (object.partner_id.commercial_company_name if "
+"object.partner_id.commercial_company_name else object.partner_id.name))"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_invoice
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_packing_list
+msgid "(document name)"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "- Installment of"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "11.05"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "16"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "20.00"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "2021-09-19"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "2023-12-31"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "2024-01-01"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_packing_list_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "27.00"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "3.00"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "30.00"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_packing_list_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "31.05"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span style=\"color: #000000 !important;\"> _</span>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<span style=\"color: #000000 !important;\">Packing List #</span>"
+msgstr "<span style=\"color: #000000 !important;\">納品書 #</span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span style=\"display:inline-block\">Tax ID</span>"
+msgstr "<span style=\"display:inline-block\">登録番号</span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_packing_list_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<span style=\"font-weight: bold; color: #000000\">Total</span>"
+msgstr "<span style=\"font-weight: bold; color: #000000\">合計</span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "<span> due on </span>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_purchase_order_report_tmpl
+msgid "<span><strong>Order to:</strong></span><br/>"
+msgstr "<span><strong>仕入先:</strong></span><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span style=\"font-weight: bold; color: #000000\">Untaxed Amount</span>"
+msgstr "<span style=\"font-weight: bold; color: #000000\">税抜金額</span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span>Amount</span>"
+msgstr "<span>金額</span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span>Disc.%</span>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed
+msgid "<span>Effective Date: </span>"
+msgstr "<span>発行日： </span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_invoice
+msgid "<span>Invoice Date: </span>"
+msgstr "<span>請求日： </span>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span>御中</span>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<span>様</span>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<strong class=\"mr16\">Subtotal</strong>"
+msgstr "小計"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Carrier:</strong><br/>"
+msgstr "<strong>配送業者：</strong><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "<strong>Customer Reference:</strong>"
+msgstr "<strong>お客様参照：</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Customer Reference:</strong><br/>"
+msgstr "<strong>お客様参照：</strong><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<strong>Expiration:</strong>"
+msgstr "<strong>見積有効期限：</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<strong>Fiscal Position Remark:</strong>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "<strong>Order Reference:</strong>"
+msgstr "<strong>オーダ番号：</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Product</strong>"
+msgstr "<strong>内容</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Quantity</strong>"
+msgstr "<strong>数量</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<strong>Shipping Address:</strong>"
+msgstr "<strong>配送先：</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Shipping Address:</strong><br/>"
+msgstr "<strong>配送先：</strong><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Shipping Date:</strong><br/>"
+msgstr "<strong>発送日：</strong><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<strong>Signature</strong>"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Taxes</strong>"
+msgstr "<strong>消費税</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Tracking Number:</strong><br/>"
+msgstr "<strong>追跡番号：</strong><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Untaxed Amount</strong>"
+msgstr "<strong>税抜金額</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "<strong>Your Reference:</strong>"
+msgstr "<strong>お客様参照：</strong>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "<strong>Your Reference:</strong><br/>"
+msgstr "<strong>オーダー番号：</strong><br/>"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "A note, whose content usually applies to the section or product above."
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "A section title"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "Amount"
+msgstr "金額"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Amount Due"
+msgstr "残高"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Approver:"
+msgstr "承認者："
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Bacon Burger"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Cancelled Credit Note #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Cancelled Invoice #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model,name:pc_innovasia_custom_report.model_res_company
+msgid "Companies"
+msgstr "会社"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_invoice
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_packing_list
+msgid "Company Report Footer"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Credit Note #"
+msgstr "クレジットノート　＃"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Description"
+msgstr "内容"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Draft Credit Note #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Draft Invoice #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,help:pc_innovasia_custom_report.field_res_company__pc_local_address
+msgid ""
+"Enter your company’s address in your local language here. This address will "
+"be displayed in the PDF reports."
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "INV/2023/0001"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Image"
+msgstr "イメージ"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "Innov/OUT/00289"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,name:pc_innovasia_custom_report.innovasia_invoice_action
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Innovasia Customer Invoice"
+msgstr "請求書（Innovasia Decor JP）"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,name:pc_innovasia_custom_report.innovasia_sale_quotation_action
+msgid "Innovasia JP Quotation/Order"
+msgstr "見積書/発注書（Innovasia Decor JP）"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,name:pc_innovasia_custom_report.innovasia_inventory_packing_list_action
+msgid "Innovasia Packing List"
+msgstr "納品書（Innovasia Decor JP）"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.actions.report,name:pc_innovasia_custom_report.innovasia_sale_proforma_invoice_action
+msgid "Innovasia Pro-Forma Invoice"
+msgstr "見積送り状(Innovasia JP)"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Invoice #"
+msgstr "請求書 #"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Invoicing Address:"
+msgstr "請求先："
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Invoicing and Shipping Address:"
+msgstr "請求先及び配送先："
+
+#. module: pc_innovasia_custom_report
+#: model:res.groups,name:pc_innovasia_custom_report.jp_report_access
+msgid "JP Custom Report"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Line"
+msgstr "品番"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_res_company__pc_local_address
+msgid "Local Address"
+msgstr "現地住所"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_invoice
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_packing_list
+msgid "Logo"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "Lot/Serial Number"
+msgstr "ロット/シリアル番号"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "No further requirements for this payment"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Order #"
+msgstr "注文書 #"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Oscar Morgan"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "PROFORMA #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "Packing List"
+msgstr "納品書"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_invoice
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_report_layout_boxed_packing_list
+msgid "Page: <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr "ページ: <span class=\"page\"/> / <span class=\"topage\"/>"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_account_bank_statement_line__pc_remittance_info
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_account_move__pc_remittance_info
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_account_payment__pc_remittance_info
+msgid "Remittance Info"
+msgstr "振込情報"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Paid on"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Payment within 30 calendar day"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Pro-Forma Invoice #"
+msgstr "見積送り状 #"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Quantity"
+msgstr "数量"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Quotation #"
+msgstr "見積書 #"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Quotation/Order"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_packing_list_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_tax_totals_template
+msgid "Rounding"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "SO0000"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "SO0001"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model,name:pc_innovasia_custom_report.model_sale_order
+msgid "Sales Order"
+msgstr "販売オーダ"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Sales person:"
+msgstr "担当："
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_stock_picking__pc_show_price_on_report
+msgid "Show Price on Report"
+msgstr "レポート上で価格表示"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_sale_order__pc_show_tax_on_report
+msgid "Show Tax on Report"
+msgstr "レポート上で税を表示"
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_account_bank_statement_line__pc_show_narration
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_account_move__pc_show_narration
+#: model:ir.model.fields,field_description:pc_innovasia_custom_report.field_account_payment__pc_show_narration
+msgid "Show Terms and Conditions"
+msgstr "諸条件を表示"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Tax 15%"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Tax ID"
+msgstr "登録番号"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Taxes"
+msgstr "税"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "The payment should also be transmitted with love"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,help:pc_innovasia_custom_report.field_stock_picking__pc_show_price_on_report
+msgid "To show the Price on the Packing List PDF print"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model.fields,help:pc_innovasia_custom_report.field_sale_order__pc_show_tax_on_report
+msgid "To show the tax on the quotation/order PDF print"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model:ir.model,name:pc_innovasia_custom_report.model_stock_picking
+msgid "Transfer"
+msgstr "移動"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "Unit Price"
+msgstr "単価"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_packing_list_tax_totals_template
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.document_tax_totals_template
+msgid "Untaxed Amount"
+msgstr "税抜金額"
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Vendor Bill #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "Vendor Credit Note #"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "due if paid before"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "pc_innovasia_custom_report.innovasia_inventory_packing_list"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+msgid "pc_innovasia_custom_report.innovasia_invoice_report_tmpl"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "pc_innovasia_custom_report.innovasia_quo_order_report_tmpl"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "primary"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "qweb"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_invoice_report_tmpl
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_quo_order_report_tmpl
+msgid "units"
+msgstr ""
+
+#. module: pc_innovasia_custom_report
+#: model_terms:ir.ui.view,arch_db:pc_innovasia_custom_report.innovasia_inventory_packing_list
+msgid "お客様参照"
+msgstr ""

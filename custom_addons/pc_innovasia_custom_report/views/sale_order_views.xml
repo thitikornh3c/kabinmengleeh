@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_view_inherit_pc_reports" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.pc.reports</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">                
+                <field name="pc_show_remittance_info" groups="pc_innovasia_custom_report.jp_report_access"/>
+                <field name="pc_show_tax_on_report" groups="pc_innovasia_custom_report.jp_report_access"/>                
+                <field name="pc_show_sign_stamp" groups="pc_innovasia_custom_report.jp_report_access"/>
+            </xpath>
+            <xpath expr="//group[@name='sale_info']" position="inside">
+                <field name="pc_remittance_info" groups="pc_innovasia_custom_report.jp_report_access"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="before">
+                <field name="pc_suppress_in_report"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='product_uom_qty']" position="before">
+                <field name="pc_suppress_in_report"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
