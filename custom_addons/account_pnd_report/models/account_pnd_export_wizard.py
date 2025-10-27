@@ -115,7 +115,7 @@ class AccountPNDExportWizard(models.TransientModel):
         """Fill Thai RD official PDF template"""
 
         template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/approve_wh3_081156.pdf'
+            'account_pnd_report_th', 'static/pdf/thailand_withholding_tax.pdf'
         )
         # template_path = (
         #     self.env['ir.config_parameter']
