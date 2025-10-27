@@ -7,6 +7,7 @@ import io
 import csv
 import logging
 from PyPDF2 import PdfReader, PdfWriter
+from odoo.modules.module import get_module_resource
 
 _logger = logging.getLogger(__name__)
 
@@ -111,7 +112,19 @@ class AccountPNDExportWizard(models.TransientModel):
             'state': 'result'
         })
         
-        self._fill_pnd_pdf()
+        """Fill Thai RD official PDF template"""
+
+        template_path = get_module_resource(
+            'account_pnd_report_th', 'static/pdf/approve_wh3_081156.pdf'
+        )
+        # template_path = (
+        #     self.env['ir.config_parameter']
+        #     .sudo()
+        #     .get_param('addons_path') +
+        #     '/account_pnd_report/static/pdf/thailand_withholding_tax.pdf'
+        # )
+
+        reader = PdfReader(template_path)
         # Return a window action to refresh the current wizard form view
         return {
             'type': 'ir.actions.act_window',
@@ -122,13 +135,3 @@ class AccountPNDExportWizard(models.TransientModel):
             'context': self.env.context,
         }
     
-    def _fill_pnd_pdf(self):
-            """Fill Thai RD official PDF template"""
-            template_path = (
-                self.env['ir.config_parameter']
-                .sudo()
-                .get_param('addons_path') +
-                '/account_pnd_report/static/pdf/thailand_withholding_tax.pdf'
-            )
-
-            reader = PdfReader(template_path)
