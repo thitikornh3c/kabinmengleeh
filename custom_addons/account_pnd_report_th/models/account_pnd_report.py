@@ -154,9 +154,9 @@ class AccountPNDReport(models.TransientModel):
         reader = PdfReader(template_path)
         fields = reader.get_fields()  # dict ของ field names + attributes
         if fields:
-            print("Fields in PDF:", list(fields.keys()))
+            _logger.info(f"Fields in PDF: {list(fields.keys())}")
         else:
-            print("No form fields found in PDF")
+            _logger.info(f"No form fields found in PDF"")
             
         writer = PdfWriter()
         for page in reader.pages:
