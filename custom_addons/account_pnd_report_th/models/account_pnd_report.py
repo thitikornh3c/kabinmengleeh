@@ -12,7 +12,7 @@ class AccountPNDReportResult(models.TransientModel):
     name = fields.Char(string="File Name")
     file_data = fields.Binary(string="PDF File")
     partner_id = fields.Many2one('res.partner', string="Partner")
-    pnd_type = fields.Selection([('pnd3', 'PND3'), ('pnd53', 'PND53')], string="Form Type")
+    pnd_type = fields.Selection([('pnd3', '3% WH C S'), ('pnd53', '3% WH P S')], string="Form Type")
 
     def action_download(self):
         """Download generated PDF"""
