@@ -95,10 +95,8 @@ class AccountPNDReport(models.TransientModel):
     def set_text_field_centered(self, writer, page, field_name, value):
         try:
             field = writer.get_fields()[field_name]
+            _logger(f'Re AP field {field}')
             if field:
-                writer.update_page_form_field_values(page, {field_name: str(value)})
-                # alignment = 1 คือ center
-                writer.update_page_form_field_values(page, {field_name: str(value)})
                 # ถ้า PyPDF2 รุ่นใหม่อาจต้องใช้ appearance update
                 for f in writer.pages[0]['/Annots']:
                     annot = f.get_object()
@@ -170,12 +168,10 @@ class AccountPNDReport(models.TransientModel):
         # Update text fields
         try:
             writer.update_page_form_field_values(writer.pages[0], data_dict)
-            self.set_text_field_centered(writer, writer.pages[0], 'date_pay', day)
-            self.set_text_field_centered(writer, writer.pages[0], 'month_pay', month)
-            self.set_text_field_centered(writer, writer.pages[0], 'year_pay', year)
         except Exception as e:
             _logger.warning("Failed to fill PDF text fields: %s", e)
 
+        self.set_text_field_centered(writer, writer.pages[0], 'month_pay', month)
         # Check checkboxes
         for field in checkbox_list:
             try:
