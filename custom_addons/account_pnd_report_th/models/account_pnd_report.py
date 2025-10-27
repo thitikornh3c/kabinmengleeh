@@ -203,10 +203,10 @@ class AccountPNDReport(models.TransientModel):
             '1': '1',
             # 'total': 'total',
             'pay1_13_0': "13",
-            'pay1_13': "13_1",
+            '13': "13_1",
             'pay1.13': "13_2",
             'pay1.14': "p1_14",
-            'tax1.14': "t1_14",
+            '14': "t1_14",
 
             'date_pay': day,
             'month_pay': month,
