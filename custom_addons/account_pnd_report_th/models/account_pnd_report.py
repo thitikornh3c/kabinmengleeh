@@ -58,8 +58,13 @@ class AccountPNDReport(models.TransientModel):
 
             pdf_bytes = self._fill_pnd_pdf(wizard.pnd_type, partner, move)
 
+            # แปลงวันที่เป็น string YYYYMMDD
+            if move.date:
+                move_date_str = move.date.strftime('%Y%m%d') if hasattr(move.date, 'strftime') else str(move.date).replace('-', '')
+            else:
+                move_date_str = 'nodate'
             # File name: pndtype_vat_YYYYMMDD.pdf
-            move_date_str = move.date.replace('-', '') if move.date else 'nodate'
+            # move_date_str = move.date.replace('-', '') if move.date else 'nodate'
             vat_clean = ''.join(c for c in (partner.vat or '') if c.isdigit())
             file_name = f"{wizard.pnd_type}_{vat_clean}_{move_date_str}.pdf"
 
@@ -147,8 +152,16 @@ class AccountPNDReport(models.TransientModel):
         wht_amount = abs(move.tax_line_id.amount)
 
         invoice_date = move.date
-        date_parts = str(invoice_date).split('-') if invoice_date else ['','','']
-        year, month, day = date_parts if len(date_parts) == 3 else ['','','']
+        if hasattr(invoice_date, 'strftime'):
+            year = invoice_date.strftime('%Y')
+            month = invoice_date.strftime('%m')
+            day = invoice_date.strftime('%d')
+        elif invoice_date:
+            date_parts = str(invoice_date).split('-')
+            year, month, day = date_parts if len(date_parts) == 3 else ['','','']
+        else:
+            year = month = day = ''
+
 
         data_dict = {
             'form_type': 'PND3' if pnd_type == 'pnd3' else 'PND53',
