@@ -56,7 +56,9 @@ class AccountPNDReport(models.TransientModel):
             partner_moves = moves.filtered(lambda m: m.partner_id == partner)
 
             _logger.info(f"Partner all fields: {partner}")
-            _logger.info(f"Partner Move all fields: {partner_moves}")
+
+            dataMove = {f: getattr(partner_moves, f) for f in partner_moves._fields}
+            _logger.info(f"Partner Move all fields: {dataMove}")
 
             pdf_bytes = self._fill_pnd_pdf(wizard.pnd_type, partner, partner_moves)
 
@@ -127,7 +129,7 @@ class AccountPNDReport(models.TransientModel):
         # ถ้า Invoice/Bill Date ต้องเป็นวันที่ล่าสุดของ partner_moves
         latest_move = moves.sorted('date', reverse=True)[:1]
         invoice_date = latest_move.date if latest_move else ''
-
+        _logger.info(f"total_amount {moves.mapped('balance')}, wht_amount {moves.mapped('tax_line_id.amount')}")
          # format D/M/Y
         date_parts = str(invoice_date).split('-')  # YYYY-MM-DD
         if len(date_parts) == 3:
