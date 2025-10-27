@@ -115,7 +115,7 @@ class AccountPNDReport(models.TransientModel):
             'TotalAmount': f"{total_amount:,.2f}",
             'TaxAmount': f"{tax_amount:,.2f}",
             'name1': partner.name or '',
-            'id1': format_vat_th(partner.vat or ''),
+            'id1': self.format_vat_th(partner.vat or ''),
             # 'add1': partner.street or '',  # ถ้ามี address
         }
 
