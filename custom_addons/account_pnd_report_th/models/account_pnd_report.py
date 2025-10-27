@@ -154,6 +154,10 @@ class AccountPNDReport(models.TransientModel):
             'tax1.13.0': "{:,.2f}".format(wht_amount),
             'pay1.14': "{:,.2f}".format(total_amount),
             'tax1.14': "{:,.2f}".format(wht_amount),
+            
+            'date_pay': day,
+            'month_pay': month,
+            'year_pay': year,
         }
 
         # Checkbox fields (ตัวอย่าง chk7)
