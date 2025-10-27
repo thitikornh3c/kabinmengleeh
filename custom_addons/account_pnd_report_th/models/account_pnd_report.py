@@ -195,10 +195,10 @@ class AccountPNDReport(models.TransientModel):
 
             'date14': invoice_date.strftime('%d/%m/%Y'),
             # 'pay1': "{:,.2f}".format(total_amount),
-            'pay1.13.0': "{:,.2f}".format(total_amount),
-            'tax1.13.0': "{:,.2f}".format(wht_amount),
+            'pay1_13': "{:,.2f}".format(total_amount),
+            'tax1_13': "{:,.2f}".format(wht_amount),
             'pay1_14': "{:,.2f}".format(total_amount),
-            'tax1.14': "{:,.2f}".format(wht_amount),
+            'tax1_14': "{:,.2f}".format(wht_amount),
 
             'date_pay': day,
             'month_pay': month,
