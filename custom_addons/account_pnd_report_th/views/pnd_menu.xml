@@ -1,7 +1,7 @@
 <odoo>
     <!-- Menu Item under Accounting -> Reports -->
-    <menuitem id="menu_account_pnd_pdf"
-              name="Export PND PDF"
+    <menuitem id="menu_account_pnd_report_pdf"
+              name="Export PND PDF 2"
               parent="account.menu_finance_reports"
               action="action_pnd_export_wizard"
               sequence="10"/>
