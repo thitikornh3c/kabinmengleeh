@@ -152,6 +152,12 @@ class AccountPNDReport(models.TransientModel):
         )
 
         reader = PdfReader(template_path)
+        fields = reader.get_fields()  # dict ของ field names + attributes
+        if fields:
+            print("Fields in PDF:", list(fields.keys()))
+        else:
+            print("No form fields found in PDF")
+            
         writer = PdfWriter()
         for page in reader.pages:
             writer.add_page(page)
@@ -198,10 +204,6 @@ class AccountPNDReport(models.TransientModel):
             'year_pay': year,
         }
         _logger.info(f'Dict {data_dict}')
-        fields_in_pdf = writer.get_fields()
-        for key in data_dict.keys():
-            if key not in fields_in_pdf:
-                _logger.warning("Field %s not found in PDF form", key)
 
         try:
             writer.update_page_form_field_values(writer.pages[0], data_dict)
