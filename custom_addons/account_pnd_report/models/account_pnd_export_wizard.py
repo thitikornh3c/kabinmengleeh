@@ -113,16 +113,15 @@ class AccountPNDExportWizard(models.TransientModel):
         })
         
         """Fill Thai RD official PDF template"""
-
-        template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/thailand_withholding_tax.pdf'
-        )
-        # template_path = (
-        #     self.env['ir.config_parameter']
-        #     .sudo()
-        #     .get_param('addons_path') +
-        #     '/account_pnd_report/static/pdf/thailand_withholding_tax.pdf'
+        # template_path = get_module_resource(
+        #     'account_pnd_report_th', 'static/pdf/thailand_withholding_tax.pdf'
         # )
+        template_path = (
+            self.env['ir.config_parameter']
+            .sudo()
+            .get_param('addons_path') +
+            '/account_pnd_report/static/pdf/thailand_withholding_tax.pdf'
+        )
 
         reader = PdfReader(template_path)
         # Return a window action to refresh the current wizard form view
