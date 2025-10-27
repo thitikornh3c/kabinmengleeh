@@ -1,15 +1,15 @@
 <odoo>
-    <record id="view_account_pnd_report_result_tree" model="ir.ui.view">
-        <field name="name">account.pnd.report.result.tree</field>
+    <record id="view_account_pnd_report_result_list" model="ir.ui.view">
+        <field name="name">account.pnd.report.result.list</field>
         <field name="model">account.pnd.report.result</field>
         <field name="arch" type="xml">
-            <tree string="Generated PND Reports">
+            <list string="Generated PND Reports">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="pnd_type"/>
                 <button name="action_download" type="object"
                         string="Download PDF" icon="fa-download"/>
-            </tree>
+            </list>
         </field>
     </record>
 
