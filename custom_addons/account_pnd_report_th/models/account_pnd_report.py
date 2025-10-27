@@ -165,10 +165,25 @@ class AccountPNDReport(models.TransientModel):
 
         data_dict = {
             'form_type': 'PND3' if pnd_type == 'pnd3' else 'PND53',
-            'TaxID': self.format_vat_th(partner.vat),
-            'PartnerName': partner.name or '',
-            'TotalAmount': f"{total_amount:,.2f}",
-            'TaxAmount': f"{wht_amount:,.2f}",
+            # 'TaxID': self.format_vat_th(partner.vat),
+            # 'PartnerName': partner.name or '',
+            # 'TotalAmount': f"{total_amount:,.2f}",
+            # 'TaxAmount': f"{wht_amount:,.2f}",
+
+            'name1': 'ห้างหุ้นส่วนจำกัด อินดิเพนเดนท์ มัฟฟิน',
+            'id1': self.format_vat_th('0253562000217'),
+            'add1': '200/24 หมู่บ้าน โครงการ เค ปาร์ค กบินทร์บุรี 2 ๓ ๓ หมู่ที่ 9 ต.เมืองเก่า อ.กบินทร์บุรี จ.ปราจีนบุรี',
+
+            'name2': partner.name or '',
+            'id1_2': self.format_vat_th(partner.vat),
+            'add2': partner.street or '',  # ถ้ามี address
+
+            'date14.0': invoice_date,
+            'pay1.13.0': "{:,.2f}".format(total_amount),
+            'tax1.13.0': "{:,.2f}".format(wht_amount),
+            'pay1.14': "{:,.2f}".format(total_amount),
+            'tax1.14': "{:,.2f}".format(wht_amount),
+            
             'date_pay': day,
             'month_pay': month,
             'year_pay': year,
