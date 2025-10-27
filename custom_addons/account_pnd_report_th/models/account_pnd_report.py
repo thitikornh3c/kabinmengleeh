@@ -74,6 +74,20 @@ class AccountPNDReport(models.TransientModel):
             'target': 'current',
         }
     
+    def format_vat_th(vat):
+        """
+        Format VAT number Thai style: '0253562000217' → '0 2535 62000 21 7'
+        """
+        if not vat:
+            return ''
+        
+        # ลบช่องว่างหรือเครื่องหมายใดๆ
+        vat_clean = ''.join(c for c in vat if c.isdigit())
+        if len(vat_clean) != 13:
+            return vat  # ถ้าไม่ใช่ 13 หลัก คืนค่าเดิม
+        
+        return f"{vat_clean[0]} {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
+    
     def _fill_pnd_pdf(self, pnd_type, partner, moves):
         """Fill Thai RD official PDF template with text fields + checkbox"""
         template_path = get_module_resource(
@@ -97,7 +111,7 @@ class AccountPNDReport(models.TransientModel):
             'TotalAmount': f"{total_amount:,.2f}",
             'TaxAmount': f"{tax_amount:,.2f}",
             'name1': partner.name or '',
-            'id1': partner.vat or '0 2535 62000 21 7',
+            'id1': format_vat_th(partner.vat),
             # 'add1': partner.street or '',  # ถ้ามี address
         }
 
