@@ -189,7 +189,7 @@ class AccountPNDReport(models.TransientModel):
             'month_pay': month,
             'year_pay': year,
         }
-
+        _logger.info(f'Dict {data_dict}')
         try:
             writer.update_page_form_field_values(writer.pages[0], data_dict)
         except Exception as e:
