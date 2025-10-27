@@ -199,6 +199,12 @@ class AccountPNDReport(models.TransientModel):
             'tax1.13.0': "{:,.2f}".format(wht_amount),
             'pay1.14': "{:,.2f}".format(total_amount),
             'tax1.14': "{:,.2f}".format(wht_amount),
+            '0': '0',
+            '1': '1',
+            'total': 'total',
+            'pay1_13_0': "{:,.2f}".format(total_amount),
+            'pay1_13': "{:,.2f}".format(total_amount),
+            'pay1.13': "{:,.2f}".format(total_amount),
 
             'date_pay': day,
             'month_pay': month,
