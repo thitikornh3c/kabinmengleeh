@@ -194,8 +194,9 @@ class AccountPNDReport(models.TransientModel):
             'add2': partner.street or '',  # ถ้ามี address
 
             'date14': invoice_date.strftime('%d/%m/%Y'),
-            'pay1': "{:,.2f}".format(total_amount),
-            'tax1': "{:,.2f}".format(wht_amount),
+            # 'pay1': "{:,.2f}".format(total_amount),
+            'pay1.13.0': "{:,.2f}".format(total_amount),
+            'tax1.13.0': "{:,.2f}".format(wht_amount),
             'pay1.14': "{:,.2f}".format(total_amount),
             'tax1.14': "{:,.2f}".format(wht_amount),
 
