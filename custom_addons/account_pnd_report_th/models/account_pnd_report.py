@@ -78,7 +78,7 @@ class AccountPNDReport(models.TransientModel):
             'target': 'current',
         }
     
-    def format_vat_th(vat):
+    def format_vat_th(self, vat):
         """
         Format VAT number Thai style: '0253562000217' → '0 2535 62000 21 7'
         """
