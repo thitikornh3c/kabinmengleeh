@@ -48,7 +48,7 @@ class AccountPNDReport(models.TransientModel):
             ('date', '>=', wizard.date_start),
             ('date', '<=', wizard.date_end),
             ('tax_line_id', '!=', False),
-            # ('tax_line_id.name', 'ilike', wizard.pnd_type),
+            ('tax_line_id.name', 'in', tax_names),
         ])
         moves = moves.filtered(lambda l: l.tax_line_id and l.move_id)
         _logger.info("PND Report Wizard: date_start=%s, date_end=%s, pnd_type=%s", 
