@@ -59,7 +59,7 @@ class AccountPNDReport(models.TransientModel):
             'type': 'ir.actions.act_window',
             'res_model': 'account.pnd.report.result',
             'name': 'Generated PND Reports',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',  # เปลี่ยนจาก tree → list
             'domain': [('id', 'in', created.ids)],
             'target': 'current',
         }
