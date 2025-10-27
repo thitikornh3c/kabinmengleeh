@@ -1,0 +1,35 @@
+<odoo>
+    <record id="view_account_pnd_report_result_tree" model="ir.ui.view">
+        <field name="name">account.pnd.report.result.tree</field>
+        <field name="model">account.pnd.report.result</field>
+        <field name="arch" type="xml">
+            <tree string="Generated PND Reports">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="pnd_type"/>
+                <button name="action_download" type="object"
+                        string="Download PDF" icon="fa-download"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_account_pnd_report_result_form" model="ir.ui.view">
+        <field name="name">account.pnd.report.result.form</field>
+        <field name="model">account.pnd.report.result</field>
+        <field name="arch" type="xml">
+            <form string="Generated PND Report">
+                <group>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="pnd_type"/>
+                    <field name="file_data" filename="name"/>
+                </group>
+                <footer>
+                    <button name="action_download" string="Download" type="object"
+                            class="btn-primary"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
