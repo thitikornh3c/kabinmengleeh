@@ -13,7 +13,7 @@ class AccountPNDReportResult(models.TransientModel):
     name = fields.Char(string="File Name")
     file_data = fields.Binary(string="PDF File")
     partner_id = fields.Many2one('res.partner', string="Partner")
-    pnd_type = fields.Selection([('pnd3', '3% WH C S'), ('pnd53', '3% WH P S')], string="Form Type")
+    pnd_type = fields.Selection([('pnd3', 'pnd3'), ('pnd53', 'pnd53')], string="Form Type")
 
     def action_download(self):
         """Download generated PDF"""
@@ -27,18 +27,24 @@ class AccountPNDReportResult(models.TransientModel):
 class AccountPNDReport(models.TransientModel):
     _name = 'account.pnd.report'
     _description = 'Generate Thai PND 3/53 Reports'
-
+ 
     @api.model
     def generate_pnd_reports(self, wizard):
         """Find tax transactions, group by partner, and generate PDFs."""
+        PND_TAX_MAP = {
+            'pnd53': ['1% WH C T', '2% WH C A', '3% WH C S', '5% WH C R', '3% WH C S'],
+            'pnd3': ['1% WH P T', '2% WH P A', '3% WH P S', '5% WH P R', '3% PND3'],
+        }
+
+        tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
         moves = self.env['account.move.line'].search([
             ('date', '>=', wizard.date_start),
             ('date', '<=', wizard.date_end),
             ('tax_line_id', '!=', False),
-            ('tax_line_id.name', 'ilike', wizard.pnd_type),
+            # ('tax_line_id.name', 'ilike', wizard.pnd_type),
         ])
         _logger.info("PND Report Wizard: date_start=%s, date_end=%s, pnd_type=%s", 
-                    wizard.date_start, wizard.date_end, wizard.pnd_type)
+                    wizard.date_start, wizard.date_end, wizard.pnd_type, tax_names)
         _logger.info("Found %d account.move.line(s) for PND report", len(moves))
         
         partners = moves.mapped('partner_id')
