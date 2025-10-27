@@ -3,7 +3,8 @@ import base64
 from odoo import models, fields, api
 from odoo.modules.module import get_module_resource
 from PyPDF2 import PdfReader, PdfWriter
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class AccountPNDReportResult(models.TransientModel):
     _name = 'account.pnd.report.result'
@@ -36,7 +37,10 @@ class AccountPNDReport(models.TransientModel):
             ('tax_line_id', '!=', False),
             ('tax_line_id.name', 'ilike', wizard.pnd_type),
         ])
-
+        _logger.info("PND Report Wizard: date_start=%s, date_end=%s, pnd_type=%s", 
+                    wizard.date_start, wizard.date_end, wizard.pnd_type)
+        _logger.info("Found %d account.move.line(s) for PND report", len(moves))
+        
         partners = moves.mapped('partner_id')
         results = self.env['account.pnd.report.result']
 
