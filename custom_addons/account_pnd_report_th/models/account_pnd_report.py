@@ -37,12 +37,19 @@ class AccountPNDReport(models.TransientModel):
         }
 
         tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
-        moves = self.env['account.move.line'].search([
-            ('date', '>=', wizard.date_start),
+        moves = self.env['account.move.line'].read_group(
+            [('date', '>=', wizard.date_start),
             ('date', '<=', wizard.date_end),
-            ('tax_line_id', '!=', False),
-            # ('tax_line_id.name', 'ilike', wizard.pnd_type),
-        ])
+            ('tax_line_id', '!=', False)],
+            ['move_id', 'partner_id', 'balance', 'tax_line_id'],
+            ['move_id']
+        )
+        # moves = self.env['account.move.line'].search([
+        #     ('date', '>=', wizard.date_start),
+        #     ('date', '<=', wizard.date_end),
+        #     ('tax_line_id', '!=', False),
+        #     # ('tax_line_id.name', 'ilike', wizard.pnd_type),
+        # ])
         _logger.info("PND Report Wizard: date_start=%s, date_end=%s, pnd_type=%s", 
                     wizard.date_start, wizard.date_end, wizard.pnd_type, tax_names)
         _logger.info("Found %d account.move.line(s) for PND report", len(moves))
@@ -194,7 +201,7 @@ class AccountPNDReport(models.TransientModel):
         for key in data_dict.keys():
             if key not in fields_in_pdf:
                 _logger.warning("Field %s not found in PDF form", key)
-                
+
         try:
             writer.update_page_form_field_values(writer.pages[0], data_dict)
         except Exception as e:
