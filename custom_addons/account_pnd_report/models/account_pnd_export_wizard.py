@@ -44,7 +44,7 @@ class AccountPNDExportWizard(models.TransientModel):
             if rec.date_from and rec.date_to and rec.date_from > rec.date_to:
                 raise UserError(_('The "Date From" cannot be later than the "Date To".'))
 
-    def action_confirm_export_pnd53(self):
+    def action_confirm_export_pnd(self):
         """
         Action for the 'Submit' button: mocks CSV, calls external API, and updates the wizard state.
         """
@@ -111,6 +111,7 @@ class AccountPNDExportWizard(models.TransientModel):
             'state': 'result'
         })
         
+        self._fill_pnd_pdf()
         # Return a window action to refresh the current wizard form view
         return {
             'type': 'ir.actions.act_window',
@@ -120,3 +121,14 @@ class AccountPNDExportWizard(models.TransientModel):
             'target': 'new',
             'context': self.env.context,
         }
+    
+    def _fill_pnd_pdf(self, pnd_type, partner, moves):
+            """Fill Thai RD official PDF template"""
+            template_path = (
+                self.env['ir.config_parameter']
+                .sudo()
+                .get_param('addons_path') +
+                '/account_pnd_report/static/pdf/thailand_withholding_tax.pdf'
+            )
+
+            reader = PdfReader(template_path)

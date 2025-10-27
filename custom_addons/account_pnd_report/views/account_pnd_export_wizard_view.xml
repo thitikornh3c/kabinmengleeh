@@ -25,7 +25,7 @@
                 <footer>
                     <!-- Submit Button (Always visible) -->
                     <button string="Submit" 
-                            name="action_confirm_export_pnd53" 
+                            name="action_confirm_export_pnd" 
                             type="object" 
                             class="oe_highlight"/>
                     
