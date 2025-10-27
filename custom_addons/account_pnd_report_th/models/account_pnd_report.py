@@ -156,7 +156,7 @@ class AccountPNDReport(models.TransientModel):
         if fields:
             _logger.info(f"Fields in PDF: {list(fields.keys())}")
         else:
-            _logger.info(f"No form fields found in PDF"")
+            _logger.info(f"No form fields found in PDF")
             
         writer = PdfWriter()
         for page in reader.pages:
