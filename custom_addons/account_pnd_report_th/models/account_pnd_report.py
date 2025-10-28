@@ -203,6 +203,7 @@ class AccountPNDReport(models.TransientModel):
             'date_pay': day,
             'month_pay': month,
             'year_pay': year,
+            'total': f"({self.number_to_thai_currency(wht_amount)})"
         }
         _logger.info(f'Dict {data_dict}')
 
@@ -222,6 +223,59 @@ class AccountPNDReport(models.TransientModel):
         output_stream = io.BytesIO()
         writer.write(output_stream)
         return output_stream.getvalue()
+
+
+    def number_to_thai_currency(self, number):
+        """
+        แปลงตัวเลขเป็นข้อความภาษาไทยรูปแบบจำนวนเงิน
+        เช่น 1234.56 -> "หนึ่งพันสองร้อยสามสิบสี่บาทห้าสิบหกสตางค์"
+        """
+        number_str = str(number).replace(',', '').replace(' ', '').replace('บาท', '').replace('฿', '')
+        try:
+            number = float(number_str)
+        except ValueError:
+            return "ข้อมูลนำเข้าไม่ถูกต้อง"
+
+        if number > 9999999.9999:
+            return "ข้อมูลนำเข้าเกินขอบเขตที่ตั้งไว้"
+
+        number_str = f"{number:.2f}"
+        integer_part, decimal_part = number_str.split('.')
+
+        number_array = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"]
+        digit_array = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"]
+
+        def read_number(num):
+            num = str(int(num))
+            result = ""
+            num_len = len(num)
+            for i, n in enumerate(num):
+                n = int(n)
+                if n != 0:
+                    if i == num_len - 1 and n == 1 and num_len > 1:
+                        result += "เอ็ด"
+                    elif i == num_len - 2 and n == 2:
+                        result += "ยี่"
+                    elif i == num_len - 2 and n == 1:
+                        result += ""
+                    else:
+                        result += number_array[n]
+                    result += digit_array[num_len - i - 1]
+            return result
+
+        baht_text = ""
+        integer_part = int(integer_part)
+        if integer_part == 0:
+            baht_text = "ศูนย์บาท"
+        else:
+            baht_text = read_number(integer_part) + "บาท"
+
+        if decimal_part == "00":
+            baht_text += "ถ้วน"
+        else:
+            baht_text += read_number(decimal_part) + "สตางค์"
+
+        return baht_text
     # def _fill_pnd_pdf(self, pnd_type, partner, moves):
     #     """Fill Thai RD official PDF template with text fields + checkbox"""
     #     template_path = get_module_resource(
