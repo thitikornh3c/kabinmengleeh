@@ -21,7 +21,7 @@ class AccountPNDReportResultBK(models.TransientModel):
     percent = fields.Char(string="Tax %")
     
     def action_download(self):
-        """Download generated PDF"""
+        """Download generated PDF """
         return {
             'type': 'ir.actions.act_url',
             'url': f"/web/content/{self._name}/{self.id}/file_data/{self.name}?download=true",
