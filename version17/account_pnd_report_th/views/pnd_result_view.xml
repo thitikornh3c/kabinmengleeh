@@ -1,0 +1,47 @@
+<odoo>
+    <!-- List View -->
+    <record id="view_account_pnd_report_result_list" model="ir.ui.view">
+        <field name="name">account.pnd.report.result.list</field>
+        <field name="model">account.pnd.report.result</field>
+        <field name="arch" type="xml">
+            <tree string="Generated PND Reports">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="pnd_type"/>
+                <field name="tax_base_amount"/>
+                <field name="wht_amount"/>
+                <field name="percent"/>
+                <button name="action_download"
+                        type="object"
+                        string="Download PDF"
+                        icon="fa-download"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_account_pnd_report_result_form" model="ir.ui.view">
+        <field name="name">account.pnd.report.result.form</field>
+        <field name="model">account.pnd.report.result</field>
+        <field name="arch" type="xml">
+            <form string="Generated PND Report">
+                <group>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="pnd_type"/>
+                    <field name="file_data" filename="name"/>
+                    <field name="tax_base_amount"/>
+                    <field name="wht_amount"/>
+                    <field name="percent"/>
+                </group>
+                <footer>
+                    <button name="action_download"
+                            string="Download"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -6,12 +6,8 @@ from odoo.modules.module import get_module_resource
 
 _logger = logging.getLogger(__name__)
 
-# ต้องติดตั้ง pdfrw และ reportlab ใน requirements.txt
-from pdfrw import PdfReader, PdfWriter, PdfDict, PdfName, PdfString, PdfObject, PageMerge
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.pagesizes import A4
+# ต้องติดตั้ง pdfrw ใน requirements.txt
+from pdfrw import PdfReader, PdfWriter, PdfDict, PdfName
 
 ANNOT_KEY = '/Annots'
 ANNOT_FIELD_KEY = '/T'
@@ -19,7 +15,6 @@ ANNOT_VAL_KEY = '/V'
 ANNOT_AP_KEY = '/AP'
 SUBTYPE_KEY = '/Subtype'
 WIDGET_SUBTYPE_KEY = '/Widget'
-
 
 class AccountPNDReportResult(models.TransientModel):
     _name = 'account.pnd.report.result'
@@ -30,17 +25,16 @@ class AccountPNDReportResult(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string="Partner")
     pnd_type = fields.Selection([('pnd3', 'pnd3'), ('pnd53', 'pnd53')], string="Form Type")
 
+    # 👇 เพิ่มฟิลด์ใหม่
     tax_base_amount = fields.Float(string="Base Amount")
     wht_amount = fields.Float(string="WHT Amount")
     percent = fields.Char(string="Tax %")
-
     def action_download(self):
         return {
             'type': 'ir.actions.act_url',
             'url': f"/web/content/{self._name}/{self.id}/file_data/{self.name}?download=true",
             'target': 'self',
         }
-
 
 class AccountPNDReport(models.TransientModel):
     _name = 'account.pnd.report'
@@ -60,10 +54,8 @@ class AccountPNDReport(models.TransientModel):
                 'Personal Withholding Tax 2% (Advertising)',
                 'Personal Withholding Tax 3% (Service)',
                 'Personal Withholding Tax 5% (Rental)',
-                'WHT 1%', 'WHT 2%', 'WHT 3%', 'WHT 4%', 'WHT 5%',
             ],
         }
-
         tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
         moves = self.env['account.move.line'].sudo().search([
             ('date', '>=', wizard.date_start),
@@ -80,24 +72,21 @@ class AccountPNDReport(models.TransientModel):
         for move in moves:
             partner = move.partner_id
             pdf_bytes = self._fill_pnd_pdf(wizard.pnd_type, partner, move)
-            # ✅ ทำให้แสดงผลภาษาไทยได้
-            pdf_bytes = self._flatten_pdf_with_thai_font(pdf_bytes)
-
             vat_clean = ''.join(c for c in (partner.vat or '') if c.isdigit())
             move_date_str = (
                 move.date.strftime('%Y%m%d') if hasattr(move.date, 'strftime')
                 else str(move.date).replace('-', '')
             )
             file_name = f"{wizard.pnd_type}_{vat_clean}_{move_date_str}.pdf"
-
             results.create({
                 'name': file_name,
                 'file_data': base64.b64encode(pdf_bytes),
                 'partner_id': partner.id,
                 'pnd_type': wizard.pnd_type,
+
                 'tax_base_amount': move.tax_base_amount,
                 'wht_amount': abs(move.balance),
-                'percent': f"{abs(move.tax_line_id.amount)} %",
+                'percent':  f"{abs(move.tax_line_id.amount)} %",
             })
 
         return {
@@ -108,42 +97,14 @@ class AccountPNDReport(models.TransientModel):
             'target': 'current',
         }
 
-    # ----------------------------
-    # 🔹 ส่วนแปลง PDF และ embed ฟอนต์
-    # ----------------------------
-    def _flatten_pdf_with_thai_font(self, pdf_bytes):
-        """ทำให้ PDF แสดงภาษาไทยถูกต้องด้วยฟอนต์ฝัง"""
-        template_pdf = PdfReader(fdata=pdf_bytes)
-        packet = io.BytesIO()
-        can = canvas.Canvas(packet, pagesize=A4)
+    def format_vat_th(self, vat):
+        if not vat:
+            return ''
+        vat_clean = ''.join(c for c in vat if c.isdigit())
+        if len(vat_clean) != 13:
+            return vat
+        return f"{vat_clean[0]} {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
 
-        font_path = get_module_resource('account_pnd_report_th', 'static/fonts/micross.ttf')
-        pdfmetrics.registerFont(TTFont('Micross', font_path))  # 👈 ตั้งชื่อฟอนต์ (อะไรก็ได้ แต่ต้องตรงตอนใช้)
-        can = canvas.Canvas(packet, pagesize=A4)
-        can.setFont("Micross", 12)  # 👈 ใช้ชื่อเดียวกันกับตอน register
-        # font_path = get_module_resource('account_pnd_report_th', 'static/fonts/THSarabun.ttf')
-        # pdfmetrics.registerFont(TTFont('THSarabun', font_path))
-        # can.setFont("THSarabun", 12)
-
-        for _ in template_pdf.pages:
-            can.drawString(0, 0, " ")  # บังคับ embed font
-            can.showPage()
-
-        can.save()
-        packet.seek(0)
-        overlay_pdf = PdfReader(packet)
-
-        for i, page in enumerate(template_pdf.pages):
-            merger = PageMerge(page)
-            merger.add(overlay_pdf.pages[i]).render()
-
-        output_stream = io.BytesIO()
-        PdfWriter().write(output_stream, template_pdf)
-        return output_stream.getvalue()
-
-    # ----------------------------
-    # 🔹 ส่วนกรอกข้อมูลลง PDF
-    # ----------------------------
     def _fill_pnd_pdf(self, pnd_type, partner, move):
         template_path = get_module_resource(
             'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
@@ -151,52 +112,27 @@ class AccountPNDReport(models.TransientModel):
         template_pdf = PdfReader(template_path)
         data_dict = self._prepare_data_dict(pnd_type, partner, move)
 
-        if template_pdf.Root.AcroForm:
-            template_pdf.Root.AcroForm.update(
-                PdfDict(NeedAppearances=PdfObject('true'))
-            )
-
+        # fill fields
         for page in template_pdf.pages:
-            annotations = page.get(ANNOT_KEY)
-            if not annotations:
-                continue
-
-            for annot in annotations:
-                if annot.get(SUBTYPE_KEY) != WIDGET_SUBTYPE_KEY:
-                    continue
-
-                key = annot.get(ANNOT_FIELD_KEY)
-                if not key:
-                    continue
-                key_str = key.to_unicode() if hasattr(key, 'to_unicode') else str(key)
-
-                if key_str in data_dict and data_dict[key_str] not in ['Yes', 'Off']:
-                    val = str(data_dict[key_str])
-                    annot.update(
-                        PdfDict(
-                            V=PdfString.encode(val),
-                            AP=PdfDict(N=PdfDict()),
-                            Ff=1,
-                        )
-                    )
-
-                if key_str in data_dict and data_dict[key_str] in ['Yes', 'Off']:
-                    val = data_dict[key_str]
-                    annot.update(
-                        PdfDict(
-                            V=PdfName(val),
-                            AS=PdfName(val),
-                            AP=PdfDict(N=PdfDict()),
-                        )
-                    )
+            if page[ANNOT_KEY]:
+                for annot in page[ANNOT_KEY]:
+                    if annot[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
+                        key = annot.get(ANNOT_FIELD_KEY)
+                        if key:
+                            key_str = key.to_unicode() if hasattr(key, 'to_unicode') else str(key)
+                            # fill text field
+                            if key_str in data_dict:
+                                annot.update(PdfDict(V='{}'.format(data_dict[key_str])))
+                                annot.update(PdfDict(AP=''))  # force appearance update
+                            # fill checkbox
+                            if key_str in data_dict and data_dict[key_str] in ['Yes', 'Off']:
+                                annot.update(PdfDict(V=PdfName(data_dict[key_str])))
+                                annot.update(PdfDict(AS=PdfName(data_dict[key_str])))
 
         output_stream = io.BytesIO()
         PdfWriter().write(output_stream, template_pdf)
         return output_stream.getvalue()
 
-    # ----------------------------
-    # 🔹 ส่วนจัดเตรียมข้อมูล
-    # ----------------------------
     def _prepare_data_dict(self, pnd_type, partner, move):
         total_amount = abs(move.tax_base_amount)
         wht_amount = abs(move.balance)
@@ -221,6 +157,7 @@ class AccountPNDReport(models.TransientModel):
             'month_pay': month,
             'year_pay': year,
             'total': f"({self.number_to_thai_currency(wht_amount)})",
+            # checkbox example
             'chk4': 'Yes' if pnd_type == 'pnd3' else 'Off',
             'chk7': 'Yes' if pnd_type == 'pnd53' else 'Off',
             'chk8': 'Yes'
@@ -228,18 +165,11 @@ class AccountPNDReport(models.TransientModel):
         _logger.info(f"Prepared PDF data_dict: {data_dict}")
         return data_dict
 
-    # ----------------------------
-    # 🔹 แปลง VAT และตัวเลขเป็นข้อความไทย
-    # ----------------------------
-    def format_vat_th(self, vat):
-        if not vat:
-            return ''
-        vat_clean = ''.join(c for c in vat if c.isdigit())
-        if len(vat_clean) != 13:
-            return vat
-        return f"{vat_clean[0]} {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
-
     def number_to_thai_currency(self, number):
+        """
+        แปลงตัวเลขเป็นข้อความภาษาไทยรูปแบบจำนวนเงิน
+        เช่น 1234.56 -> "หนึ่งพันสองร้อยสามสิบสี่บาทห้าสิบหกสตางค์"
+        """
         number_str = str(number).replace(',', '').replace(' ', '').replace('บาท', '').replace('฿', '')
         try:
             number = float(number_str)
@@ -273,6 +203,16 @@ class AccountPNDReport(models.TransientModel):
                     result += digit_array[num_len - i - 1]
             return result
 
-        baht_text = read_number(integer_part) + "บาท" if int(integer_part) > 0 else "ศูนย์บาท"
-        baht_text += "ถ้วน" if decimal_part == "00" else read_number(decimal_part) + "สตางค์"
+        baht_text = ""
+        integer_part = int(integer_part)
+        if integer_part == 0:
+            baht_text = "ศูนย์บาท"
+        else:
+            baht_text = read_number(integer_part) + "บาท"
+
+        if decimal_part == "00":
+            baht_text += "ถ้วน"
+        else:
+            baht_text += read_number(decimal_part) + "สตางค์"
+
         return baht_text
