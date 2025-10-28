@@ -7,6 +7,9 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="pnd_type"/>
+                <field name="tax_base_amount"/>
+                <field name="wht_amount"/>
+                <field name="percent"/>
                 <button name="action_download" type="object"
                         string="Download PDF" icon="fa-download"/>
             </list>
@@ -23,6 +26,9 @@
                     <field name="partner_id"/>
                     <field name="pnd_type"/>
                     <field name="file_data" filename="name"/>
+                    <field name="tax_base_amount"/>
+                    <field name="wht_amount"/>
+                    <field name="percent"/>
                 </group>
                 <footer>
                     <button name="action_download" string="Download" type="object"

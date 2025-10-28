@@ -15,6 +15,11 @@ class AccountPNDReportResult(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string="Partner")
     pnd_type = fields.Selection([('pnd3', 'pnd3'), ('pnd53', 'pnd53')], string="Form Type")
 
+    # 👇 เพิ่มฟิลด์ใหม่
+    tax_base_amount = fields.Float(string="Base Amount")
+    wht_amount = fields.Float(string="WHT Amount")
+    percent = fields.Char(string="Tax %")
+    
     def action_download(self):
         """Download generated PDF"""
         return {
@@ -81,6 +86,9 @@ class AccountPNDReport(models.TransientModel):
                 'file_data': base64.b64encode(pdf_bytes),
                 'partner_id': partner.id,
                 'pnd_type': wizard.pnd_type,
+                'tax_base_amount': move.tax_base_amount,
+                'wht_amount': move.wht_amount,
+                'percent': f"{move.wht_amount} %"
             })
             created += result
         # for partner in partners:
@@ -163,8 +171,8 @@ class AccountPNDReport(models.TransientModel):
             writer.add_page(page)
 
         _logger.info(f'move {move}')
-        total_amount = abs(move.balance)
-        wht_amount = abs(move.tax_line_id.amount)
+        total_amount = abs(move.tax_base_amount)
+        wht_amount = abs(move.balance)
 
         invoice_date = move.date
         if hasattr(invoice_date, 'strftime'):
