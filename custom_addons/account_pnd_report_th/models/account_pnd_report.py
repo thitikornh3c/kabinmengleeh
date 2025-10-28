@@ -87,8 +87,8 @@ class AccountPNDReport(models.TransientModel):
                 'partner_id': partner.id,
                 'pnd_type': wizard.pnd_type,
                 'tax_base_amount': move.tax_base_amount,
-                'wht_amount': move.wht_amount,
-                'percent': f"{move.wht_amount} %"
+                'wht_amount': abs(move.balance),
+                'percent':  f"{move.tax_line_id.amount} %",
             })
             created += result
         # for partner in partners:
