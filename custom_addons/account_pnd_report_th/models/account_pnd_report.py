@@ -126,16 +126,16 @@ class AccountPNDReport(models.TransientModel):
 
         c.drawString(195, 161, data_dict.get('total', ''))
 
-        c.drawString(339, 77, data_dict.get('date_pay', ''))
+        c.drawString(342, 77, data_dict.get('date_pay', ''))
         c.drawString(390, 77, data_dict.get('month_pay', ''))
-        c.drawString(435, 77, data_dict.get('year_pay', ''))
+        c.drawString(438, 77, data_dict.get('year_pay', ''))
 
 
         c.setFont("DejaVuSans", 14)
         # checkbox ตัวอย่าง
-        c.drawString(474, 604, f"chk4: {data_dict.get('chk4', '')}")
-        c.drawString(398, 586, f"{data_dict.get('chk7', '')}")
-        c.drawString(85, 122, f"{data_dict.get('chk8', '')}")
+        c.drawString(472, 604, f"chk4: {data_dict.get('chk4', '')}")
+        c.drawString(396, 586, f"{data_dict.get('chk7', '')}")
+        c.drawString(83, 121, f"{data_dict.get('chk8', '')}")
 
         c.showPage()
         c.save()
