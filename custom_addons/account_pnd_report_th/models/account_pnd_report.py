@@ -114,13 +114,13 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(378, 679, data_dict.get('id1_2', ''))
         c.drawString(65, 634, data_dict.get('add2', ''))
 
-        c.drawString(355, 200, data_dict.get('date14_0', ''))
-        c.drawRightString(480, 200, data_dict.get('pay1_13', ''))
-        c.drawRightString(580, 200, data_dict.get('tax1_13', ''))
+        c.drawString(345, 220, data_dict.get('date14_0', ''))
+        c.drawRightString(486, 220, data_dict.get('pay1_13', ''))
+        c.drawRightString(560, 220, data_dict.get('tax1_13', ''))
 
         # checkbox ตัวอย่าง
-        c.drawString(475, 610, f"chk4: {data_dict.get('chk4', '')}")
-        c.drawString(404, 600, f"chk7: {data_dict.get('chk7', '')}")
+        c.drawString(475, 605, f"chk4: {data_dict.get('chk4', '')}")
+        c.drawString(400, 575, f"chk7: {data_dict.get('chk7', '')}")
 
         c.showPage()
         c.save()
@@ -164,9 +164,9 @@ class AccountPNDReport(models.TransientModel):
             'month_pay': month,
             'year_pay': year,
             'total': f"({self.number_to_thai_currency(wht_amount)})",
-            'chk4': '✔️' if pnd_type == 'pnd3' else '',
-            'chk7': '✔️' if pnd_type == 'pnd53' else '',
-            'chk8': '✔️'
+            'chk4': '&#10004;' if pnd_type == 'pnd3' else '',
+            'chk7': '&#10004;' if pnd_type == 'pnd53' else '',
+            'chk8': '&#10004;'
         }
         _logger.info(f"Prepared PDF data_dict: {data_dict}")
         return data_dict
@@ -180,7 +180,7 @@ class AccountPNDReport(models.TransientModel):
         vat_clean = ''.join(c for c in vat if c.isdigit())
         if len(vat_clean) != 13:
             return vat
-        return f"{vat_clean[0]}   {vat_clean[1:2]} {vat_clean[2:3]} {vat_clean[3:4]} {vat_clean[4:5]}   {vat_clean[5:10]}    {vat_clean[10:12]}    {vat_clean[12]}"
+        return f"{vat_clean[0]}   {vat_clean[1:2]}  {vat_clean[2:3]}  {vat_clean[3:4]} {vat_clean[4:5]}   {vat_clean[5:10]}    {vat_clean[10:12]}    {vat_clean[12]}"
 
     def number_to_thai_currency(self, number):
         number_str = str(number).replace(',', '').replace(' ', '').replace('บาท', '').replace('฿', '')
