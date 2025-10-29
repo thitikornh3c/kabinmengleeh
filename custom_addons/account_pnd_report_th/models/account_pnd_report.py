@@ -125,7 +125,7 @@ class AccountPNDReport(models.TransientModel):
         c.showPage()
         c.save()
         buffer.seek(0)
-        overlay_pdf = PdfReader(packet)
+        overlay_pdf = PdfReader(buffer)
 
         # merge overlay ลง template
         for i, page in enumerate(template_pdf.pages):
