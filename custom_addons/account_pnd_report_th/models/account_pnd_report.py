@@ -94,7 +94,7 @@ class AccountPNDReport(models.TransientModel):
         """
         # โหลด template PDF
         template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
+            'account_pnd_report_th', 'static/pdf/lock_template_thailand_pnd.pdf'
         )
         template_pdf = PdfReader(template_path)
         
@@ -106,13 +106,13 @@ class AccountPNDReport(models.TransientModel):
         c.setFont("Micross", 12)
 
         # ✏️ วาดข้อความลง PDF ตามตำแหน่ง (ต้องปรับ x, y ให้ตรงกับ layout)
-        c.drawString(50, 800, data_dict.get('name1', ''))
-        c.drawString(50, 780, data_dict.get('id1', ''))
-        c.drawString(50, 760, data_dict.get('add1', ''))
+        c.drawString(65, 730, data_dict.get('name1', ''))
+        c.drawString(360, 750, data_dict.get('id1', ''))
+        c.drawString(65, 710, data_dict.get('add1', ''))
 
-        c.drawString(50, 720, data_dict.get('name2', ''))
-        c.drawString(50, 700, data_dict.get('id1_2', ''))
-        c.drawString(50, 680, data_dict.get('add2', ''))
+        c.drawString(65, 670, data_dict.get('name2', ''))
+        c.drawString(385, 680, data_dict.get('id1_2', ''))
+        c.drawString(65, 630, data_dict.get('add2', ''))
 
         c.drawString(400, 800, data_dict.get('date14_0', ''))
         c.drawString(400, 780, data_dict.get('pay1_13', ''))
