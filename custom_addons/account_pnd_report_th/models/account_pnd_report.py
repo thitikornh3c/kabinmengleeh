@@ -119,10 +119,18 @@ class AccountPNDReport(models.TransientModel):
         packet = io.BytesIO()
         can = canvas.Canvas(packet, pagesize=A4)
 
+        # font_path = get_module_resource('account_pnd_report_th', 'static/fonts/micross.ttf')
+        # pdfmetrics.registerFont(TTFont('Micross', font_path))  # 👈 ตั้งชื่อฟอนต์ (อะไรก็ได้ แต่ต้องตรงตอนใช้)
+        # can = canvas.Canvas(packet, pagesize=A4)
+        # can.setFont("Micross", 12)  # 👈 ใช้ชื่อเดียวกันกับตอน register
+        # Resolve font path
         font_path = get_module_resource('account_pnd_report_th', 'static/fonts/micross.ttf')
-        pdfmetrics.registerFont(TTFont('Micross', font_path))  # 👈 ตั้งชื่อฟอนต์ (อะไรก็ได้ แต่ต้องตรงตอนใช้)
-        can = canvas.Canvas(packet, pagesize=A4)
-        can.setFont("Micross", 12)  # 👈 ใช้ชื่อเดียวกันกับตอน register
+        if not font_path or not os.path.exists(font_path):
+            raise FileNotFoundError(f"Font file not found: {font_path}")
+
+        # Register font before creating the Canvas
+        pdfmetrics.registerFont(TTFont('Micross', font_path))
+        can.setFont("Micross", 12)
         # font_path = get_module_resource('account_pnd_report_th', 'static/fonts/THSarabun.ttf')
         # pdfmetrics.registerFont(TTFont('THSarabun', font_path))
         # can.setFont("THSarabun", 12)
