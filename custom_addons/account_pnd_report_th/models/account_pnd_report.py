@@ -124,7 +124,7 @@ class AccountPNDReport(models.TransientModel):
         # can = canvas.Canvas(packet, pagesize=A4)
         # can.setFont("Micross", 12)  # 👈 ใช้ชื่อเดียวกันกับตอน register
         # Resolve font path
-        font_path = get_module_resource('account_pnd_report_th', 'static/fonts/micross.ttf')
+        font_path = get_module_resource('account_pnd_report_th', 'static/font/micross.ttf')
         if not font_path or not os.path.exists(font_path):
             raise FileNotFoundError(f"Font file not found: {font_path}")
 
