@@ -115,7 +115,7 @@ class AccountPNDReport(models.TransientModel):
 
         c.drawString(65, 658, data_dict.get('name2', ''))
         c.drawString(378, 677, data_dict.get('id1_2', ''))
-        c.drawString(65, 634, data_dict.get('add2', ''))
+        c.drawString(65, 633, data_dict.get('add2', ''))
 
         c.drawString(337, 219, data_dict.get('date14_0', ''))
         c.drawRightString(489, 219, data_dict.get('pay1_13', ''))
