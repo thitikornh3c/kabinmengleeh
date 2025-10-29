@@ -136,7 +136,7 @@ class AccountPNDReport(models.TransientModel):
         # can.setFont("THSarabun", 12)
 
         for _ in template_pdf.pages:
-            can.drawString(0, 0, " ")  # บังคับ embed font
+            can.drawString(0, 0, "ฟหกฟหกฟหก")  # บังคับ embed font
             can.showPage()
 
         can.save()
