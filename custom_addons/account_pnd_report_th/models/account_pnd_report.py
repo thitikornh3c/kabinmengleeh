@@ -6,19 +6,10 @@ from odoo.modules.module import get_module_resource
 
 _logger = logging.getLogger(__name__)
 
-# ต้องติดตั้ง pdfrw และ reportlab ใน requirements.txt
-from pdfrw import PdfReader, PdfWriter, PdfDict, PdfName, PdfString, PdfObject, PageMerge
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.pagesizes import A4
-
-ANNOT_KEY = '/Annots'
-ANNOT_FIELD_KEY = '/T'
-ANNOT_VAL_KEY = '/V'
-ANNOT_AP_KEY = '/AP'
-SUBTYPE_KEY = '/Subtype'
-WIDGET_SUBTYPE_KEY = '/Widget'
 
 
 class AccountPNDReportResult(models.TransientModel):
@@ -51,19 +42,6 @@ class AccountPNDReport(models.TransientModel):
         PND_TAX_MAP = {
             'pnd53': ['1% WH C T', '2% WH C A', '3% WH C S', '5% WH C R', '3% WH C S'],
             'pnd3': ['1% WH P T', '2% WH P A', '3% WH P S', '5% WH P R', '3% PND3'],
-            # 'pnd53': [
-            #     'Company Withholding Tax 1% (Transportation)',
-            #     'Company Withholding Tax 2% (Advertising)',
-            #     'Company Withholding Tax 3% (Service)',
-            #     'Company Withholding Tax 5% (Rental)',
-            # ],
-            # 'pnd3': [
-            #     'Personal Withholding Tax 1% (Transportation)',
-            #     'Personal Withholding Tax 2% (Advertising)',
-            #     'Personal Withholding Tax 3% (Service)',
-            #     'Personal Withholding Tax 5% (Rental)',
-            #     'WHT 1%', 'WHT 2%', 'WHT 3%', 'WHT 4%', 'WHT 5%',
-            # ],
         }
 
         tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
@@ -81,15 +59,11 @@ class AccountPNDReport(models.TransientModel):
 
         for move in moves:
             partner = move.partner_id
-            pdf_bytes = self._fill_pnd_pdf(wizard.pnd_type, partner, move)
-            # ✅ ทำให้แสดงผลภาษาไทยได้
-            pdf_bytes = self._flatten_pdf_with_thai_font(pdf_bytes)
+            data_dict = self._prepare_data_dict(wizard.pnd_type, partner, move)
+            pdf_bytes = self._flatten_pdf_with_thai_font(data_dict)
 
             vat_clean = ''.join(c for c in (partner.vat or '') if c.isdigit())
-            move_date_str = (
-                move.date.strftime('%Y%m%d') if hasattr(move.date, 'strftime')
-                else str(move.date).replace('-', '')
-            )
+            move_date_str = move.date.strftime('%Y%m%d') if hasattr(move.date, 'strftime') else str(move.date).replace('-', '')
             file_name = f"{wizard.pnd_type}_{vat_clean}_{move_date_str}.pdf"
 
             results.create({
@@ -111,101 +85,43 @@ class AccountPNDReport(models.TransientModel):
         }
 
     # ----------------------------
-    # 🔹 ส่วนแปลง PDF และ embed ฟอนต์
+    # 🔹 สร้าง PDF จาก data_dict และ embed ฟอนต์ไทย
     # ----------------------------
-    def _flatten_pdf_with_thai_font(self, pdf_bytes):
-        """ทำให้ PDF แสดงภาษาไทยถูกต้องด้วยฟอนต์ฝัง"""
-        template_pdf = PdfReader(fdata=pdf_bytes)
-        packet = io.BytesIO()
-        can = canvas.Canvas(packet, pagesize=A4)
+    def _flatten_pdf_with_thai_font(self, data_dict):
+        """
+        สร้าง PDF ใหม่จาก data_dict โดยใช้ฟอนต์ไทย Micross
+        """
+        buffer = io.BytesIO()
+        c = canvas.Canvas(buffer, pagesize=A4)
 
-        # font_path = get_module_resource('account_pnd_report_th', 'static/fonts/micross.ttf')
-        # pdfmetrics.registerFont(TTFont('Micross', font_path))  # 👈 ตั้งชื่อฟอนต์ (อะไรก็ได้ แต่ต้องตรงตอนใช้)
-        # can = canvas.Canvas(packet, pagesize=A4)
-        # can.setFont("Micross", 12)  # 👈 ใช้ชื่อเดียวกันกับตอน register
-        # Resolve font path
         font_path = get_module_resource('account_pnd_report_th', 'static/font/micross.ttf')
-        # if not font_path or not os.path.exists(font_path):
-        #     raise FileNotFoundError(f"Font file not found: {font_path}")
-
-        # Register font before creating the Canvas
         pdfmetrics.registerFont(TTFont('Micross', font_path))
-        can.setFont("Micross", 12)
-        # font_path = get_module_resource('account_pnd_report_th', 'static/fonts/THSarabun.ttf')
-        # pdfmetrics.registerFont(TTFont('THSarabun', font_path))
-        # can.setFont("THSarabun", 12)
+        c.setFont("Micross", 12)
 
-        for _ in template_pdf.pages:
-            can.drawString(0, 0, "ฟหกฟหกฟหก")  # บังคับ embed font
-            can.showPage()
+        # ✏️ วาดข้อความลง PDF ตามตำแหน่ง (ต้องปรับ x, y ให้ตรงกับ layout)
+        c.drawString(50, 800, data_dict.get('name1', ''))
+        c.drawString(50, 780, data_dict.get('id1', ''))
+        c.drawString(50, 760, data_dict.get('add1', ''))
 
-        can.save()
-        packet.seek(0)
-        overlay_pdf = PdfReader(packet)
+        c.drawString(50, 720, data_dict.get('name2', ''))
+        c.drawString(50, 700, data_dict.get('id1_2', ''))
+        c.drawString(50, 680, data_dict.get('add2', ''))
 
-        for i, page in enumerate(template_pdf.pages):
-            merger = PageMerge(page)
-            merger.add(overlay_pdf.pages[i]).render()
+        c.drawString(400, 800, data_dict.get('date14_0', ''))
+        c.drawString(400, 780, data_dict.get('pay1_13', ''))
+        c.drawString(400, 760, data_dict.get('tax1_13', ''))
 
-        output_stream = io.BytesIO()
-        PdfWriter().write(output_stream, template_pdf)
-        return output_stream.getvalue()
+        # checkbox ตัวอย่าง
+        c.drawString(50, 640, f"chk4: {data_dict.get('chk4', 'Off')}")
+        c.drawString(50, 620, f"chk7: {data_dict.get('chk7', 'Off')}")
 
-    # ----------------------------
-    # 🔹 ส่วนกรอกข้อมูลลง PDF
-    # ----------------------------
-    def _fill_pnd_pdf(self, pnd_type, partner, move):
-        template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
-        )
-        template_pdf = PdfReader(template_path)
-        data_dict = self._prepare_data_dict(pnd_type, partner, move)
-
-        if template_pdf.Root.AcroForm:
-            template_pdf.Root.AcroForm.update(
-                PdfDict(NeedAppearances=PdfObject('true'))
-            )
-
-        for page in template_pdf.pages:
-            annotations = page.get(ANNOT_KEY)
-            if not annotations:
-                continue
-
-            for annot in annotations:
-                if annot.get(SUBTYPE_KEY) != WIDGET_SUBTYPE_KEY:
-                    continue
-
-                key = annot.get(ANNOT_FIELD_KEY)
-                if not key:
-                    continue
-                key_str = key.to_unicode() if hasattr(key, 'to_unicode') else str(key)
-
-                if key_str in data_dict and data_dict[key_str] not in ['Yes', 'Off']:
-                    val = str(data_dict[key_str])
-                    annot.update(
-                        PdfDict(
-                            V=PdfString.encode(val),
-                            AP=PdfDict(N=PdfDict()),
-                            Ff=1,
-                        )
-                    )
-
-                if key_str in data_dict and data_dict[key_str] in ['Yes', 'Off']:
-                    val = data_dict[key_str]
-                    annot.update(
-                        PdfDict(
-                            V=PdfName(val),
-                            AS=PdfName(val),
-                            AP=PdfDict(N=PdfDict()),
-                        )
-                    )
-
-        output_stream = io.BytesIO()
-        PdfWriter().write(output_stream, template_pdf)
-        return output_stream.getvalue()
+        c.showPage()
+        c.save()
+        buffer.seek(0)
+        return buffer.getvalue()
 
     # ----------------------------
-    # 🔹 ส่วนจัดเตรียมข้อมูล
+    # 🔹 จัดเตรียมข้อมูลจาก move line
     # ----------------------------
     def _prepare_data_dict(self, pnd_type, partner, move):
         total_amount = abs(move.tax_base_amount)
@@ -239,7 +155,7 @@ class AccountPNDReport(models.TransientModel):
         return data_dict
 
     # ----------------------------
-    # 🔹 แปลง VAT และตัวเลขเป็นข้อความไทย
+    # 🔹 ฟังก์ชันช่วยแปลง VAT และตัวเลขเป็นข้อความไทย
     # ----------------------------
     def format_vat_th(self, vat):
         if not vat:
