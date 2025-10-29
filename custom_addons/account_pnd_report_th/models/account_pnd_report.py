@@ -110,13 +110,13 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(378, 748, data_dict.get('id1', ''))
         c.drawString(65, 708, data_dict.get('add1', ''))
 
-        c.drawString(65, 664, data_dict.get('name2', ''))
+        c.drawString(65, 662, data_dict.get('name2', ''))
         c.drawString(378, 679, data_dict.get('id1_2', ''))
-        c.drawString(65, 639, data_dict.get('add2', ''))
+        c.drawString(65, 636, data_dict.get('add2', ''))
 
-        c.drawString(364, 150, data_dict.get('date14_0', ''))
-        c.drawString(420, 150, data_dict.get('pay1_13', ''))
-        c.drawString(500, 150, data_dict.get('tax1_13', ''))
+        c.drawString(355, 250, data_dict.get('date14_0', ''))
+        c.drawRightString(420, 250, data_dict.get('pay1_13', ''))
+        c.drawRightString(500, 250, data_dict.get('tax1_13', ''))
 
         # checkbox ตัวอย่าง
         c.drawString(480, 640, f"chk4: {data_dict.get('chk4', '')}")
@@ -180,7 +180,7 @@ class AccountPNDReport(models.TransientModel):
         vat_clean = ''.join(c for c in vat if c.isdigit())
         if len(vat_clean) != 13:
             return vat
-        return f"{vat_clean[0]}     {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
+        return f"{vat_clean[0]}    {vat_clean[1:5]}    {vat_clean[5:10]}    {vat_clean[10:12]}    {vat_clean[12]}"
 
     def number_to_thai_currency(self, number):
         number_str = str(number).replace(',', '').replace(' ', '').replace('บาท', '').replace('฿', '')
