@@ -122,14 +122,14 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(475, 605, f"chk4: {data_dict.get('chk4', '')}")
         c.drawString(398, 586, f"chk7: {data_dict.get('chk7', '')}")
 
-        c.drawRightString(489, 210, data_dict.get('pay1_14', ''))
-        c.drawRightString(560, 210, data_dict.get('tax1_14', ''))
+        c.drawRightString(489, 200, data_dict.get('pay1_14', ''))
+        c.drawRightString(560, 200, data_dict.get('tax1_14', ''))
 
-        c.drawString(140, 180, data_dict.get('total', ''))
+        c.drawString(170, 155, data_dict.get('total', ''))
 
-        c.drawString(355, 75, data_dict.get('date_pay', ''))
-        c.drawString(400, 75, data_dict.get('month_pay', ''))
-        c.drawString(460, 75, data_dict.get('year_pay', ''))
+        c.drawString(348, 77, data_dict.get('date_pay', ''))
+        c.drawString(390, 77, data_dict.get('month_pay', ''))
+        c.drawString(445, 77, data_dict.get('year_pay', ''))
 
         c.showPage()
         c.save()
@@ -189,7 +189,7 @@ class AccountPNDReport(models.TransientModel):
         vat_clean = ''.join(c for c in vat if c.isdigit())
         if len(vat_clean) != 13:
             return vat
-        return f"{vat_clean[0]}   {vat_clean[1:2]}  {vat_clean[2:3]}  {vat_clean[3:4]}  {vat_clean[4:5]}    {vat_clean[5:6]}  {vat_clean[6:7]}  {vat_clean[7:8]}  {vat_clean[8:9]} {vat_clean[9:10]}   {vat_clean[10:11]}  {vat_clean[11:12]}   {vat_clean[12]}"
+        return f"{vat_clean[0]}   {vat_clean[1:2]}  {vat_clean[2:3]}  {vat_clean[3:4]}  {vat_clean[4:5]}   {vat_clean[5:6]}  {vat_clean[6:7]}  {vat_clean[7:8]} {vat_clean[8:9]}  {vat_clean[9:10]}   {vat_clean[10:11]}  {vat_clean[11:12]}   {vat_clean[12]}"
 
     def number_to_thai_currency(self, number):
         number_str = str(number).replace(',', '').replace(' ', '').replace('บาท', '').replace('฿', '')
