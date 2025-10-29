@@ -106,12 +106,12 @@ class AccountPNDReport(models.TransientModel):
         c.setFont("Micross", 12)
 
         # ✏️ วาดข้อความลง PDF ตามตำแหน่ง (ต้องปรับ x, y ให้ตรงกับ layout)
-        c.drawString(65, 730, data_dict.get('name1', ''))
-        c.drawString(360, 750, data_dict.get('id1', ''))
-        c.drawString(65, 710, data_dict.get('add1', ''))
+        c.drawString(65, 733, data_dict.get('name1', ''))
+        c.drawString(380, 748, data_dict.get('id1', ''))
+        c.drawString(65, 708, data_dict.get('add1', ''))
 
         c.drawString(65, 670, data_dict.get('name2', ''))
-        c.drawString(385, 680, data_dict.get('id1_2', ''))
+        c.drawString(380, 678, data_dict.get('id1_2', ''))
         c.drawString(65, 630, data_dict.get('add2', ''))
 
         c.drawString(400, 800, data_dict.get('date14_0', ''))
@@ -180,7 +180,7 @@ class AccountPNDReport(models.TransientModel):
         vat_clean = ''.join(c for c in vat if c.isdigit())
         if len(vat_clean) != 13:
             return vat
-        return f"{vat_clean[0]} {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
+        return f"{vat_clean[0]}     {vat_clean[1:5]} {vat_clean[5:10]} {vat_clean[10:12]} {vat_clean[12]}"
 
     def number_to_thai_currency(self, number):
         number_str = str(number).replace(',', '').replace(' ', '').replace('บาท', '').replace('฿', '')
