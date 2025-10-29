@@ -125,8 +125,8 @@ class AccountPNDReport(models.TransientModel):
         # can.setFont("Micross", 12)  # 👈 ใช้ชื่อเดียวกันกับตอน register
         # Resolve font path
         font_path = get_module_resource('account_pnd_report_th', 'static/font/micross.ttf')
-        if not font_path or not os.path.exists(font_path):
-            raise FileNotFoundError(f"Font file not found: {font_path}")
+        # if not font_path or not os.path.exists(font_path):
+        #     raise FileNotFoundError(f"Font file not found: {font_path}")
 
         # Register font before creating the Canvas
         pdfmetrics.registerFont(TTFont('Micross', font_path))
