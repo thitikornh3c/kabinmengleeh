@@ -133,9 +133,9 @@ class AccountPNDReport(models.TransientModel):
 
         c.setFont("DejaVuSans", 14)
         # checkbox ตัวอย่าง
-        c.drawString(471, 604, '✔') #f"chk4: {data_dict.get('chk4', '')}")
+        c.drawString(473, 604, '✔') #f"chk4: {data_dict.get('chk4', '')}")
         c.drawString(396, 585, f"{data_dict.get('chk7', '')}")
-        c.drawString(83, 120, f"{data_dict.get('chk8', '')}")
+        c.drawString(83, 121, f"{data_dict.get('chk8', '')}")
 
         c.showPage()
         c.save()
