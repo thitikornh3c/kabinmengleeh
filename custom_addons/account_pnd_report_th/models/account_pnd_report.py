@@ -91,6 +91,12 @@ class AccountPNDReport(models.TransientModel):
         """
         สร้าง PDF ใหม่จาก data_dict โดยใช้ฟอนต์ไทย Micross
         """
+        # โหลด template PDF
+        template_path = get_module_resource(
+            'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
+        )
+        template_pdf = PdfReader(template_path)
+        
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=A4)
 
@@ -118,7 +124,17 @@ class AccountPNDReport(models.TransientModel):
         c.showPage()
         c.save()
         buffer.seek(0)
-        return buffer.getvalue()
+        overlay_pdf = PdfReader(packet)
+
+        # merge overlay ลง template
+        for i, page in enumerate(template_pdf.pages):
+            merger = PageMerge(page)
+            if i < len(overlay_pdf.pages):
+                merger.add(overlay_pdf.pages[i]).render()
+
+        output_stream = io.BytesIO()
+        PdfWriter().write(output_stream, template_pdf)
+        return output_stream.getvalue()
 
     # ----------------------------
     # 🔹 จัดเตรียมข้อมูลจาก move line
