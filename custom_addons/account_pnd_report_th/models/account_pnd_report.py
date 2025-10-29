@@ -94,7 +94,7 @@ class AccountPNDReport(models.TransientModel):
         """
         # โหลด template PDF
         template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/lock_template_thailand_pnd.pdf'
+            'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
         )
         template_pdf = PdfReader(template_path)
         
@@ -119,8 +119,8 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(400, 760, data_dict.get('tax1_13', ''))
 
         # checkbox ตัวอย่าง
-        c.drawString(50, 640, f"chk4: {data_dict.get('chk4', 'Off')}")
-        c.drawString(50, 620, f"chk7: {data_dict.get('chk7', 'Off')}")
+        c.drawString(50, 640, f"chk4: {data_dict.get('chk4', '')}")
+        c.drawString(50, 620, f"chk7: {data_dict.get('chk7', '')}")
 
         c.showPage()
         c.save()
@@ -164,9 +164,9 @@ class AccountPNDReport(models.TransientModel):
             'month_pay': month,
             'year_pay': year,
             'total': f"({self.number_to_thai_currency(wht_amount)})",
-            'chk4': 'Yes' if pnd_type == 'pnd3' else 'Off',
-            'chk7': 'Yes' if pnd_type == 'pnd53' else 'Off',
-            'chk8': 'Yes'
+            'chk4': '✔️' if pnd_type == 'pnd3' else '',
+            'chk7': '✔️' if pnd_type == 'pnd53' else '',
+            'chk8': '✔️'
         }
         _logger.info(f"Prepared PDF data_dict: {data_dict}")
         return data_dict
