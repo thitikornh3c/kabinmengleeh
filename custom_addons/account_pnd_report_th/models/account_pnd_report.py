@@ -109,12 +109,12 @@ class AccountPNDReport(models.TransientModel):
         c.setFont("Micross", 12)
 
         # ✏️ วาดข้อความลง PDF ตามตำแหน่ง (ต้องปรับ x, y ให้ตรงกับ layout)
-        c.drawString(65, 733, data_dict.get('name1', ''))
+        c.drawString(65, 732, data_dict.get('name1', ''))
         c.drawString(378, 748, data_dict.get('id1', ''))
         c.drawString(65, 708, data_dict.get('add1', ''))
 
-        c.drawString(65, 660, data_dict.get('name2', ''))
-        c.drawString(378, 679, data_dict.get('id1_2', ''))
+        c.drawString(65, 658, data_dict.get('name2', ''))
+        c.drawString(378, 677, data_dict.get('id1_2', ''))
         c.drawString(65, 634, data_dict.get('add2', ''))
 
         c.drawString(337, 219, data_dict.get('date14_0', ''))
@@ -125,7 +125,7 @@ class AccountPNDReport(models.TransientModel):
         c.drawRightString(489, 202, data_dict.get('pay1_14', ''))
         c.drawRightString(560, 202, data_dict.get('tax1_14', ''))
 
-        c.drawString(195, 161, data_dict.get('total', ''))
+        c.drawString(190, 161, data_dict.get('total', ''))
 
         c.drawString(342, 77, data_dict.get('date_pay', ''))
         c.drawString(390, 77, data_dict.get('month_pay', ''))
