@@ -49,19 +49,21 @@ class AccountPNDReport(models.TransientModel):
     @api.model
     def generate_pnd_reports(self, wizard):
         PND_TAX_MAP = {
-            'pnd53': [
-                'Company Withholding Tax 1% (Transportation)',
-                'Company Withholding Tax 2% (Advertising)',
-                'Company Withholding Tax 3% (Service)',
-                'Company Withholding Tax 5% (Rental)',
-            ],
-            'pnd3': [
-                'Personal Withholding Tax 1% (Transportation)',
-                'Personal Withholding Tax 2% (Advertising)',
-                'Personal Withholding Tax 3% (Service)',
-                'Personal Withholding Tax 5% (Rental)',
-                'WHT 1%', 'WHT 2%', 'WHT 3%', 'WHT 4%', 'WHT 5%',
-            ],
+            'pnd53': ['1% WH C T', '2% WH C A', '3% WH C S', '5% WH C R', '3% WH C S'],
+            'pnd3': ['1% WH P T', '2% WH P A', '3% WH P S', '5% WH P R', '3% PND3'],
+            # 'pnd53': [
+            #     'Company Withholding Tax 1% (Transportation)',
+            #     'Company Withholding Tax 2% (Advertising)',
+            #     'Company Withholding Tax 3% (Service)',
+            #     'Company Withholding Tax 5% (Rental)',
+            # ],
+            # 'pnd3': [
+            #     'Personal Withholding Tax 1% (Transportation)',
+            #     'Personal Withholding Tax 2% (Advertising)',
+            #     'Personal Withholding Tax 3% (Service)',
+            #     'Personal Withholding Tax 5% (Rental)',
+            #     'WHT 1%', 'WHT 2%', 'WHT 3%', 'WHT 4%', 'WHT 5%',
+            # ],
         }
 
         tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
