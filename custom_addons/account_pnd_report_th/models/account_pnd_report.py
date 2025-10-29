@@ -51,6 +51,7 @@ class AccountPNDReport(models.TransientModel):
             ('date', '<=', wizard.date_end),
             ('tax_line_id', '!=', False),
             ('tax_line_id.name', 'in', tax_names),
+            ('company_id', '=', self.env.company.id),
         ])
         moves = moves.filtered(lambda l: l.tax_line_id and l.move_id)
         _logger.info("Found %d move lines for PND report", len(moves))
