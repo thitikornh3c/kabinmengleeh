@@ -107,20 +107,20 @@ class AccountPNDReport(models.TransientModel):
 
         # ✏️ วาดข้อความลง PDF ตามตำแหน่ง (ต้องปรับ x, y ให้ตรงกับ layout)
         c.drawString(65, 733, data_dict.get('name1', ''))
-        c.drawString(380, 748, data_dict.get('id1', ''))
+        c.drawString(378, 748, data_dict.get('id1', ''))
         c.drawString(65, 708, data_dict.get('add1', ''))
 
-        c.drawString(65, 670, data_dict.get('name2', ''))
-        c.drawString(380, 678, data_dict.get('id1_2', ''))
-        c.drawString(65, 630, data_dict.get('add2', ''))
+        c.drawString(65, 664, data_dict.get('name2', ''))
+        c.drawString(378, 679, data_dict.get('id1_2', ''))
+        c.drawString(65, 639, data_dict.get('add2', ''))
 
-        c.drawString(400, 800, data_dict.get('date14_0', ''))
-        c.drawString(400, 780, data_dict.get('pay1_13', ''))
-        c.drawString(400, 760, data_dict.get('tax1_13', ''))
+        c.drawString(364, 150, data_dict.get('date14_0', ''))
+        c.drawString(420, 150, data_dict.get('pay1_13', ''))
+        c.drawString(500, 150, data_dict.get('tax1_13', ''))
 
         # checkbox ตัวอย่าง
-        c.drawString(50, 640, f"chk4: {data_dict.get('chk4', '')}")
-        c.drawString(50, 620, f"chk7: {data_dict.get('chk7', '')}")
+        c.drawString(480, 640, f"chk4: {data_dict.get('chk4', '')}")
+        c.drawString(410, 620, f"chk7: {data_dict.get('chk7', '')}")
 
         c.showPage()
         c.save()
