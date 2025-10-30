@@ -58,8 +58,8 @@ class AccountPNDReport(models.TransientModel):
         #     ('company_id', '=', self.env.company.id),
         # ])
         PND_ACCOUNT_MAP = {
-            'pnd53': '232000',
-            'pnd3': '232000',
+            'pnd53': ['232000'],
+            'pnd3': ['232000'],
         }
         account_code = PND_ACCOUNT_MAP.get(wizard.pnd_type)
         # grid_names = PND_TAX_MAP.get(wizard.pnd_type, [])
@@ -67,7 +67,7 @@ class AccountPNDReport(models.TransientModel):
             ('date', '>=', wizard.date_start),
             ('date', '<=', wizard.date_end),
             ('tax_line_id', '!=', False),
-            ('account_id.code', '=', account_code),
+            ('account_id.code', 'in', account_code),
             # ('tax_tag_ids.name', 'in', grid_names),
             ('company_id', '=', self.env.company.id),
         ])
