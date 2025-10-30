@@ -69,7 +69,7 @@ class AccountPNDReport(models.TransientModel):
             ('tax_line_id', '!=', False),
             ('account_id.code', '=', account_code),
             # ('tax_tag_ids.name', 'in', grid_names),
-            ('company_id', '', self.env.company.id),
+            ('company_id', 'in', self.env.company.id),
         ])
         for m in moves:
             _logger.info(json.dumps({
