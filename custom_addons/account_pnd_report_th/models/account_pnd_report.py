@@ -1,6 +1,7 @@
 import io
 import base64
 import logging
+import json
 from odoo import models, fields, api
 from odoo.modules.module import get_module_resource
 
@@ -44,15 +45,44 @@ class AccountPNDReport(models.TransientModel):
             'pnd53': ['1% WH C T', '2% WH C A', '3% WH C S', '5% WH C R', '3% WH C S'],
             'pnd3': ['1% WH P T', '2% WH P A', '3% WH P S', '5% WH P R', '3% PND3'],
         }
-
-        tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
+        # PND_TAX_GRID_MAP = {
+        #     'pnd53': ['-PND53'],
+        #     'pnd3': ['-PND3'],
+        # }
+        # tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
+        # moves = self.env['account.move.line'].sudo().search([
+        #     ('date', '>=', wizard.date_start),
+        #     ('date', '<=', wizard.date_end),
+        #     ('tax_line_id', '!=', False),
+        #     ('tax_line_id.name', 'in', tax_names),
+        #     ('company_id', '=', self.env.company.id),
+        # ])
+        PND_ACCOUNT_MAP = {
+            'pnd53': '232000',
+            'pnd3': '232000',
+        }
+        account_code = PND_ACCOUNT_MAP.get(wizard.pnd_type)
+        # grid_names = PND_TAX_MAP.get(wizard.pnd_type, [])
         moves = self.env['account.move.line'].sudo().search([
             ('date', '>=', wizard.date_start),
             ('date', '<=', wizard.date_end),
             ('tax_line_id', '!=', False),
-            ('tax_line_id.name', 'in', tax_names),
-            ('company_id', '=', self.env.company.id),
+            ('account_id.code', '=', account_code),
+            # ('tax_tag_ids.name', 'in', grid_names),
+            ('company_id', '', self.env.company.id),
         ])
+        for m in moves:
+            _logger.info(json.dumps({
+                'id': m.id,
+                'move_name': m.move_id.name,
+                'date': str(m.date),
+                'partner': m.partner_id.name,
+                'debit': m.debit,
+                'credit': m.credit,
+                'account': m.account_id.code,
+                'tax_line': m.tax_line_id.name if m.tax_line_id else None,
+                'tags': [t.name for t in m.tax_tag_ids],
+            }, ensure_ascii=False, indent=2))
         moves = moves.filtered(lambda l: l.tax_line_id and l.move_id)
         _logger.info("Found %d move lines for PND report", len(moves))
 
