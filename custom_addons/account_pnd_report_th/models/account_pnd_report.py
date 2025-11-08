@@ -195,9 +195,9 @@ class AccountPNDReport(models.TransientModel):
         day = invoice_date.strftime('%d') if hasattr(invoice_date, 'strftime') else ''
 
         data_dict = {
-            'name1': 'บริษัท อินโนเวเซีย เท็กซ์ไทล์ (ไทยแลนด์) จำกัด',
-            'id1': self.format_vat_th('0105550042583'),
-            'add1': '1999/21 ซอยลาดพร้าว 94 (ปัญจมิตร) แขวงพลับพลา เขตวังทองหลาง กรุงเทพมหานคร 10310',
+            'name1': 'บริษัท แฮปปี้ทรีครีเอชั่น จำกัด (สำนักงานใหญ่)',
+            'id1': self.format_vat_th('0105563142174'),
+            'add1': '47/71 ซอยรามคำแหง 102 แขวงสะพานสูง เขตสะพานสูง กรุงเทพมหานคร 10240',
             'name2': partner.name or '',
             'id1_2': self.format_vat_th(partner.vat),
             'add2': partner.street or '',
