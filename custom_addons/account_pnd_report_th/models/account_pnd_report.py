@@ -50,7 +50,7 @@ class AccountPNDReport(models.TransientModel):
 
             for move in moves:
                 # ใช้ปี+เดือน เป็น key
-                month_str = move.date.strftime('%y%m') if move.date else '0000'  # yyMM
+                month_str = move.date.strftime('%Y%m%d') if move.date else '00000000'  # yyMM
                 if month_str not in counter_per_month:
                     counter_per_month[month_str] = 1
                 else:
