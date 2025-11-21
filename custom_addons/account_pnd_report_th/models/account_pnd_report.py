@@ -121,6 +121,7 @@ class AccountPNDReport(models.TransientModel):
 
         for move in moves:
             doc_number = doc_numbers_map.get(move.id)
+            _logger.info('Document Number', doc_number)
             partner = move.partner_id
             data_dict = self._prepare_data_dict(wizard.pnd_type, partner, move, doc_number)
             pdf_bytes = self._flatten_pdf_with_thai_font(data_dict)
@@ -199,7 +200,7 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(396, 585, f"{data_dict.get('chk7', '')}")
         c.drawString(83, 121, f"{data_dict.get('chk8', '')}")
 
-        c.drawString(700, 700, f"{data_dict.get('doc_number', '')}")
+        c.drawString(500, 604, f"{data_dict.get('doc_number', '')}")
 
         c.showPage()
         c.save()
