@@ -96,7 +96,8 @@ class AccountPNDReport(models.TransientModel):
             ('company_id', '=', self.env.company.id),
         ])
         moveAll = self.env['account.move.line'].sudo().search([
-            ('tax_tag_ids.name', 'in', grid_names),
+            ('tax_line_id', '!=', False),
+            ('account_id.code', 'in', account_code),
             ('company_id', '=', self.env.company.id),
         ]).filtered(lambda l: l.move_id)
         doc_numbers_map = self.generate_move_document_numbers(moveAll)
@@ -197,7 +198,7 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(473, 604, '✔') #f"chk4: {data_dict.get('chk4', '')}")
         c.drawString(396, 585, f"{data_dict.get('chk7', '')}")
         c.drawString(83, 121, f"{data_dict.get('chk8', '')}")
-        
+
         c.drawString(700, 700, f"{data_dict.get('doc_number', '')}")
 
         c.showPage()
