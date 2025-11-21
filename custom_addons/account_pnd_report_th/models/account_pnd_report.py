@@ -39,38 +39,72 @@ class AccountPNDReport(models.TransientModel):
     _name = 'account.pnd.report'
     _description = 'Generate Thai PND 3/53 Reports'
 
+    def generate_move_document_numbers(self, moves):
+        """
+        moves: recordset account.move.line
+        return: dict {move.id: document_number}
+        """
+        moves = moves.sorted(key=lambda m: m.date)  # เรียงตามวันที่ก่อน
+        doc_numbers = {}
+        counter_per_month = {}
+
+        for move in moves:
+            # ใช้ปี+เดือน เป็น key
+            month_str = move.date.strftime('%y%m') if move.date else '0000'  # yyMM
+            if month_str not in counter_per_month:
+                counter_per_month[month_str] = 1
+            else:
+                counter_per_month[month_str] += 1
+
+            running_number = f"{counter_per_month[month_str]:03d}"  # 3 หลัก
+            doc_number = f"{month_str}{running_number}"
+            doc_numbers[move.id] = doc_number
+
+        return doc_numbers
+    
     @api.model
     def generate_pnd_reports(self, wizard):
-        PND_TAX_MAP = {
-            'pnd53': ['1% WH C T', '2% WH C A', '3% WH C S', '5% WH C R', '3% WH C S'],
-            'pnd3': ['1% WH P T', '2% WH P A', '3% WH P S', '5% WH P R', '3% PND3'],
-        }
-        # PND_TAX_GRID_MAP = {
-        #     'pnd53': ['-PND53'],
-        #     'pnd3': ['-PND3'],
+        # PND_TAX_MAP = {
+        #     'pnd53': ['1% WH C T', '2% WH C A', '3% WH C S', '5% WH C R', '3% WH C S'],
+        #     'pnd3': ['1% WH P T', '2% WH P A', '3% WH P S', '5% WH P R', '3% PND3'],
         # }
-        # tax_names = PND_TAX_MAP.get(wizard.pnd_type, [])
+        PND_TAX_MAP = {
+            'pnd53': ['-PND53'],
+            'pnd3': ['-PND3'],
+        }
+        grid_names = PND_TAX_MAP.get(wizard.pnd_type, [])
+        moves = self.env['account.move.line'].sudo().search([
+            ('date', '>=', wizard.date_start),
+            ('date', '<=', wizard.date_end),
+            # ('tax_line_id', '!=', False),
+            ('tax_tag_ids.name', 'in', grid_names),
+            ('company_id', '=', self.env.company.id),
+        ])
+        moveAll = self.env['account.move.line'].sudo().search([
+            ('tax_tag_ids.name', 'in', grid_names),
+            ('company_id', '=', self.env.company.id),
+        ]).filtered(lambda l: l.move_id)
+        doc_numbers_map = self.generate_move_document_numbers(moveAll)
         # moves = self.env['account.move.line'].sudo().search([
         #     ('date', '>=', wizard.date_start),
         #     ('date', '<=', wizard.date_end),
         #     ('tax_line_id', '!=', False),
         #     ('tax_line_id.name', 'in', tax_names),
+        # ])
+        # PND_ACCOUNT_MAP = {
+        #     'pnd53': ['210253'],
+        #     'pnd3': ['210300', '210203'],
+        # }
+        # account_code = PND_ACCOUNT_MAP.get(wizard.pnd_type)
+        # # grid_names = PND_TAX_MAP.get(wizard.pnd_type, [])
+        # moves = self.env['account.move.line'].sudo().search([
+        #     ('date', '>=', wizard.date_start),
+        #     ('date', '<=', wizard.date_end),
+        #     # ('tax_line_id', '!=', False),
+        #     ('account_id.code', 'in', account_code),
+        #     # ('tax_tag_ids.name', 'in', grid_names),
         #     ('company_id', '=', self.env.company.id),
         # ])
-        PND_ACCOUNT_MAP = {
-            'pnd53': ['232000'],
-            'pnd3': ['232000'],
-        }
-        account_code = PND_ACCOUNT_MAP.get(wizard.pnd_type)
-        # grid_names = PND_TAX_MAP.get(wizard.pnd_type, [])
-        moves = self.env['account.move.line'].sudo().search([
-            ('date', '>=', wizard.date_start),
-            ('date', '<=', wizard.date_end),
-            ('tax_line_id', '!=', False),
-            ('account_id.code', 'in', account_code),
-            # ('tax_tag_ids.name', 'in', grid_names),
-            ('company_id', '=', self.env.company.id),
-        ])
         for m in moves:
             _logger.info(json.dumps({
                 'id': m.id,
@@ -83,15 +117,18 @@ class AccountPNDReport(models.TransientModel):
                 'tax_line': m.tax_line_id.name if m.tax_line_id else None,
                 'tags': [t.name for t in m.tax_tag_ids],
             }, ensure_ascii=False, indent=2))
-        moves = moves.filtered(lambda l: l.tax_line_id and l.move_id)
+
+        moves = moves.filtered(lambda l: l.move_id)
+        # moves = moves.filtered(lambda l: l.tax_line_id and l.move_id)
         _logger.info("Found %d move lines for PND report", len(moves))
 
         results = self.env['account.pnd.report.result'].sudo()
         results.search([]).unlink()
 
         for move in moves:
+            doc_number = doc_numbers_map.get(move.id)
             partner = move.partner_id
-            data_dict = self._prepare_data_dict(wizard.pnd_type, partner, move)
+            data_dict = self._prepare_data_dict(wizard.pnd_type, partner, move, doc_number)
             pdf_bytes = self._flatten_pdf_with_thai_font(data_dict)
 
             vat_clean = ''.join(c for c in (partner.vat or '') if c.isdigit())
@@ -125,7 +162,7 @@ class AccountPNDReport(models.TransientModel):
         """
         # โหลด template PDF
         template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
+            'account_pnd_report_th', 'static/pdf/lock_template_thailand_pnd.pdf'
         )
         template_pdf = PdfReader(template_path)
         
@@ -143,8 +180,8 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(378, 748, data_dict.get('id1', ''))
         c.drawString(65, 708, data_dict.get('add1', ''))
 
-        c.drawString(65, 658, data_dict.get('name2', ''))
-        c.drawString(378, 677, data_dict.get('id1_2', ''))
+        c.drawString(65, 659, data_dict.get('name2', ''))
+        c.drawString(378, 678, data_dict.get('id1_2', ''))
         c.drawString(65, 633, data_dict.get('add2', ''))
 
         c.drawString(337, 219, data_dict.get('date14_0', ''))
@@ -164,9 +201,12 @@ class AccountPNDReport(models.TransientModel):
 
         c.setFont("DejaVuSans", 14)
         # checkbox ตัวอย่าง
-        c.drawString(473, 604, '✔') #f"chk4: {data_dict.get('chk4', '')}")
+        c.drawString(473, 604, f"{data_dict.get('chk4', '')}")
         c.drawString(396, 585, f"{data_dict.get('chk7', '')}")
         c.drawString(83, 121, f"{data_dict.get('chk8', '')}")
+
+
+        c.drawString(700, 700, f"{data_dict.get('doc_number', '')}")
 
         c.showPage()
         c.save()
@@ -186,7 +226,7 @@ class AccountPNDReport(models.TransientModel):
     # ----------------------------
     # 🔹 จัดเตรียมข้อมูลจาก move line
     # ----------------------------
-    def _prepare_data_dict(self, pnd_type, partner, move):
+    def _prepare_data_dict(self, pnd_type, partner, move, doc_number):
         total_amount = abs(move.tax_base_amount)
         wht_amount = abs(move.balance)
         invoice_date = move.date
@@ -195,9 +235,9 @@ class AccountPNDReport(models.TransientModel):
         day = invoice_date.strftime('%d') if hasattr(invoice_date, 'strftime') else ''
 
         data_dict = {
-            'name1': 'บริษัท แฮปปี้ทรีครีเอชั่น จำกัด (สำนักงานใหญ่)',
-            'id1': self.format_vat_th('0105563142174'),
-            'add1': '47/71 ซอยรามคำแหง 102 แขวงสะพานสูง เขตสะพานสูง กรุงเทพมหานคร 10240',
+            'name1': 'บริษัท อินโนเวเซีย เท็กซ์ไทล์ (ไทยแลนด์) จำกัด',
+            'id1': self.format_vat_th('0105550042583'),
+            'add1': '1999/21 ซอยลาดพร้าว 94 (ปัญจมิตร) แขวงพลับพลา เขตวังทองหลาง กรุงเทพมหานคร 10310',
             'name2': partner.name or '',
             'id1_2': self.format_vat_th(partner.vat),
             'add2': partner.street or '',
@@ -212,7 +252,8 @@ class AccountPNDReport(models.TransientModel):
             'total': f"({self.number_to_thai_currency(wht_amount)})",
             'chk4': '✔' if pnd_type == 'pnd3' else '',
             'chk7': '✔' if pnd_type == 'pnd53' else '',
-            'chk8': '✔'
+            'chk8': '✔',
+            'doc_number': doc_number
         }
         _logger.info(f"Prepared PDF data_dict: {data_dict}")
         return data_dict
