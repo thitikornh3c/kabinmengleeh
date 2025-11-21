@@ -200,8 +200,8 @@ class AccountPNDReport(models.TransientModel):
         c.drawString(396, 585, f"{data_dict.get('chk7', '')}")
         c.drawString(83, 121, f"{data_dict.get('chk8', '')}")
 
-        c.setFont("DejaVuSans", 12)
-        c.drawString(500, 788, f"{data_dict.get('doc_number', '')}")
+        c.setFont("DejaVuSans", 10)
+        c.drawString(520, 765, f"{data_dict.get('doc_number', '')}")
 
         c.showPage()
         c.save()
