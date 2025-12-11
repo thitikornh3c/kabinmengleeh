@@ -49,69 +49,80 @@ class CustomSequence(models.Model):
     
     def _get_prefix_suffix(self):
         """
-        Override to customize the sequence prefix and suffix. 1
+        Override to customize the sequence prefix and suffix.
         """
 
         if self.code in (None, "", False):
             prefix, suffix = super()._get_prefix_suffix()
             return prefix, suffix
-        # Call the super method to get the default prefix and suffix
-        # Get the current UTC time
+
+        # Get Bangkok timezone timestamp
         utc_now = datetime.utcnow()
-
-        # Bangkok is UTC+7
         bangkok_time = utc_now + timedelta(hours=7)
-
         currentDate = bangkok_time.strftime("%d")
+
         company_id = self.env.context.get('company_id', self.env.company.id)
-        _logger.info(f"Sequnece of Company: {company_id}")
+        _logger.info(f"Sequence of Company: {company_id}")
+
         sequence_code = self.code
         if company_id == 2:
             sequence_code = sequence_code + '.h3c'
-        # invoice = self.search([('code', '=', 'account.move')], limit=1)
-        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date}")
-    
+
+        _logger.info(
+            f"Sequence Entry: {sequence_code} {self.number_next} | "
+            f"{bangkok_time} {currentDate} {self.x_studio_last_date}"
+        )
+
+        # --- get default prefix/suffix ---
         prefix, suffix = super()._get_prefix_suffix()
 
-        if prefix.startswith("INV"):
+        # Normalize prefix/suffix (important!)
+        prefix = prefix or ""
+        suffix = suffix or ""
+        self_prefix = self.prefix or ""
+
+        # --- Custom logic for INV / REC ---
+        if str(prefix).startswith("INV"):
             sequence = self.search([('code', '=', self.code)], limit=1)
             if currentDate != self.x_studio_last_date:
                 sequence.number_next = 1
             else:
                 self._get_next_invoice_number(sequence)
 
-        if prefix.startswith("REC"):
+        if str(prefix).startswith("REC"):
             sequence = self.search([('code', '=', self.code)], limit=1)
             if currentDate != self.x_studio_last_date:
                 sequence.number_next = 1
             else:
                 self._get_next_invoice_number(sequence)
-                # sequence.number_next = full_number
-                
-        # next_by_code = super().next_by_code(self.code)
-        # _logger.info(f"Sequnece Entry: {next_by_code}")
+
+        # Buddha Era Year
         be_year = self._get_buddha_era_year()
 
-        # Optionally modify the prefix
-        if self.prefix.startswith("SQ"):
-            prefix = f"{self.prefix}{be_year}{currentDate}"
-        elif self.prefix.startswith("INV"):
-            prefix = f"{self.prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
-        elif self.prefix.startswith("REC"):
-            prefix = f"{self.prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
-        else:
-            prefix = f"{self.prefix}{be_year}{currentDate}"
+        # ---- Build custom PREFIX safely ----
+        if str(self_prefix).startswith("SQ"):
+            prefix = f"{self_prefix}{be_year}{currentDate}"
 
+        elif str(self_prefix).startswith("INV"):
+            prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
+
+        elif str(self_prefix).startswith("REC"):
+            prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
+
+        else:
+            prefix = f"{self_prefix}{be_year}{currentDate}"
+
+        # Update last date
         self.x_studio_last_date = currentDate
-        # self.number_next = 1
-        # prefix = f"{self.code}{be_year}"
-        # Customize the suffix
-        # For example, include the Buddha Era year in the suffix
-      
-        # suffix = f"{be_year}/{suffix}" if suffix else f"{be_year}"
-        _logger.info(f"Sequnece Entry: {sequence_code} {self.number_next} | {bangkok_time} {currentDate} {self.x_studio_last_date} {prefix} {suffix}")
+
+        _logger.info(
+            f"Sequence Entry: {sequence_code} {self.number_next} | "
+            f"{bangkok_time} {currentDate} {self.x_studio_last_date} "
+            f"{prefix} {suffix}"
+        )
 
         return prefix, suffix
+
     
     @api.model
     def next_by_code(self, code, **kwargs):
