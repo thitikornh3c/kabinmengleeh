@@ -378,8 +378,8 @@ class HRPayslip(models.Model):
                     if line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
                             sso_amount = basic_amount * 0.05 
-                            if sso_amount > 750:
-                                sso_amount = -750
+                            if sso_amount > 875:
+                                sso_amount = -875
                             else:
                                 sso_amount = -sso_amount
 
@@ -565,8 +565,8 @@ class HRPayslip(models.Model):
                     if line.salary_rule_id.code == 'SSO':
                         if contract_type_code == 'จ่ายประกันสังคม': 
                             sso_amount = basic_amount * 0.05 
-                            if sso_amount > 750:
-                                sso_amount = -750
+                            if sso_amount > 875:
+                                sso_amount = -875
                             else:
                                 sso_amount = -sso_amount
                             
