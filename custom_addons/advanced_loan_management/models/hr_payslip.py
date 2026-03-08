@@ -129,11 +129,11 @@ class HRPayslip(models.Model):
         _logger.info(f"Using loan line ID: {gross_salary}, amount: {empId}")
 
         year_gross_salary = gross_salary * 12 
-        if empId != 90:
-            year_gross_salary = year_gross_salary - 100000 #หักค่าใช้จ่าย สูงสุด 100000 40(1) 50% ไม่เกิน 100000
+        # if empId != 90:
+        year_gross_salary = year_gross_salary - 100000 #หักค่าใช้จ่าย สูงสุด 100000 40(1) 50% ไม่เกิน 100000
 
-            year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล
-            year_gross_salary = year_gross_salary - 9000 #ยกเว้นภาษีเงินได้ เงินประกันสังคมสะสม สูงสุด 9000
+        year_gross_salary = year_gross_salary - 60000 #ลดหย่อนส่วนบุคคล
+        year_gross_salary = year_gross_salary - 9000 #ยกเว้นภาษีเงินได้ เงินประกันสังคมสะสม สูงสุด 9000
 
         if year_gross_salary > 150000:
             year_gross_salary = year_gross_salary - 150000 #ยกเว้นภาษีเงินได้ 0%
