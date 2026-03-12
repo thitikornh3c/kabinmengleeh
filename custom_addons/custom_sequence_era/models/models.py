@@ -67,6 +67,8 @@ class CustomSequence(models.Model):
         sequence_code = self.code
         if company_id == 2:
             sequence_code = sequence_code + '.h3c'
+        if company_id == 4:
+            sequence_code = sequence_code + '.im'
 
         _logger.info(
             f"Sequence Entry: {sequence_code} {self.number_next} | "
@@ -91,10 +93,17 @@ class CustomSequence(models.Model):
 
         if str(prefix).startswith("REC"):
             sequence = self.search([('code', '=', self.code)], limit=1)
-            if currentDate != self.x_studio_last_date:
-                sequence.number_next = 1
+            if company_id == 4:
+                # For company_id == 4, reset daily based on full date (YYYYMMDD)
+                current_full_date = bangkok_time.strftime('%Y%m%d')
+                if current_full_date != self.x_studio_last_date:
+                    sequence.number_next = 1
+                    self.x_studio_last_date = current_full_date
             else:
-                self._get_next_invoice_number(sequence)
+                if currentDate != self.x_studio_last_date:
+                    sequence.number_next = 1
+                else:
+                    self._get_next_invoice_number(sequence)
 
         # Buddha Era Year
         be_year = self._get_buddha_era_year()
@@ -107,13 +116,22 @@ class CustomSequence(models.Model):
             prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
 
         elif str(self_prefix).startswith("REC"):
-            prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
+            if company_id == 4:
+                # For company_id == 4, use YYYYMMDD format for REC
+                prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m%d')}"
+            else:
+                prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
 
         else:
             prefix = f"{self_prefix}{be_year}{currentDate}"
 
         # Update last date
-        self.x_studio_last_date = currentDate
+        if company_id == 4 and str(self_prefix).startswith("REC"):
+            # For company_id == 4 REC, store full date (YYYYMMDD)
+            self.x_studio_last_date = bangkok_time.strftime('%Y%m%d')
+        else:
+            # For other cases, store day only
+            self.x_studio_last_date = currentDate
 
         _logger.info(
             f"Sequence Entry: {sequence_code} {self.number_next} | "
@@ -133,6 +151,8 @@ class CustomSequence(models.Model):
         sequence_code = code
         if company_id == 2:
             sequence_code = sequence_code + '.h3c'
+        elif company_id == 4:
+            sequence_code = sequence_code + '.im'
 
         sequence = self.search([('code', '=', sequence_code)], limit=1)
         _logger.warning(f"Sequence code '{sequence_code}' {sequence} not found.")
