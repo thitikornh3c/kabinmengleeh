@@ -30,6 +30,29 @@ class CustomInvoice(models.Model):
 class CustomPayment(models.Model):
     _inherit = 'account.payment'
 
+    def _compute_name(self):
+        """Override the name computation for company_id == 4"""
+        for payment in self:
+            if payment.company_id.id == 4:
+                # Generate custom sequence for company_id == 4
+                utc_now = datetime.utcnow()
+                bangkok_time = utc_now + timedelta(hours=7)
+                current_date = bangkok_time.strftime('%Y%m%d')
+                
+                # Find the next number for today
+                existing_payments = self.search([
+                    ('name', 'like', f'REC{current_date}%'),
+                    ('company_id', '=', payment.company_id.id),
+                    ('id', '!=', payment.id)
+                ])
+                
+                next_number = len(existing_payments) + 1
+                payment.name = f"REC{current_date}{str(next_number).zfill(2)}"
+                _logger.warning(f"Custom _compute_name: {payment.name}")
+            else:
+                # Use default computation for other companies
+                super(CustomPayment, payment)._compute_name()
+
     @api.model
     def create(self, vals):
         _logger.warning(f"=== PAYMENT DEBUG === Payment create called with vals: {vals}")
@@ -37,60 +60,12 @@ class CustomPayment(models.Model):
         company_id = vals.get('company_id') or self.env.company.id
         _logger.warning(f"Payment company_id: {company_id}")
         
-        # Generate custom sequence for company_id == 4
-        if company_id == 4 and (not vals.get('name') or vals.get('name') == '/' or vals.get('name') == 'New'):
-            # Get Bangkok timezone timestamp
-            utc_now = datetime.utcnow()
-            bangkok_time = utc_now + timedelta(hours=7)
-            current_date = bangkok_time.strftime('%Y%m%d')
-            
-            # Find the next number for today
-            existing_payments = self.search([
-                ('name', 'like', f'REC{current_date}%'),
-                ('company_id', '=', company_id)
-            ])
-            
-            next_number = len(existing_payments) + 1
-            custom_name = f"REC{current_date}{str(next_number).zfill(2)}"
-            vals['name'] = custom_name
-            _logger.warning(f"Generated payment name: {custom_name}")
+        # Don't set name in vals, let _compute_name handle it
+        if company_id == 4:
+            vals.pop('name', None)  # Remove name if exists
+            _logger.warning("Removed name from vals, will use _compute_name")
 
         result = super(CustomPayment, self).create(vals)
-        
-        # Force update name after creation if needed
-        if result.company_id.id == 4 and (result.name.startswith('PBNK') or '/' in result.name):
-            utc_now = datetime.utcnow()
-            bangkok_time = utc_now + timedelta(hours=7)
-            current_date = bangkok_time.strftime('%Y%m%d')
-            
-            existing_payments = self.search([
-                ('name', 'like', f'REC{current_date}%'),
-                ('company_id', '=', result.company_id.id),
-                ('id', '!=', result.id)
-            ])
-            
-            next_number = len(existing_payments) + 1
-            custom_name = f"REC{current_date}{str(next_number).zfill(2)}"
-            result.name = custom_name
-            _logger.warning(f"Force updated payment name to: {custom_name}")
+        _logger.warning(f"Created payment with name: {result.name}")
         
         return result
-
-    def write(self, vals):
-        # Prevent name from being overwritten by sequence
-        if self.company_id.id == 4 and 'name' in vals and vals['name'] and vals['name'].startswith('PBNK'):
-            utc_now = datetime.utcnow()
-            bangkok_time = utc_now + timedelta(hours=7)
-            current_date = bangkok_time.strftime('%Y%m%d')
-            
-            existing_payments = self.search([
-                ('name', 'like', f'REC{current_date}%'),
-                ('company_id', '=', self.company_id.id),
-                ('id', '!=', self.id)
-            ])
-            
-            next_number = len(existing_payments) + 1
-            vals['name'] = f"REC{current_date}{str(next_number).zfill(2)}"
-            _logger.warning(f"Prevented PBNK override, using: {vals['name']}")
-        
-        return super(CustomPayment, self).write(vals)
