@@ -34,20 +34,19 @@ class CustomPayment(models.Model):
         """Override the name computation for company_id == 4"""
         for payment in self:
             if payment.company_id.id == 4:
-                # Generate custom sequence for company_id == 4
-                utc_now = datetime.utcnow()
-                bangkok_time = utc_now + timedelta(hours=7)
+                # Use payment date instead of current date
+                payment_date = payment.date or datetime.now().date()
                 
                 # Calculate Buddha Era year (2 digits)
-                current_year = bangkok_time.year
+                current_year = payment_date.year
                 be_year = current_year + 543
                 be_year_2digit = str(be_year)[2:4]  # Get last 2 digits (69 from 2569)
                 
-                month = bangkok_time.strftime('%m')
-                day = bangkok_time.strftime('%d')
+                month = payment_date.strftime('%m')
+                day = payment_date.strftime('%d')
                 date_prefix = f"{be_year_2digit}{month}{day}"
                 
-                # Find the next number for today
+                # Find the next number for the same date
                 existing_payments = self.search([
                     ('name', 'like', f'REC{date_prefix}%'),
                     ('company_id', '=', payment.company_id.id),
@@ -56,7 +55,7 @@ class CustomPayment(models.Model):
                 
                 next_number = len(existing_payments) + 1
                 payment.name = f"REC{date_prefix}{str(next_number).zfill(2)}"
-                _logger.warning(f"Custom _compute_name: {payment.name}")
+                _logger.warning(f"Custom _compute_name using payment.date {payment_date}: {payment.name}")
             else:
                 # Use default computation for other companies
                 super(CustomPayment, payment)._compute_name()

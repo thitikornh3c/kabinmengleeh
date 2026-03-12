@@ -65,15 +65,27 @@ class CustomSequence(models.Model):
             prefix, suffix = super()._get_prefix_suffix()
             return prefix, suffix
 
-        # Get Bangkok timezone timestamp
-        utc_now = datetime.utcnow()
-        bangkok_time = utc_now + timedelta(hours=7)
-        currentDate = bangkok_time.strftime("%d")
+        # Get date from context or use current Bangkok time
+        invoice_date = self.env.context.get('ir_sequence_date')
+        if invoice_date:
+            # Use the date from context (usually invoice_date)
+            if isinstance(invoice_date, str):
+                from datetime import datetime as dt
+                invoice_date = dt.strptime(invoice_date, '%Y-%m-%d').date()
+            current_year = invoice_date.year
+            currentDate = invoice_date.strftime("%d")
+            month_date = invoice_date.strftime("%m")
+        else:
+            # Fallback to Bangkok timezone timestamp
+            utc_now = datetime.utcnow()
+            bangkok_time = utc_now + timedelta(hours=7)
+            current_year = bangkok_time.year
+            currentDate = bangkok_time.strftime("%d")
+            month_date = bangkok_time.strftime("%m")
 
         company_id = self.env.context.get('company_id', self.env.company.id)
         _logger.warning(f"Sequence of Company: {company_id}")
-        _logger.warning(f"Current company from env: {self.env.company.id}")
-        _logger.warning(f"Company name: {self.env.company.name}")
+        _logger.warning(f"Using date: {invoice_date if invoice_date else 'current Bangkok time'}")
 
         sequence_code = self.code
         if company_id == 2:
