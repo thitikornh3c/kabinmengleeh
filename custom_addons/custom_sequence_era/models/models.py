@@ -27,7 +27,13 @@ class CustomSequence(models.Model):
             self.x_studio_last_date = current_date
 
         prefix = sequence.prefix or ''
-        padding = 3  # INV running digits
+        
+        # Check company_id to determine padding
+        company_id = self.env.context.get('company_id', self.env.company.id)
+        if company_id == 4:
+            padding = 2  # 2 digits for company_id == 4 (01, 02, ..., 99)
+        else:
+            padding = 3  # 3 digits for other companies (001, 002, ..., 999)
 
         # Get all existing numbers for today
         model = self.env['account.move']  # adjust for invoice model
@@ -37,7 +43,8 @@ class CustomSequence(models.Model):
         existing_numbers = model.search(domain).mapped('name')
 
         # Find first missing number
-        for i in range(1, 999):
+        max_range = 99 if company_id == 4 else 999
+        for i in range(1, max_range + 1):
             candidate = f"{prefix}{current_date}{str(i).zfill(padding)}"
             if candidate not in existing_numbers:
                 sequence.number_next = i + 1
@@ -83,13 +90,20 @@ class CustomSequence(models.Model):
         suffix = suffix or ""
         self_prefix = self.prefix or ""
 
-        # --- Custom logic for INV / REC ---
+        # --- Custom logic for INV / REC / QO ---
         if str(prefix).startswith("INV"):
             sequence = self.search([('code', '=', self.code)], limit=1)
-            if currentDate != self.x_studio_last_date:
-                sequence.number_next = 1
+            if company_id == 4:
+                # For company_id == 4, reset daily based on full date (YYYYMMDD)
+                current_full_date = bangkok_time.strftime('%Y%m%d')
+                if current_full_date != self.x_studio_last_date:
+                    sequence.number_next = 1
+                    self.x_studio_last_date = current_full_date
             else:
-                self._get_next_invoice_number(sequence)
+                if currentDate != self.x_studio_last_date:
+                    sequence.number_next = 1
+                else:
+                    self._get_next_invoice_number(sequence)
 
         if str(prefix).startswith("REC"):
             sequence = self.search([('code', '=', self.code)], limit=1)
@@ -105,15 +119,35 @@ class CustomSequence(models.Model):
                 else:
                     self._get_next_invoice_number(sequence)
 
+        if str(prefix).startswith("QO") or str(self_prefix).startswith("SO"):
+            sequence = self.search([('code', '=', self.code)], limit=1)
+            if company_id == 4:
+                # For company_id == 4, reset daily based on full date (YYYYMMDD)
+                current_full_date = bangkok_time.strftime('%Y%m%d')
+                if current_full_date != self.x_studio_last_date:
+                    sequence.number_next = 1
+                    self.x_studio_last_date = current_full_date
+            else:
+                if currentDate != self.x_studio_last_date:
+                    sequence.number_next = 1
+
         # Buddha Era Year
         be_year = self._get_buddha_era_year()
 
         # ---- Build custom PREFIX safely ----
         if str(self_prefix).startswith("SQ"):
-            prefix = f"{self_prefix}{be_year}{currentDate}"
+            if company_id == 4:
+                # For company_id == 4, use Buddha Era format: 25YYMMDD
+                prefix = f"{self_prefix}{be_year}{currentDate}"
+            else:
+                prefix = f"{self_prefix}{be_year}{currentDate}"
 
         elif str(self_prefix).startswith("INV"):
-            prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
+            if company_id == 4:
+                # For company_id == 4, use Buddha Era format: 25YYMMDD
+                prefix = f"{self_prefix}{be_year}{currentDate}"
+            else:
+                prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
 
         elif str(self_prefix).startswith("REC"):
             if company_id == 4:
@@ -122,12 +156,23 @@ class CustomSequence(models.Model):
             else:
                 prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
 
+        elif str(self_prefix).startswith("QO") or str(self_prefix).startswith("SO"):
+            if company_id == 4:
+                # For company_id == 4, use Buddha Era format: 25YYMMDD
+                prefix = f"{self_prefix}{be_year}{currentDate}"
+            else:
+                prefix = f"{self_prefix}{be_year}{currentDate}"
+
         else:
-            prefix = f"{self_prefix}{be_year}{currentDate}"
+            if company_id == 4:
+                # For company_id == 4, use Buddha Era format: 25YYMMDD
+                prefix = f"{self_prefix}{be_year}{currentDate}"
+            else:
+                prefix = f"{self_prefix}{be_year}{currentDate}"
 
         # Update last date
-        if company_id == 4 and str(self_prefix).startswith("REC"):
-            # For company_id == 4 REC, store full date (YYYYMMDD)
+        if company_id == 4 and (str(self_prefix).startswith("REC") or str(self_prefix).startswith("INV") or str(self_prefix).startswith("QO") or str(self_prefix).startswith("SO")):
+            # For company_id == 4, store full date (YYYYMMDD) for daily reset
             self.x_studio_last_date = bangkok_time.strftime('%Y%m%d')
         else:
             # For other cases, store day only
