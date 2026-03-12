@@ -37,17 +37,25 @@ class CustomPayment(models.Model):
                 # Generate custom sequence for company_id == 4
                 utc_now = datetime.utcnow()
                 bangkok_time = utc_now + timedelta(hours=7)
-                current_date = bangkok_time.strftime('%Y%m%d')
+                
+                # Calculate Buddha Era year (2 digits)
+                current_year = bangkok_time.year
+                be_year = current_year + 543
+                be_year_2digit = str(be_year)[2:4]  # Get last 2 digits (69 from 2569)
+                
+                month = bangkok_time.strftime('%m')
+                day = bangkok_time.strftime('%d')
+                date_prefix = f"{be_year_2digit}{month}{day}"
                 
                 # Find the next number for today
                 existing_payments = self.search([
-                    ('name', 'like', f'REC{current_date}%'),
+                    ('name', 'like', f'REC{date_prefix}%'),
                     ('company_id', '=', payment.company_id.id),
                     ('id', '!=', payment.id)
                 ])
                 
                 next_number = len(existing_payments) + 1
-                payment.name = f"REC{current_date}{str(next_number).zfill(2)}"
+                payment.name = f"REC{date_prefix}{str(next_number).zfill(2)}"
                 _logger.warning(f"Custom _compute_name: {payment.name}")
             else:
                 # Use default computation for other companies
