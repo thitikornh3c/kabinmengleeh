@@ -85,7 +85,6 @@ class CustomSequence(models.Model):
             f"Sequence Entry: {sequence_code} {self.number_next} | "
             f"{bangkok_time} {currentDate} {self.x_studio_last_date}"
         )
-        _logger.info(f"Original prefix: '{prefix}', self_prefix: '{self_prefix}', code: '{self.code}'")
 
         # --- get default prefix/suffix ---
         prefix, suffix = super()._get_prefix_suffix()
@@ -95,7 +94,7 @@ class CustomSequence(models.Model):
         suffix = suffix or ""
         self_prefix = self.prefix or ""
         
-        _logger.info(f"After super() - prefix: '{prefix}', self_prefix: '{self_prefix}'")
+        _logger.info(f"After super() - prefix: '{prefix}', self_prefix: '{self_prefix}', code: '{self.code}'")
 
         # --- Custom logic for INV / REC / QO / Payment Receipt ---
         if str(prefix).startswith("INV"):
