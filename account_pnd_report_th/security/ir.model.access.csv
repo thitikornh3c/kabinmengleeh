@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_pnd_wizard,access_account_pnd_wizard,model_account_pnd_wizard,,1,1,1,1
+access_account_pnd_report_result,access_account_pnd_report_result,model_account_pnd_report_result,,1,1,1,1
+access_account_pnd_report,access_account_pnd_report,model_account_pnd_report,,1,1,1,1

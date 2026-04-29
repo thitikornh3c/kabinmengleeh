@@ -17,7 +17,7 @@
                     <field name="partner_id"/>
                     <field name="loan_amount"/>
                     <field name="interest_rate"/>
-                    <field name="date"/>
+                    <field name="create_date"/>
                     <field name="tenure"/>
                     <field name="company_id"/>
                     <field name="state"/>
@@ -89,7 +89,7 @@
                                        <!-- readonly="state != 'draft'"/> -->
                                 <field name="disbursal_amount"/>
                                 <field name="currency_id"/>
-                                <field name="date"/>
+                                <field name="create_date"/>
                                 <field name="request" invisible="1"/>
                             </group>
                             <group>
@@ -105,7 +105,7 @@
                                 <field name="repayment_lines_ids" readonly="1">
                                     <tree string="tree" create="false">
                                         <field name="name"/>
-                                        <field name="date"/>
+                                        <field name="create_date"/>
                                         <field name="amount"/>
                                         <field name="interest_amount"/>
                                         <field name="total_amount"/>
