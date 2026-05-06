@@ -1,6 +1,6 @@
 {
     'name': 'Thai PND 3/53 Report Generator',
-    'version': '19.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Accounting',
     'summary': 'Generate Thai PND3 and PND53 forms from accounting transactions',
     'author': 'Your Company',
