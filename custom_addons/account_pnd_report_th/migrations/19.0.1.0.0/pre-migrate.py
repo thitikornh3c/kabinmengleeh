@@ -3,7 +3,7 @@ def migrate(cr, version):
     cr.execute("""
         DELETE FROM ir_model_data
         WHERE model = 'ir.ui.view'
-          AND name = 'report_invoice_document_preview'
+          AND name = 'report_invoice_document_preview';
     """)
     cr.execute("""
         DELETE FROM ir_ui_view
