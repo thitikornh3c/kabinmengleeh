@@ -153,23 +153,28 @@ class CustomSequence(models.Model):
                 if currentDate != self.x_studio_last_date:
                     sequence.number_next = 1
 
-        # Buddha Era Year
-        be_year = self._get_buddha_era_year()
+        # Buddha Era Year (using the date we determined above)
+        be_year_full = current_year + 543
+        be_year_2digit = str(be_year_full)[2:4]  # Get last 2 digits
 
         # ---- Build custom PREFIX safely ----
         if str(self_prefix).startswith("SQ"):
             if company_id == 4:
-                # For company_id == 4, use Buddha Era format: 25YYMMDD
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                # For company_id == 4, use Buddha Era format: YYMMDD
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
             else:
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
 
         elif str(self_prefix).startswith("INV"):
             if company_id == 4:
-                # For company_id == 4, use Buddha Era format: 25YYMMDD
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                # For company_id == 4, use Buddha Era format: YYMMDD
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
             else:
-                prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
+                # For other companies, use original format
+                if invoice_date:
+                    prefix = f"{self_prefix}{invoice_date.strftime('%Y%m')}{currentDate}"
+                else:
+                    prefix = f"{self_prefix}{bangkok_time.strftime('%Y%m')}{currentDate}"
 
         # Handle REC, PBNK, or any receipt-related prefixes
         elif (str(self_prefix).startswith("REC") or str(self_prefix).startswith("PBNK") or
@@ -183,17 +188,17 @@ class CustomSequence(models.Model):
 
         elif str(self_prefix).startswith("QO") or str(self_prefix).startswith("SO"):
             if company_id == 4:
-                # For company_id == 4, use Buddha Era format: 25YYMMDD
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                # For company_id == 4, use Buddha Era format: YYMMDD
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
             else:
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
 
         else:
             if company_id == 4:
-                # For company_id == 4, use Buddha Era format: 25YYMMDD
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                # For company_id == 4, use Buddha Era format: YYMMDD
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
             else:
-                prefix = f"{self_prefix}{be_year}{currentDate}"
+                prefix = f"{self_prefix}{be_year_2digit}{month_date}{currentDate}"
 
         # Update last date
         if company_id == 4 and (str(self_prefix).startswith("REC") or str(self_prefix).startswith("PBNK") or 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Action: รายงานสรุป Two Book -->
+    <record id="action_two_book_report" model="ir.actions.act_window">
+        <field name="name">รายงาน Two Book (VAT/Non-VAT)</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="domain">[('state', 'not in', ['cancel', 'draft'])]</field>
+        <field name="context">{'group_by': ['two_book_type', 'session_id']}</field>
+    </record>
+
+    <!-- Pivot View สำหรับ Two Book Report -->
+    <record id="view_pos_order_two_book_pivot" model="ir.ui.view">
+        <field name="name">pos.order.two.book.pivot</field>
+        <field name="model">pos.order</field>
+        <field name="type">pivot</field>
+        <field name="arch" type="xml">
+            <pivot string="สรุปยอดขาย Two Book" disable_linking="True">
+                <field name="session_id" type="row"/>
+                <field name="two_book_type" type="col"/>
+                <field name="amount_untaxed" type="measure" string="ยอดก่อนภาษี"/>
+                <field name="amount_tax" type="measure" string="ภาษีขาย"/>
+                <field name="amount_total" type="measure" string="ยอดรวม"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Menu: Two Book Report -->
+    <menuitem
+        id="menu_two_book_report"
+        name="รายงาน Two Book"
+        parent="point_of_sale.menu_point_of_sale"
+        action="action_two_book_report"
+        sequence="50"
+    />
+
+</odoo>

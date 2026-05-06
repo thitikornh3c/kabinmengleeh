@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pos_config_two_book,pos.config two book,point_of_sale.model_pos_config,base.group_user,1,0,0,0
+access_pos_config_two_book_manager,pos.config two book manager,point_of_sale.model_pos_config,point_of_sale.group_pos_manager,1,1,1,0

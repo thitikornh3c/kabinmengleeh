@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- เพิ่ม Column is_vat_order ใน POS Order List -->
+    <record id="view_pos_order_two_book_list" model="ir.ui.view">
+        <field name="name">pos.order.two.book.list</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="two_book_type" widget="badge"
+                       decoration-success="two_book_type == 'vat'"
+                       decoration-muted="two_book_type == 'non_vat'"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- เพิ่ม Field ใน POS Order Form -->
+    <record id="view_pos_order_two_book_form" model="ir.ui.view">
+        <field name="name">pos.order.two.book.form</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <field name="session_id" position="after">
+                <field name="is_vat_order" widget="boolean_toggle"/>
+                <field name="two_book_type" readonly="1"/>
+                <field name="tax_invoice_number" readonly="1"
+                       attrs="{'invisible': [('is_vat_order', '=', False)]}"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Two Book Summary ใน POS Session -->
+    <record id="view_pos_session_two_book" model="ir.ui.view">
+        <field name="name">pos.session.two.book.form</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+        <field name="arch" type="xml">
+            <page name="payments" position="after">
+                <page string="สรุป Two Book" name="two_book_summary">
+                    <group string="สรุปยอดขายแยกประเภท">
+                        <field name="two_book_vat_total" readonly="1"/>
+                        <field name="two_book_vat_tax_total" readonly="1"/>
+                        <field name="two_book_non_vat_total" readonly="1"/>
+                    </group>
+                    <div class="alert alert-success" role="alert">
+                        <strong>ยอดขาย VAT</strong> ใช้สำหรับยื่น ภ.พ.30 (รายงานภาษีขาย)<br/>
+                        <strong>ยอดขาย Non-VAT</strong> บันทึกเป็นรายได้ภายใน (ไม่นำส่ง VAT)
+                    </div>
+                </page>
+            </page>
+        </field>
+    </record>
+
+</odoo>

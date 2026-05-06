@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- เพิ่ม Tab "Two Book" ใน POS Configuration -->
+    <record id="view_pos_config_two_book" model="ir.ui.view">
+        <field name="name">pos.config.two.book.form</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Two Book (VAT/Non-VAT)" name="two_book">
+                    <group string="การตั้งค่าระบบ Two Book">
+                        <field name="enable_two_book" widget="boolean_toggle"/>
+                        <field name="two_book_default_vat"
+                               attrs="{'invisible': [('enable_two_book', '=', False)]}"
+                               widget="boolean_toggle"/>
+                    </group>
+
+                    <group string="ฝั่ง VAT (ใบกำกับภาษีเต็มรูปแบบ)"
+                           attrs="{'invisible': [('enable_two_book', '=', False)]}">
+                        <field name="two_book_vat_journal_id"/>
+                        <field name="two_book_vat_fiscal_position_id"/>
+                    </group>
+
+                    <group string="ฝั่ง Non-VAT (บิลเงินสด)"
+                           attrs="{'invisible': [('enable_two_book', '=', False)]}">
+                        <field name="two_book_non_vat_journal_id"/>
+                        <field name="two_book_non_vat_fiscal_position_id"/>
+                    </group>
+
+                    <div attrs="{'invisible': [('enable_two_book', '=', False)]}"
+                         class="alert alert-info" role="alert">
+                        <strong>หมายเหตุ:</strong>
+                        ระบบจะตัด Stock ทุกรายการไม่ว่าจะเลือก VAT หรือ Non-VAT
+                        เพื่อให้ยอด Inventory ตรงกับหน้าชั้นวางเสมอ
+                    </div>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

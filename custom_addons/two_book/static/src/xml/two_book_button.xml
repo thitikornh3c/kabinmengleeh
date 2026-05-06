@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- ปุ่ม VAT Toggle ใน POS ActionPad -->
+    <t t-name="two_book.TwoBookButton">
+        <div class="two-book-container">
+            <button
+                t-if="pos.config.enable_two_book"
+                t-attf-class="{{ buttonClass }}"
+                t-on-click="toggleVatMode"
+                t-att-title="buttonLabel"
+            >
+                <i t-attf-class="fa {{ isVatOrder ? 'fa-file-text' : 'fa-money' }} me-1"/>
+                <span t-esc="buttonLabel"/>
+            </button>
+        </div>
+    </t>
+
+    <!-- Badge แสดงสถานะบน Order Summary -->
+    <t t-name="two_book.OrderVatBadge">
+        <span t-if="order.is_vat_order" class="badge bg-success ms-1">
+            <i class="fa fa-check-circle me-1"/>VAT
+        </span>
+        <span t-else="" class="badge bg-secondary ms-1">
+            <i class="fa fa-minus-circle me-1"/>Non-VAT
+        </span>
+    </t>
+
+</templates>
