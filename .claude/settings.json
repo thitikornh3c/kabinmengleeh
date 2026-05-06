@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c ' *)",
+      "Bash(mkdir -p /Users/mamuydev/mamuy/h3c/kabinmengleeh/custom_addons/account_pnd_report_th/migrations/19.0.1.0.0)"
+    ],
+    "additionalDirectories": [
+      "/Users/mamuydev/mamuy/h3c/kabinmengleeh/custom_addons/account_pnd_report_th/migrations"
+    ]
+  }
+}
