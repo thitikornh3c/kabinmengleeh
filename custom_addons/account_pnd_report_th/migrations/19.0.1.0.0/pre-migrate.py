@@ -5,16 +5,17 @@ _logger = logging.getLogger(__name__)
 
 def migrate(cr, version):
     # --- ท่าไม้ตาย: บังคับ Ignore Tax Tag ในระดับ OS Process ---
+    # สั่งใน Python เลย เพื่อให้สคริปต์ Odoo ที่รันต่อจากนี้มองเห็น
     os.environ['ODOO_UPG_IGNORE_TAX_TAGS'] = '1'
-    _logger.info(">>> ODOO_UPG_IGNORE_TAX_TAGS SET TO 1 <<<")
+    _logger.info(">>> FORCE SETTING ODOO_UPG_IGNORE_TAX_TAGS TO 1 IN PYTHON PROCESS <<<")
 
-    # 1. ล้างข้อมูลภาษีซ้ำอีกรอบ (กรณี Odoo ไปดึง Backup เก่ามา)
+    # 1. ล้างยอด Tax Tag (PND) ทิ้งทันทีที่เริ่มสคริปต์
     _logger.info("Cleaning up Tax Tags relation and Audits...")
     cr.execute("TRUNCATE account_account_tag_account_move_line_rel CASCADE;")
     cr.execute("DELETE FROM account_move_line_tax_audit;")
     cr.execute("UPDATE account_move_line SET tax_tag_invert = false;")
     
-    # 2. ลบ View ที่ค้าง (Fix XPath QR Code)
+    # 2. ลบ View เจ้าปัญหา qrcode
     _logger.info("Force deleting qrcode views...")
     cr.execute("""
         DELETE FROM ir_model_data 
@@ -26,4 +27,4 @@ def migrate(cr, version):
            OR name = 'report_invoice_document_preview';
     """)
 
-    _logger.info("Pre-migrate cleanup finished successfully.")
+    _logger.info("Pre-migrate cleanup finished.")
