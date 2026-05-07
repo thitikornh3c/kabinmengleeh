@@ -7,7 +7,7 @@ import io
 import csv
 import logging
 from PyPDF2 import PdfReader, PdfWriter
-from odoo.modules.module import get_module_resource
+from odoo.tools import get_module_resource
 
 _logger = logging.getLogger(__name__)
 
