@@ -7,8 +7,7 @@ import io
 import csv
 import logging
 from PyPDF2 import PdfReader, PdfWriter
-# from odoo.tools import get_module_resource
-from odoo.modules import get_module_resource
+from odoo.tools.misc import file_path
 
 _logger = logging.getLogger(__name__)
 
@@ -114,9 +113,7 @@ class AccountPNDExportWizard(models.TransientModel):
         })
         
         """Fill Thai RD official PDF template"""
-        template_path = get_module_resource(
-            'account_pnd_report', 'static/pdf/thailand_withholding_tax.pdf'
-        )
+        template_path = file_path('account_pnd_report/static/pdf/thailand_withholding_tax.pdf')
         # template_path = (
         #     self.env['ir.config_parameter']
         #     .sudo()
