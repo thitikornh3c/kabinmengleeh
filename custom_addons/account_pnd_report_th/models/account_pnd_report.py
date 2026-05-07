@@ -3,7 +3,7 @@ import base64
 import logging
 import json
 from odoo import models, fields, api
-from odoo.modules.module import get_module_resource
+from odoo.tools.misc import file_path
 
 _logger = logging.getLogger(__name__)
 
@@ -156,16 +156,14 @@ class AccountPNDReport(models.TransientModel):
         สร้าง PDF ใหม่จาก data_dict โดยใช้ฟอนต์ไทย Micross
         """
         # โหลด template PDF
-        template_path = get_module_resource(
-            'account_pnd_report_th', 'static/pdf/template_thailand_pnd.pdf'
-        )
+        template_path = file_path('account_pnd_report_th/static/pdf/template_thailand_pnd.pdf')
         template_pdf = PdfReader(template_path)
         
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=A4)
 
-        font_path = get_module_resource('account_pnd_report_th', 'static/font/micross.ttf')
-        font_path_icon = get_module_resource('account_pnd_report_th', 'static/font/DejaVuSans.ttf')
+        font_path = file_path('account_pnd_report_th/static/font/micross.ttf')
+        font_path_icon = file_path('account_pnd_report_th/static/font/DejaVuSans.ttf')
         pdfmetrics.registerFont(TTFont('Micross', font_path))
         pdfmetrics.registerFont(TTFont('DejaVuSans', font_path_icon))
         c.setFont("Micross", 12)

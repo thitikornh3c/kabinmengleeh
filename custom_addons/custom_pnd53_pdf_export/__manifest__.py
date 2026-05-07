@@ -1,6 +1,6 @@
 {
     "name": "H3C PND53 PDF Export",
-    "version": "1.0",
+    "version": "19.0.1.0.0",
     "depends": ["base", "account"],
     "author": "Your Name",
     "category": "Accounting",
