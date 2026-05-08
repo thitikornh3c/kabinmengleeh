@@ -12,7 +12,13 @@ def migrate(cr, version):
     # 1. ล้างยอด Tax Tag (PND) ทิ้งทันทีที่เริ่มสคริปต์
     _logger.info("Cleaning up Tax Tags relation and Audits...")
     cr.execute("TRUNCATE account_account_tag_account_move_line_rel CASCADE;")
-    cr.execute("DELETE FROM account_move_line_tax_audit;")
+    cr.execute("""
+        DO $$ BEGIN
+            IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'account_move_line_tax_audit') THEN
+                DELETE FROM account_move_line_tax_audit;
+            END IF;
+        END $$;
+    """)
     cr.execute("UPDATE account_move_line SET tax_tag_invert = false;")
     
     # 2. ลบ View เจ้าปัญหา qrcode
