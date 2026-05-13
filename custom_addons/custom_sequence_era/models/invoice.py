@@ -6,25 +6,24 @@ _logger = logging.getLogger(__name__)
 class CustomInvoice(models.Model):
     _inherit = 'account.move'
 
-    @api.model
-    def create(self, vals):
-        _logger.info(f"Invoice Code: {vals}")
-        move_type = vals.get('move_type', '')
-        
-        if move_type == 'out_invoice':
-            # Use your custom sequence logic
-            if vals.get('state') == 'draft':
-                vals['name'] = 'Draft'  # Set the name to "Draft" for draft invoices
-            else:
-                vals['name'] = self.env['ir.sequence'].next_by_code('account.move')
-        elif move_type == 'in_invoice':
-            # Use your custom sequence logic
-            if vals.get('state') == 'draft':
-                vals['name'] = 'Draft'  # Set the name to "Draft" for draft invoices
-            else:
-                vals['name'] = self.env['ir.sequence'].next_by_code('account.bill.move')
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            _logger.info(f"Invoice Code: {vals}")
+            move_type = vals.get('move_type', '')
 
-        return super(CustomInvoice, self).create(vals)
+            if move_type == 'out_invoice':
+                if vals.get('state') == 'draft':
+                    vals['name'] = 'Draft'
+                else:
+                    vals['name'] = self.env['ir.sequence'].next_by_code('account.move')
+            elif move_type == 'in_invoice':
+                if vals.get('state') == 'draft':
+                    vals['name'] = 'Draft'
+                else:
+                    vals['name'] = self.env['ir.sequence'].next_by_code('account.bill.move')
+
+        return super(CustomInvoice, self).create(vals_list)
 
 
 class CustomPayment(models.Model):
@@ -60,19 +59,19 @@ class CustomPayment(models.Model):
                 # Use default computation for other companies
                 super(CustomPayment, payment)._compute_name()
 
-    @api.model
-    def create(self, vals):
-        _logger.warning(f"=== PAYMENT DEBUG === Payment create called with vals: {vals}")
-        
-        company_id = vals.get('company_id') or self.env.company.id
-        _logger.warning(f"Payment company_id: {company_id}")
-        
-        # Don't set name in vals, let _compute_name handle it
-        if company_id == 4:
-            vals.pop('name', None)  # Remove name if exists
-            _logger.warning("Removed name from vals, will use _compute_name")
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            _logger.warning(f"=== PAYMENT DEBUG === Payment create called with vals: {vals}")
 
-        result = super(CustomPayment, self).create(vals)
-        _logger.warning(f"Created payment with name: {result.name}")
-        
+            company_id = vals.get('company_id') or self.env.company.id
+            _logger.warning(f"Payment company_id: {company_id}")
+
+            if company_id == 4:
+                vals.pop('name', None)
+                _logger.warning("Removed name from vals, will use _compute_name")
+
+        result = super(CustomPayment, self).create(vals_list)
+        _logger.warning(f"Created payments with names: {result.mapped('name')}")
+
         return result
