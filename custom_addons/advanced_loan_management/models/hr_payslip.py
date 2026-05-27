@@ -168,7 +168,6 @@ class HRPayslip(models.Model):
 
         return month_tax
     
-    @api.model
     def compute_sheet(self):
         super(HRPayslip, self).compute_sheet()
 
@@ -610,7 +609,6 @@ class HRPayslip(models.Model):
                         #     line.total = 12500
 
 
-    @api.model
     def write(self, vals):
         """
         Override the write method to listen for the state change when a payslip is paid.
@@ -817,7 +815,6 @@ class HRPayslip(models.Model):
                 'x_studio_deduction': str(abs(float(other_deduct or 0.0)))
             })
 
-    @api.model
     def _compute_salary_details(self):
         for payslip in self:
             # Search for the associated x_employee_salaries record
@@ -888,14 +885,12 @@ class HRPayslip(models.Model):
     #         if not hasattr(record, 'move_type'):
     #             record.move_type = None  # Default value if not present
     #     return records
-    @api.model
-    def create(self, vals):
-        # Override create method to automatically add loan deduction rule
-        res = super(HRPayslip, self).create(vals)
-        if res:
-            # Compute loan deductions and create corresponding salary lines
-            _logger.info(f'Create Slip ${res.employee_id.id}')
-            res.compute_sheet()
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        for slip in res:
+            _logger.info(f'Create Slip ${slip.employee_id.id}')
+            slip.compute_sheet()
         return res
 
     def compute_loan_deductions(self):

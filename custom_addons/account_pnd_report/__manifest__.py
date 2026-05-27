@@ -1,6 +1,6 @@
 {
     "name": "Account PND Report Export", # Revised module name
-    "version": "1.0",
+    "version": "19.0.1.0.0",
     "depends": ["base", "account"],
     "author": "Happy Three Creation co., ltd.",
     'website': 'https://www.h3creation.com/',

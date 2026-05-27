@@ -96,23 +96,19 @@ class LoanRequest(models.Model):
                    ('rejected', 'Rejected'), ('closed', 'Closed')],
         copy=False, tracking=True, default='draft', help="Loan request states")
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """create  auto sequence for the loan request records"""
-        loan_count = self.env['loan.request'].search(
-            [('partner_id', '=', vals['partner_id']),
-             ('state', 'not in', ('draft', 'rejected', 'closed'))])
-        if loan_count:
-            for rec in loan_count:
-                if rec.state != 'closed':
-                    raise UserError(
-                        _('The partner has already an ongoing loan.'))
-        else:
+        for vals in vals_list:
+            loan_count = self.env['loan.request'].search(
+                [('partner_id', '=', vals.get('partner_id')),
+                 ('state', 'not in', ('draft', 'rejected', 'closed'))])
+            if loan_count:
+                raise UserError(_('The partner has already an ongoing loan.'))
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code(
                     'increment_loan_ref')
-            res = super().create(vals)
-            return res
+        return super().create(vals_list)
 
     @api.onchange('loan_type_id')
     def _onchange_loan_type_id(self):
