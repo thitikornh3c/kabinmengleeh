@@ -618,8 +618,14 @@ class HRPayslip(models.Model):
 
     def _get_payslip_contract(self, payslip):
         """Return the employee contract/version linked to the payslip."""
-        if payslip.contract_id:
-            return payslip.contract_id
+        for field_name in ('version_id', 'contract_id'):
+            if field_name in payslip._fields:
+                version = payslip[field_name]
+                if version:
+                    return version
+        employee = payslip.employee_id
+        if employee and 'version_id' in employee._fields and employee.version_id:
+            return employee.version_id
         if 'hr.version' in self.env:
             return self.env['hr.version'].search([
                 ('employee_id', '=', payslip.employee_id.id),
@@ -629,6 +635,16 @@ class HRPayslip(models.Model):
             ('employee_id', '=', payslip.employee_id.id),
             ('state', '=', 'open'),
         ], limit=1)
+
+    def _payslip_line_version_vals(self, payslip, version=None):
+        """Return the field linking a payslip line to its contract/version."""
+        version = version or self._get_payslip_contract(payslip)
+        if not version:
+            return {}
+        for field_name in ('version_id', 'contract_id'):
+            if field_name in self.env['hr.payslip.line']._fields:
+                return {field_name: version.id}
+        return {}
 
     def write(self, vals):
         """
@@ -933,14 +949,15 @@ class HRPayslip(models.Model):
                 
             if loan_line:
                 _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
-                self.env['hr.payslip.line'].create({
+                line_vals = {
                     'slip_id': slip.id,
-                    'contract_id': slip.contract_id.id,
                     'salary_rule_id': 40,
                     'amount': repayment.amount,
                     'sequence': 197,  # Adjust sequence if needed
                     'name': 'เบิกเงินล่วงหน้า'
-                })
+                }
+                line_vals.update(self._payslip_line_version_vals(slip))
+                self.env['hr.payslip.line'].create(line_vals)
 
             # for loan in loan_contracts:
             #     # Example: Deduct 10% of the loan amount
