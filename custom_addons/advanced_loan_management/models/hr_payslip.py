@@ -15,6 +15,10 @@ class HRPayslip(models.Model):
         string='Contract',
         readonly=True,
     )
+    employee_bank_acc_number = fields.Char(
+        string='Employee Bank Account',
+        compute='_compute_employee_bank_acc_number',
+    )
 
     move_type = fields.Selection([
         ('out_invoice', 'Invoice Out'),
@@ -79,6 +83,21 @@ class HRPayslip(models.Model):
         compute='_compute_salary_details',
         store=False,
     )
+
+    @api.depends('employee_id', 'employee_id.bank_account_ids', 'employee_id.primary_bank_account_id')
+    def _compute_employee_bank_acc_number(self):
+        for payslip in self:
+            employee = payslip.employee_id.sudo()
+            bank_account = False
+            if 'primary_bank_account_id' in employee._fields and employee.primary_bank_account_id:
+                bank_account = employee.primary_bank_account_id
+            elif 'bank_account_ids' in employee._fields and employee.bank_account_ids:
+                bank_account = employee.bank_account_ids[0]
+            elif 'bank_account_id' in employee._fields and employee.bank_account_id:
+                bank_account = employee.bank_account_id
+            elif employee.work_contact_id.bank_ids:
+                bank_account = employee.work_contact_id.bank_ids[0]
+            payslip.employee_bank_acc_number = bank_account.acc_number if bank_account else ''
 
     @api.model
     def get_week_ranges(self, start_date, end_date):
