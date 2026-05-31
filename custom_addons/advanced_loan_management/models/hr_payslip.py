@@ -8,6 +8,14 @@ _logger = logging.getLogger(__name__)
 
 class HRPayslip(models.Model):
     _inherit = 'hr.payslip'
+    # Odoo 19 Enterprise renamed contract_id -> version_id; keep alias for reports.
+    contract_id = fields.Many2one(
+        'hr.version',
+        related='version_id',
+        string='Contract',
+        readonly=True,
+    )
+
     move_type = fields.Selection([
         ('out_invoice', 'Invoice Out'),
         ('in_invoice', 'Invoice In'),
