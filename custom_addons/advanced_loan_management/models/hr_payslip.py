@@ -94,7 +94,39 @@ class HRPayslip(models.Model):
             current_date = start_of_week + timedelta(days=7)
         
         return weeks
-    
+
+    def _get_work_entries(self, employee, date_from, date_to):
+        """Fetch work entries for a payslip period (Odoo 19 uses date, not date_start/date_stop)."""
+        WorkEntry = self.env['hr.work.entry']
+        if 'date' in WorkEntry._fields:
+            return WorkEntry.search([
+                ('employee_id', '=', employee.id),
+                ('date', '>=', date_from),
+                ('date', '<=', date_to),
+            ], order='id ASC')
+        return WorkEntry.search([
+            ('employee_id', '=', employee.id),
+            ('date_start', '>=', date_from),
+            ('date_stop', '<=', date_to),
+        ], order='id ASC')
+
+    def _work_entry_date(self, entry):
+        if 'date' in entry._fields and entry.date:
+            return entry.date
+        if 'date_start' in entry._fields and entry.date_start:
+            return fields.Date.to_date(entry.date_start)
+        return False
+
+    def _work_entry_matches_day(self, entry, day):
+        entry_date = self._work_entry_date(entry)
+        return bool(entry_date and day == fields.Date.to_string(entry_date))
+
+    def _work_entry_day_units(self, entry):
+        """Convert a work entry to fractional work days."""
+        if 'date' in entry._fields:
+            return (entry.duration or 8.0) / 8.0
+        return 0.5
+
     def round_half_up(self, v):
         # amount = int(n)
         # round = amount + n
@@ -251,11 +283,7 @@ class HRPayslip(models.Model):
 
                 _logger.info(f"Processing1 payslip total days: {number_of_days}")
 
-                work_entries = self.env['hr.work.entry'].search([
-                    ('employee_id', '=', slip.employee_id.id),
-                    ('date_start', '>=', slip.date_from),
-                    ('date_stop', '<=', slip.date_to)
-                ], order='id ASC')
+                work_entries = self._get_work_entries(slip.employee_id, slip.date_from, slip.date_to)
                 workdays_count = number_of_days
                 weekIndex = 1
                 leave90 = 0
@@ -268,23 +296,22 @@ class HRPayslip(models.Model):
                     isWeekLeave = False
                     for day in week:
                         for entry in work_entries:
-                            if entry.date_start and entry.date_stop:
-                                start_date = fields.Date.from_string(entry.date_start)
-                                end_date = fields.Date.from_string(entry.date_stop)
-                                if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
-                                    if (start_date.strftime('%a').upper() == 'MON' or start_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
-                                        isWeekLeave = True
-                                        
-                                    if entry.code == 'LEAVE90': #Unpaid
-                                        leave90 = leave90 + 0.5 #entry.duration
-                                    elif entry.code == 'LEAVE100': #Generic
-                                        leave100 = leave100 + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE105': #Compensatory
-                                        leave105 = leave105 + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE110': #Sick Time Off
-                                        leave110 = leave110 + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE120': #Paid Time Off
-                                        leave120 = leave120 + 0.5#entry.duration
+                            if self._work_entry_matches_day(entry, day):
+                                entry_date = self._work_entry_date(entry)
+                                day_units = self._work_entry_day_units(entry)
+                                if (entry_date.strftime('%a').upper() == 'MON' or entry_date.strftime('%a').upper() == 'SAT') and entry.code != 'WORK100':
+                                    isWeekLeave = True
+
+                                if entry.code == 'LEAVE90': #Unpaid
+                                    leave90 = leave90 + day_units
+                                elif entry.code == 'LEAVE100': #Generic
+                                    leave100 = leave100 + day_units
+                                elif entry.code == 'LEAVE105': #Compensatory
+                                    leave105 = leave105 + day_units
+                                elif entry.code == 'LEAVE110': #Sick Time Off
+                                    leave110 = leave110 + day_units
+                                elif entry.code == 'LEAVE120': #Paid Time Off
+                                    leave120 = leave120 + day_units
                     if isWeekLeave == True:
                         weekBonus = weekBonus + 1
                                         
@@ -423,11 +450,7 @@ class HRPayslip(models.Model):
 
                 # _logger.info(f"Processing payslip for work entry: {week_ranges}")
 
-                work_entries = self.env['hr.work.entry'].search([
-                    ('employee_id', '=', slip.employee_id.id),
-                    ('date_start', '>=', slip.date_from),
-                    ('date_stop', '<=', slip.date_to)
-                ], order='id ASC')
+                work_entries = self._get_work_entries(slip.employee_id, slip.date_from, slip.date_to)
                 workdays_count = 0
                 weekIndex = 1
 
@@ -441,23 +464,21 @@ class HRPayslip(models.Model):
                 for week in week_ranges:
                     for day in week:
                         for entry in work_entries:
-                            if entry.date_start and entry.date_stop:
-                                start_date = fields.Date.from_string(entry.date_start)
-                                end_date = fields.Date.from_string(entry.date_stop)
-                                if day == start_date.strftime('%Y-%m-%d') and day == end_date.strftime('%Y-%m-%d'):
-                                    if entry.code == 'WORK100':
-                                        weekDay = weekDay + 0.5
-                                        
-                                    if entry.code == 'LEAVE90': #Unpaid
-                                        leave90 = leave90 + 0.5 #entry.duration
-                                    elif entry.code == 'LEAVE100': #Generic
-                                        leave100 = leave100 + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE105': #Compensatory
-                                        leave105 = leave105 + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE110': #Sick Time Off
-                                        leave110 = leave110 + 0.5#entry.duration
-                                    elif entry.code == 'LEAVE120': #Paid Time Off
-                                        leave120 = leave120 + 0.5#entry.duration
+                            if self._work_entry_matches_day(entry, day):
+                                day_units = self._work_entry_day_units(entry)
+                                if entry.code == 'WORK100':
+                                    weekDay = weekDay + day_units
+
+                                if entry.code == 'LEAVE90': #Unpaid
+                                    leave90 = leave90 + day_units
+                                elif entry.code == 'LEAVE100': #Generic
+                                    leave100 = leave100 + day_units
+                                elif entry.code == 'LEAVE105': #Compensatory
+                                    leave105 = leave105 + day_units
+                                elif entry.code == 'LEAVE110': #Sick Time Off
+                                    leave110 = leave110 + day_units
+                                elif entry.code == 'LEAVE120': #Paid Time Off
+                                    leave120 = leave120 + day_units
                 # for week in week_ranges:
                 #     weekDay = 0
                 #     for day in week:
