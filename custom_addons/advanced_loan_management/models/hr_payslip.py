@@ -225,15 +225,15 @@ class HRPayslip(models.Model):
                         line.amount = loan
                         line.total = loan  
 
-            # Get contract
-            contract = self.env['hr.contract'].search([
-                ('employee_id', '=', slip.employee_id.id),
-                ('state', '=', 'open')  # Only get active contracts
-            ], limit=1)
+            # Get contract (hr.contract -> hr.version in Odoo 19)
+            contract = self._get_payslip_contract(slip)
 
             if contract:
                 contract_type_code = contract.contract_type_id.code
-            _logger.info(f"Processing payslip for employee ID: {slip.employee_id.id} {contract.schedule_pay} {contract_type_code}")
+            _logger.info(
+                f"Processing payslip for employee ID: {slip.employee_id.id} "
+                f"{contract.schedule_pay if contract else 'no contract'} {contract_type_code}"
+            )
 
           
                 # slip.show_loan = True
@@ -241,7 +241,7 @@ class HRPayslip(models.Model):
                 # slip.show_loan = False
 
             # Logic Calculate Work day
-            if contract.schedule_pay == 'daily':
+            if contract and contract.schedule_pay == 'daily':
                 startDate = slip.date_from  # Start date
                 endDate = slip.date_to    # End date
                 week_ranges = self.get_week_ranges(startDate, endDate)
@@ -415,7 +415,7 @@ class HRPayslip(models.Model):
                     line.total = netSum
                     # line.amount = amonthSalary + totalOther + sso_amount
                     # line.total = amonthSalary + totalOther + sso_amount
-            elif contract.schedule_pay == 'monthly':
+            elif contract and contract.schedule_pay == 'monthly':
 
                 startDate = slip.date_from  # Start date
                 endDate = slip.date_to    # End date
@@ -616,6 +616,20 @@ class HRPayslip(models.Model):
             return self.number
         return self.display_name or self.name or str(self.id)
 
+    def _get_payslip_contract(self, payslip):
+        """Return the employee contract/version linked to the payslip."""
+        if payslip.contract_id:
+            return payslip.contract_id
+        if 'hr.version' in self.env:
+            return self.env['hr.version'].search([
+                ('employee_id', '=', payslip.employee_id.id),
+                ('is_in_contract', '=', True),
+            ], limit=1)
+        return self.env['hr.contract'].search([
+            ('employee_id', '=', payslip.employee_id.id),
+            ('state', '=', 'open'),
+        ], limit=1)
+
     def write(self, vals):
         """
         Override the write method to listen for the state change when a payslip is paid.
@@ -642,10 +656,7 @@ class HRPayslip(models.Model):
         Custom function to trigger an event when the payslip is marked as paid.
         """
         # Example of a log message
-        contract = self.env['hr.contract'].search([
-                ('employee_id', '=', self.employee_id.id),
-                ('state', '=', 'open')  # Only get active contracts
-            ], limit=1)
+        contract = self._get_payslip_contract(self)
 
         salary = 0 
         taxWithHolding = 0
@@ -753,7 +764,7 @@ class HRPayslip(models.Model):
             else:
                 # Use Snapshot Data in Contract
                 _logger.info(f"Not Found Old Slip Logs {salary} {taxWithHolding} {sso}")
-                if isinstance(contract.x_studio_total_net, str):
+                if contract and isinstance(contract.x_studio_total_net, str):
                     try:
                         total_net = float(contract.x_studio_total_net.replace(',', ''))
                     except ValueError:
@@ -767,7 +778,7 @@ class HRPayslip(models.Model):
                     x_studio_total_net = str(total_net + float(salary))
                 
 
-                if isinstance(contract.x_studio_total_withholding, str):
+                if contract and isinstance(contract.x_studio_total_withholding, str):
                     try:
                         total_withholding = float(contract.x_studio_total_withholding.replace(',', ''))
                     except ValueError:
@@ -776,7 +787,7 @@ class HRPayslip(models.Model):
                     total_withholding = 0.0
                 x_studio_total_withholding = str(total_withholding + abs(float(taxWithHolding)))
 
-                if isinstance(contract.x_studio_total_sso, str):
+                if contract and isinstance(contract.x_studio_total_sso, str):
                     try:
                         total_sso = float(contract.x_studio_total_sso.replace(',', ''))
                     except ValueError:
