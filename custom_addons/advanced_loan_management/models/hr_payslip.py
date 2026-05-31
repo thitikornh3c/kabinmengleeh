@@ -675,10 +675,16 @@ class HRPayslip(models.Model):
         if employee and 'version_id' in employee._fields and employee.version_id:
             return employee.version_id
         if 'hr.version' in self.env:
+            date_from = payslip.date_from
+            date_to = payslip.date_to
             return self.env['hr.version'].search([
                 ('employee_id', '=', payslip.employee_id.id),
-                ('is_in_contract', '=', True),
-            ], limit=1)
+                ('contract_date_start', '!=', False),
+                ('contract_date_start', '<=', date_to),
+                '|',
+                ('contract_date_end', '=', False),
+                ('contract_date_end', '>=', date_from),
+            ], order='contract_date_start desc', limit=1)
         return self.env['hr.contract'].search([
             ('employee_id', '=', payslip.employee_id.id),
             ('state', '=', 'open'),

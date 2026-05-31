@@ -57,16 +57,37 @@ class HrPayslipRun(models.Model):
 
     def _get_employee_version(self, employee):
         self.ensure_one()
+        Version = self.env['hr.version']
         contracts_by_emp = employee._get_contracts(
             date_start=self.date_start,
             date_end=self.date_end,
         )
-        versions = contracts_by_emp.get(employee.id, self.env['hr.version'])
+        versions = contracts_by_emp.get(employee.id, Version)
         if versions:
             return versions[0]
-        if 'hr.version' in self.env:
-            return self.env['hr.version'].search([
-                ('employee_id', '=', employee.id),
-                ('is_in_contract', '=', True),
-            ], limit=1)
-        return self.env['hr.version']
+
+        if employee.version_id:
+            version = employee.version_id
+            if hasattr(version, '_is_overlapping_period'):
+                if version._is_overlapping_period(self.date_start, self.date_end):
+                    return version
+            elif self._version_covers_period(version):
+                return version
+
+        return Version.search([
+            ('employee_id', '=', employee.id),
+            ('contract_date_start', '!=', False),
+            ('contract_date_start', '<=', self.date_end),
+            '|',
+            ('contract_date_end', '=', False),
+            ('contract_date_end', '>=', self.date_start),
+        ], order='contract_date_start desc', limit=1)
+
+    def _version_covers_period(self, version):
+        if not version.contract_date_start:
+            return False
+        if version.contract_date_start > self.date_end:
+            return False
+        if version.contract_date_end and version.contract_date_end < self.date_start:
+            return False
+        return True
