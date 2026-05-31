@@ -609,6 +609,13 @@ class HRPayslip(models.Model):
                         #     line.total = 12500
 
 
+    def _get_payslip_reference(self):
+        """Return a stable payslip identifier for logging (number field removed in Odoo 19)."""
+        self.ensure_one()
+        if 'number' in self._fields and self.number:
+            return self.number
+        return self.display_name or self.name or str(self.id)
+
     def write(self, vals):
         """
         Override the write method to listen for the state change when a payslip is paid.
@@ -620,7 +627,7 @@ class HRPayslip(models.Model):
                 new_state = vals['state']
                 
                 # If the state is changing to 'done' (or 'paid', depending on your workflow)
-                message = f"Payslip {payslip.number} has been change status to {new_state}"
+                message = f"Payslip {payslip._get_payslip_reference()} has been change status to {new_state}"
                 _logger.info(message)
                 if old_state != new_state and new_state == 'done':  # You can adjust to 'paid' if that's your state
                     # Trigger custom logic when payslip is marked as 'Paid'
@@ -652,7 +659,7 @@ class HRPayslip(models.Model):
         year = self.date_from.strftime('%Y')
         month = int(self.date_from.strftime('%m'))
         
-        _logger.info(f"Payslip1111111 {self.number} line_ids: {self.line_ids} {self.company_id.id}")
+        _logger.info(f"Payslip1111111 {self._get_payslip_reference()} line_ids: {self.line_ids} {self.company_id.id}")
         for line in self.line_ids:
             if line.salary_rule_id.code == 'BASIC':
                 salary = line.amount
