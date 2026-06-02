@@ -1,2 +1,2 @@
 # kabinmengleeh
-# version 1.0.5 odoo 19
+# version 1.0.6 odoo 19
