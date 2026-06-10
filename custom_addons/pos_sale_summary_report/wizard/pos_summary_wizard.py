@@ -47,7 +47,7 @@ class PosSummaryWizard(models.TransientModel):
         ]).filtered(lambda o: any(line.tax_ids for line in o.lines))
         pending_orders_data = [{
             'name': order.name,
-            'date_order': fields.Datetime.to_string(order.date_order.astimezone(user_tz)),
+            'date_order': fields.Datetime.to_string(order.date_order + timedelta(hours=7)),
             'customer': order.partner_id.name if order.partner_id else '',
             'vat': order.partner_id.vat or '',
             'amount_total': order.amount_total,
