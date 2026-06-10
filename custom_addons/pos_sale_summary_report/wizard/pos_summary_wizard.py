@@ -44,15 +44,22 @@ class PosSummaryWizard(models.TransientModel):
         pending_invoicing_orders = self.env['pos.order'].search([
             ('partner_id', '!=', False),
             ('account_move', '=', False),
+            ('config_id', 'in', self.config_ids.ids),
+            ('date_order', '>=', utc_dt_from),
+            ('date_order', '<=', utc_dt_to),
         ]).filtered(lambda o: any(line.tax_ids for line in o.lines))
-        pending_orders_data = [{
-            'name': order.name,
-            'date_order': fields.Datetime.to_string(order.date_order + timedelta(hours=7)),
-            'customer': order.partner_id.name if order.partner_id else '',
-            'vat': order.partner_id.vat or '',
-            'amount_total': order.amount_total,
-            'amount_tax': order.amount_tax,
-        } for order in pending_invoicing_orders]
+
+        pending_orders_data = []
+        for order in pending_invoicing_orders:
+            partner = order.partner_id.with_company(order.company_id).sudo()
+            pending_orders_data.append({
+                'name': order.name,
+                'date_order': fields.Datetime.to_string(order.date_order + timedelta(hours=7)),
+                'customer': partner.name or '',
+                'vat': partner.vat or '',
+                'amount_total': order.amount_total,
+                'amount_tax': order.amount_tax,
+            })
         # Prepare data for QWeb template
         report_data = {
             'date_from': fields.Date.to_string(self.date_from),
@@ -68,7 +75,7 @@ class PosSummaryWizard(models.TransientModel):
                     'total': line.price_subtotal,
                 } for line in order.lines],
             } for order in orders],
-            'waiting_invoice': pending_orders_data
+            'pending_orders': pending_orders_data,
         }
         
 
