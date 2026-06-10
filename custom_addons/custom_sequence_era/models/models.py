@@ -108,6 +108,11 @@ class CustomSequence(models.Model):
         
         _logger.info(f"After super() - prefix: '{prefix}', self_prefix: '{self_prefix}', code: '{self.code}'")
 
+        # Odoo 19 stores pos.order.sequence_number as Integer (max ~2.1B).
+        # Injecting BE date (e.g. 690610) into the prefix makes the numeric part overflow.
+        if (self.code or '').startswith('pos.'):
+            return prefix, suffix
+
         # --- Custom logic for INV / REC / QO / Payment Receipt ---
         if str(prefix).startswith("INV"):
             sequence = self.search([('code', '=', self.code)], limit=1)
