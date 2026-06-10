@@ -1,0 +1,328 @@
+<t t-name="account.report_payment_receipt_document">
+    <t t-call="web.external_layout">
+        <t t-set="o" t-value="o.with_context(lang=lang)"/>
+        <t t-set="values" t-value="o._get_payment_receipt_report_values()"/>
+        <t t-set="invoices" t-value="o.reconciled_invoice_ids or o.reconciled_bill_ids"/>
+        <t t-set="inv" t-value="invoices[0] if invoices else None"/>
+        <t t-set="display_discount" t-value="inv and any(l.discount for l in inv.invoice_line_ids)"/>
+        <t t-set="has_long_desc" t-value="inv and any(line.name and line.name.count('\n') &gt; 30 for line in inv.invoice_line_ids if line.name)"/>
+
+        <style>
+            .hide {
+                display: none;
+            }
+            .no-border {
+                border: none !important;
+            }
+            .no-border * {
+                border: none !important;
+            }
+            .no-border:before {
+                border: none !important;
+            }
+        </style>
+        <t t-if="o.company_id.id == 2">
+            <style>
+                .o_total td {
+                    background-color: #275986 !important;
+                    color: white !important;
+                }
+                .o_total td * {
+                    color: white !important;
+                }
+            </style>
+        </t>
+
+        <div class="page">
+            <div class="o_company_2_layout mb-4 text-end">
+                <h2 class="mb-0">ใบกำกับภาษี/ใบเสร็จรับเงิน</h2>
+                <h2 class="mb-0">Tax Invoice/Receipt</h2>
+                <div>
+                    <h2 class="d-inline-block" style="margin-right: 8px">เลขที่/No.</h2>
+                    <h2 class="d-inline-block" t-if="o.name and o.name != '/'" t-field="o.name"/>
+                </div>
+            </div>
+
+            <div>
+                <p style="margin-bottom: 0.5rem">
+                    <b>ลูกค้า/Customer Name</b>:
+                    <t t-esc="o.partner_id.name"/>
+                </p>
+            </div>
+            <t t-if="o.company_id.id == 1">
+                <div>
+                    <p style="margin-bottom: 0.5rem">
+                        <b>ที่อยู่ลูกค้า/Customer Address</b>:
+                        <t t-esc="o.partner_id.street"/>
+                    </p>
+                </div>
+            </t>
+            <t t-else="">
+                <div style="margin-bottom: 0.5rem">
+                    <b>ที่อยู่ลูกค้า/Customer Address</b>:
+                    <t t-esc="o.partner_id.street or ''"/>
+                    <t t-if="o.partner_id.street2">, <t t-esc="o.partner_id.street2"/></t>
+                    <t t-if="o.partner_id.city">, <t t-esc="o.partner_id.city"/></t>
+                    <t t-if="o.partner_id.state_id">, <t t-esc="o.partner_id.state_id.name"/></t>
+                    <t t-if="o.partner_id.zip"> <t t-esc="o.partner_id.zip"/></t>
+                    <t t-if="o.partner_id.country_id">, <t t-esc="o.partner_id.country_id.name"/></t>
+                </div>
+            </t>
+            <div>
+                <p style="margin-bottom: 0.5rem">
+                    <b>เลขประจำตัวผู้เสียภาษี/Customer Tax ID</b>:
+                    <t t-esc="o.partner_id.vat"/>
+                </p>
+            </div>
+
+            <div t-if="inv" class="clearfix invoice_main">
+                <div id="informations" class="row mb-4 mt-4">
+                    <div class="col" t-if="o.date" name="invoice_date">
+                        <strong>วันที่ใบเสร็จ/Receipt Date</strong>
+                        <div t-esc="o.date.strftime('%d/%m/%Y') if o.date else ''">2023-09-12</div>
+                    </div>
+                    <div class="col" name="origin">
+                        <strong>เอกสารต้นทาง/Source</strong>
+                        <t t-set="invoice" t-value="invoices[:1] and invoices[0]"/>
+                        <div t-if="invoice" t-esc="invoice.name"/>
+                        <div t-else="" t-esc="o.memo"/>
+                    </div>
+                </div>
+
+                <table class="o_has_total_table table o_main_table table-borderless mb-0" name="invoice_line_table">
+                    <thead t-attf-style="#{has_long_desc and 'display: table-row-group;' or ''}">
+                        <tr>
+                            <th class="text-start" style="width: 45px">
+                                <span>ลำดับ</span>
+                                <br/>
+                                <span>No.</span>
+                            </th>
+                            <th name="th_description" class="text-start">
+                                <span>คำอธิบาย</span>
+                                <br/>
+                                <span>Description</span>
+                            </th>
+                            <th name="th_quantity" class="text-end">
+                                <span>ปริมาณ</span>
+                                <br/>
+                                <span>Quantity</span>
+                            </th>
+                            <th name="th_priceunit" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                <span>ราคาต่อหน่วย</span>
+                                <br/>
+                                <span>Unit Price</span>
+                            </th>
+                            <th name="th_discount" t-if="display_discount" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                <span>ส่วนลด %</span>
+                                <br/>
+                                <span>Disc.%</span>
+                            </th>
+                            <th name="th_subtotal" class="text-end">
+                                <span>จำนวน</span>
+                                <br/>
+                                <span>Amount</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="invoice_tbody">
+                        <t t-set="lines" t-value="inv.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+                        <t t-foreach="enumerate(lines, 1)" t-as="line_with_index">
+                            <t t-set="line_index" t-value="line_with_index[0]"/>
+                            <t t-set="line" t-value="line_with_index[1]"/>
+                            <tr t-att-class="'fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                <t t-if="line.display_type == 'product'" name="account_invoice_line_accountable">
+                                    <td name="text-center">
+                                        <t t-esc="line_index"/>
+                                    </td>
+                                    <td name="account_invoice_line_name">
+                                        <span t-if="line.name" t-field="line.name" t-options="{'widget': 'text'}">Bacon Burger</span>
+                                    </td>
+                                    <td name="td_quantity" class="o_td_quantity text-end">
+                                        <span t-field="line.quantity" class="text-nowrap">3.00</span>
+                                        <span t-field="line.product_uom_id" groups="uom.group_uom">units</span>
+                                    </td>
+                                    <td name="td_price_unit" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                        <span class="text-nowrap" t-field="line.price_unit">9.00</span>
+                                    </td>
+                                    <td name="td_discount" t-if="display_discount" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                        <span class="text-nowrap" t-field="line.discount">0</span>
+                                    </td>
+                                    <td name="td_subtotal" class="text-end o_price_total">
+                                        <span class="text-nowrap" t-field="line.price_subtotal">27.00</span>
+                                    </td>
+                                </t>
+                                <t t-elif="line.display_type == 'line_section'">
+                                    <td colspan="99">
+                                        <span t-if="line.name" t-field="line.name" t-options="{'widget': 'text'}">A section title</span>
+                                    </td>
+                                </t>
+                                <t t-elif="line.display_type == 'line_note'">
+                                    <td colspan="99">
+                                        <span t-if="line.name" t-field="line.name" t-options="{'widget': 'text'}">A note</span>
+                                    </td>
+                                </t>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="clearfix">
+                    <div id="right-elements" t-attf-class="#{'col-5' if report_type != 'html' else 'col-12'} d-inline-block float-end">
+                        <table class="o_total_table table table-borderless avoid-page-break-inside">
+                            <t t-if="inv.tax_totals" t-call="account.document_tax_totals">
+                                <t t-set="tax_totals" t-value="inv.tax_totals"/>
+                                <t t-set="currency" t-value="inv.currency_id"/>
+                            </t>
+                        </table>
+                    </div>
+                    <div class="mb-3 mt-5">
+                        <p class="lh-sm">Total amount in words:</p>
+                        <div style="padding: 8px; border: 1px solid #000; width: 330px; display: inline-block; font-size: 13px">
+                            <span t-field="inv.with_context(lang='en_US').amount_total_words">One Hundred Seventy Six Thousand Eight Hundred Baht net</span>
+                        </div>
+                        <div style="width: 330px; font-size: 11px; margin-top: 12px;">
+                            <p>(Please check correctness of entries in the document within 7 days, otherwise document deemed accepted.)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <t t-if="o.company_id.id == 2">
+            <table class="no-border mt-3">
+                <tr style="border: none !important;">
+                    <td style="border: none; vertical-align: top;">
+                        <p style="float: left; display: inline-block; max-width: 350px">Payment will be considered complete once the company has received the funds.</p>
+                        <div style="display: inline-block; margin-bottom: auto">
+                            <p style="display: inline-block; margin-left: 12px">(</p>
+                            <p style="display: inline-block; width: 21px; text-align: center;"/>
+                            <p style="display: inline-block;">)</p>
+                            <p style="display: inline-block; margin-left: 7px">Cash</p>
+                            <p style="display: inline-block; margin-left: 18px">(</p>
+                            <p style="display: inline-block; width: 21px; text-align: center;">x</p>
+                            <p style="display: inline-block;">)</p>
+                            <p style="display: inline-block; margin-left: 7px">Bank Transfer</p>
+                            <p style="display: inline-block; margin-left: 18px">(</p>
+                            <p style="display: inline-block; width: 21px; text-align: center;"/>
+                            <p style="display: inline-block;">)</p>
+                            <p style="display: inline-block; margin-left: 7px">Cheque</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p style="display: inline-block;">
+                            <span>Bank</span>
+                            <span style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important" t-esc="o.company_id.x_studio_bank_method"/>
+                        </p>
+                        <p style="display: inline-block; margin-left: 8px;">
+                            <span>Account Number</span>
+                            <span style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important;" t-esc="o.company_id.x_studio_bankno">2402519403</span>
+                        </p>
+                        <p style="display: inline-block; margin-left: 8px;">
+                            <span>Date</span>
+                            <span style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important;" t-esc="o.date.strftime('%d/%m/%Y') if o.date else ''"/>
+                        </p>
+                        <p style="display: inline-block; margin-left: 8px;">
+                            <span>Total</span>
+                            <span t-esc="'{:,.2f} ฿'.format(o.amount)" style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important;">50</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            <table class="table-borderless" style="margin-top: 16px; border: none !important; width: 100%">
+                <tr style="border: none !important;">
+                    <td style="border: none !important; width: 20%; padding: 8px; text-align: center; vertical-align: bottom;">
+                        <p style="margin: 0 auto; margin-bottom: 8px; width: 100%; height: 1px; border: 1px solid #d5d5d5"/>
+                        <p>ผู้จ่ายเงิน/Payor</p>
+                    </td>
+                    <td style="border: none; width: 20%; padding: 8px; text-align: center; vertical-align: bottom;">
+                        <p style="margin: 0 auto; margin-bottom: 8px; width: 100%; height: 1px; border: 1px solid #d5d5d5"/>
+                        <p>วันที่/Date</p>
+                    </td>
+                    <td style="border: none; width: 20%; text-align: center; vertical-align: middle;">
+                        <img src="https://h3creation.s3.ap-southeast-1.amazonaws.com/official/new_stamp.png" width="auto" height="80px" style="margin-bottom:24px;" alt="Company stamp"/>
+                    </td>
+                    <td style="border: none; width: 20%; padding: 8px; text-align: center; vertical-align: bottom;">
+                        <p style="margin: 0 auto; margin-bottom: 8px; width: 100%; height: 1px; border: 1px solid #d5d5d5"/>
+                        <p>ผู้รับเงิน/Payee</p>
+                    </td>
+                    <td style="border: none; width: 20%; padding: 8px; text-align: center; vertical-align: bottom;">
+                        <p style="margin: 0 auto; margin-bottom: 8px; width: 100%; height: 1px; border: 1px solid #d5d5d5"/>
+                        <p>วันที่/Date</p>
+                    </td>
+                </tr>
+            </table>
+        </t>
+
+        <t t-if="o.company_id.id == 4">
+            <table class="no-border mt-3">
+                <tr style="background-color: transparent !important; border: none !important;">
+                    <td style="background-color: transparent !important; border: none; vertical-align: top;">
+                        <p style="float: left; display: inline-block; max-width: 350px">Payment will be considered complete once the company has received the funds.</p>
+                        <div style="display: inline-block; margin-bottom: auto">
+                            <div style="margin-bottom: 8px">
+                                <p style="display: inline-block; margin-left: 12px">(</p>
+                                <p style="display: inline-block; width: 21px; text-align: center;"/>
+                                <p style="display: inline-block;">)</p>
+                                <p style="display: inline-block; margin-left: 7px">Cash</p>
+                                <p style="display: inline-block; margin-left: 18px">(</p>
+                                <p style="display: inline-block; width: 21px; text-align: center;">x</p>
+                                <p style="display: inline-block;">)</p>
+                                <p style="display: inline-block; margin-left: 7px">Bank Transfer</p>
+                            </div>
+                            <div>
+                                <p style="display: inline-block; margin-left: 18px">(</p>
+                                <p style="display: inline-block; width: 21px; text-align: center;"/>
+                                <p style="display: inline-block;">)</p>
+                                <p style="display: inline-block; margin-left: 7px">Cheque</p>
+                                <p style="display: inline-block; margin-left: 18px">(</p>
+                                <p style="display: inline-block; width: 21px; text-align: center;"/>
+                                <p style="display: inline-block;">)</p>
+                                <p style="display: inline-block; margin-left: 7px">Paypal</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background-color: transparent !important;">
+                        <p style="display: inline-block;">
+                            <span>Bank</span>
+                            <span style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important" t-esc="o.company_id.x_studio_bank_method"/>
+                        </p>
+                        <p style="display: inline-block; margin-left: 8px;">
+                            <span>Account Number</span>
+                            <span style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important;" t-esc="o.company_id.x_studio_bankno">2402519403</span>
+                        </p>
+                        <p style="display: inline-block; margin-left: 8px;">
+                            <span>Date</span>
+                            <span style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important;" t-esc="o.date.strftime('%d/%m/%Y') if o.date else ''"/>
+                        </p>
+                        <p style="display: inline-block; margin-left: 8px;">
+                            <span>Total</span>
+                            <span t-esc="'{:,.2f} ฿'.format(o.amount)" style="display: inline-block; padding: 0px 6px; border-bottom: 1px solid #c6cdda !important;">50</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            <table class="table-borderless" style="background-color: transparent !important; margin-top: 32px; border: none !important; width: 100%">
+                <tr style="border: none !important; background-color: transparent !important;">
+                    <td style="background-color: transparent !important; border: none !important; width: 45%; padding: 8px; text-align: center; vertical-align: bottom;"/>
+                    <td style="background-color: transparent !important; border: none !important; width: 20%; padding: 8px; text-align: center; vertical-align: top;">
+                        <img style="margin-bottom: 12px" width="80%" src="https://h3creation.s3.ap-southeast-1.amazonaws.com/official/new_stamp.png" alt="Company stamp"/>
+                    </td>
+                    <td style="background-color: transparent !important; border: none !important; width: 20%; padding: 8px; text-align: center; vertical-align: bottom;">
+                        <p style="margin: 0 auto; margin-bottom: 8px; width: 100%; height: 1px; border: 1px solid #d5d5d5"/>
+                        <p>Payee</p>
+                    </td>
+                    <td style="background-color: transparent !important; border: none !important; width: 15%; padding: 8px; text-align: center; vertical-align: bottom;">
+                        <p style="margin: 0 auto; margin-bottom: 8px; width: 100%; height: 1px; border: 1px solid #d5d5d5"/>
+                        <p>Date</p>
+                    </td>
+                </tr>
+            </table>
+        </t>
+
+        <div class="oe_structure"/>
+    </t>
+</t>

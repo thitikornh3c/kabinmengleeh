@@ -21,6 +21,17 @@ class PosOrder(models.Model):
         readonly=True,
         copy=False,
     )
+    amount_untaxed = fields.Monetary(
+        string='ยอดก่อนภาษี',
+        compute='_compute_amount_untaxed',
+        store=True,
+        currency_field='currency_id',
+    )
+
+    @api.depends('amount_total', 'amount_tax')
+    def _compute_amount_untaxed(self):
+        for order in self:
+            order.amount_untaxed = order.amount_total - order.amount_tax
 
     @api.depends('is_vat_order')
     def _compute_two_book_type(self):
