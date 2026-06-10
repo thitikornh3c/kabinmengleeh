@@ -30,25 +30,23 @@
         </field>
     </record>
 
-    <!-- Two Book Summary ใน POS Session -->
+    <!-- Two Book Summary ใน POS Session (Odoo 19: no notebook in session form) -->
     <record id="view_pos_session_two_book" model="ir.ui.view">
         <field name="name">pos.session.two.book.form</field>
         <field name="model">pos.session</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
         <field name="arch" type="xml">
-            <page name="payments" position="after">
-                <page string="สรุป Two Book" name="two_book_summary">
-                    <group string="สรุปยอดขายแยกประเภท">
-                        <field name="two_book_vat_total" readonly="1"/>
-                        <field name="two_book_vat_tax_total" readonly="1"/>
-                        <field name="two_book_non_vat_total" readonly="1"/>
-                    </group>
-                    <div class="alert alert-success" role="alert">
-                        <strong>ยอดขาย VAT</strong> ใช้สำหรับยื่น ภ.พ.30 (รายงานภาษีขาย)<br/>
-                        <strong>ยอดขาย Non-VAT</strong> บันทึกเป็นรายได้ภายใน (ไม่นำส่ง VAT)
-                    </div>
-                </page>
-            </page>
+            <xpath expr="//sheet/group" position="after">
+                <group string="สรุป Two Book (VAT/Non-VAT)">
+                    <field name="two_book_vat_total" readonly="1"/>
+                    <field name="two_book_vat_tax_total" readonly="1"/>
+                    <field name="two_book_non_vat_total" readonly="1"/>
+                </group>
+                <div class="alert alert-success" role="alert">
+                    <strong>ยอดขาย VAT</strong> ใช้สำหรับยื่น ภ.พ.30 (รายงานภาษีขาย)<br/>
+                    <strong>ยอดขาย Non-VAT</strong> บันทึกเป็นรายได้ภายใน (ไม่นำส่ง VAT)
+                </div>
+            </xpath>
         </field>
     </record>
 
