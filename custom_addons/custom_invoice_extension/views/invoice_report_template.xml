@@ -1,11 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- <template id="report_invoice_document" inherit_id="account.invoice_report">
-            <xpath expr="//div[@class='page']" position="inside">
-                <div class="amount-total-words">
-                    <p>Total in Words: <span t-esc="o.amount_total_words"/></p>
-                </div>
-            </xpath>
-        </template> -->
-    </data>
+    <!-- Override l10n_th "Tax Invoice" title (loads after l10n_th) -->
+    <template id="report_invoice_document_custom_title" inherit_id="account.report_invoice_document">
+        <t name="invoice_title" position="replace">
+            <t name="invoice_title">ใบวางบิล/Invoice</t>
+        </t>
+        <t name="draft_invoice_title" position="replace">
+            <t name="draft_invoice_title">แบบร่างใบวางบิล/Draft Invoice</t>
+        </t>
+        <t name="cancelled_invoice_title" position="replace">
+            <t name="cancelled_invoice_title">ใบวางบิลที่ยกเลิก/Cancelled Invoice</t>
+        </t>
+        <t name="credit_note_title" position="replace">
+            <t name="credit_note_title">ใบลดหนี้/Credit Note</t>
+        </t>
+        <t name="draft_credit_note_title" position="replace">
+            <t name="draft_credit_note_title">แบบร่างใบลดหนี้/Draft Credit Note</t>
+        </t>
+        <t name="cancelled_credit_note_title" position="replace">
+            <t name="cancelled_credit_note_title">ใบลดหนี้ที่ยกเลิก/Cancelled Credit Note</t>
+        </t>
+    </template>
 </odoo>
