@@ -37,14 +37,3 @@ class PosSession(models.Model):
 
             # คำนวณ Output VAT จาก VAT orders (amount_tax)
             session.two_book_vat_tax_total = sum(vat_orders.mapped('amount_tax'))
-
-    def get_closing_control_data(self):
-        """เพิ่มข้อมูล Two Book ใน Closing Control"""
-        data = super().get_closing_control_data()
-        data['two_book_summary'] = {
-            'vat_total': self.two_book_vat_total,
-            'non_vat_total': self.two_book_non_vat_total,
-            'vat_tax_total': self.two_book_vat_tax_total,
-            'grand_total': self.two_book_vat_total + self.two_book_non_vat_total,
-        }
-        return data
