@@ -25,7 +25,7 @@
                 <field name="is_vat_order" widget="boolean_toggle"/>
                 <field name="two_book_type" readonly="1"/>
                 <field name="tax_invoice_number" readonly="1"
-                       attrs="{'invisible': [('is_vat_order', '=', False)]}"/>
+                       invisible="not is_vat_order"/>
             </field>
         </field>
     </record>

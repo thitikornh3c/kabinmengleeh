@@ -12,23 +12,23 @@
                     <group string="การตั้งค่าระบบ Two Book">
                         <field name="enable_two_book" widget="boolean_toggle"/>
                         <field name="two_book_default_vat"
-                               attrs="{'invisible': [('enable_two_book', '=', False)]}"
+                               invisible="not enable_two_book"
                                widget="boolean_toggle"/>
                     </group>
 
                     <group string="ฝั่ง VAT (ใบกำกับภาษีเต็มรูปแบบ)"
-                           attrs="{'invisible': [('enable_two_book', '=', False)]}">
+                           invisible="not enable_two_book">
                         <field name="two_book_vat_journal_id"/>
                         <field name="two_book_vat_fiscal_position_id"/>
                     </group>
 
                     <group string="ฝั่ง Non-VAT (บิลเงินสด)"
-                           attrs="{'invisible': [('enable_two_book', '=', False)]}">
+                           invisible="not enable_two_book">
                         <field name="two_book_non_vat_journal_id"/>
                         <field name="two_book_non_vat_fiscal_position_id"/>
                     </group>
 
-                    <div attrs="{'invisible': [('enable_two_book', '=', False)]}"
+                    <div invisible="not enable_two_book"
                          class="alert alert-info" role="alert">
                         <strong>หมายเหตุ:</strong>
                         ระบบจะตัด Stock ทุกรายการไม่ว่าจะเลือก VAT หรือ Non-VAT
