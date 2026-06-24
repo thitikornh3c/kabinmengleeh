@@ -21,12 +21,5 @@
             <field name="sequence" eval="20"/>
         </record>
 
-        <record id="account_vat_clearing" model="account.account">
-            <field name="code">VATCLR</field>
-            <field name="name">พักรายได้ VAT รอออกใบกำกับ</field>
-            <field name="account_type">liability_current</field>
-            <field name="reconcile" eval="True"/>
-        </record>
-
     </data>
 </odoo>

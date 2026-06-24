@@ -5,8 +5,66 @@ _logger = logging.getLogger(__name__)
 
 
 def post_init_hook(env):
+    _ensure_vat_clearing_accounts(env)
     _setup_fiscal_position_tax_maps(env)
     _assign_pos_config_defaults(env)
+
+
+def _ensure_vat_clearing_accounts(env):
+    """Create VAT clearing account per company (safer than XML on Odoo.sh)."""
+    Account = env['account.account'].sudo()
+    IrModelData = env['ir.model.data'].sudo()
+
+    for company in env.companies:
+        existing = Account.search([
+            ('code', '=', 'VATCLR'),
+            ('company_id', '=', company.id),
+        ], limit=1)
+        if existing:
+            _ensure_xmlid(IrModelData, 'two_book.account_vat_clearing', existing)
+            continue
+        try:
+            account = Account.create({
+                'code': 'VATCLR',
+                'name': 'พักรายได้ VAT รอออกใบกำกับ',
+                'account_type': 'liability_current',
+                'reconcile': True,
+                'company_id': company.id,
+            })
+            _ensure_xmlid(IrModelData, 'two_book.account_vat_clearing', account)
+        except Exception as err:
+            _logger.warning(
+                'Two Book: could not create VAT clearing account for %s: %s',
+                company.name,
+                err,
+            )
+
+
+def _ensure_xmlid(ir_model_data, xml_name, record):
+    module, name = xml_name.split('.')
+    existing = ir_model_data.search([
+        ('module', '=', module),
+        ('name', '=', name),
+    ], limit=1)
+    if existing:
+        return
+    ir_model_data.create({
+        'name': name,
+        'module': module,
+        'model': record._name,
+        'res_id': record.id,
+        'noupdate': True,
+    })
+
+
+def _get_clearing_account(env, company):
+    account = env.ref('two_book.account_vat_clearing', raise_if_not_found=False)
+    if account and account.company_id == company:
+        return account
+    return env['account.account'].search([
+        ('code', '=', 'VATCLR'),
+        ('company_id', '=', company.id),
+    ], limit=1)
 
 
 def _setup_fiscal_position_tax_maps(env):
@@ -52,10 +110,10 @@ def _assign_pos_config_defaults(env):
     fp_vat = env.ref('two_book.fiscal_position_vat_th', raise_if_not_found=False)
     fp_non = env.ref('two_book.fiscal_position_non_vat_th', raise_if_not_found=False)
     journal_non = env.ref('two_book.journal_non_vat_sales', raise_if_not_found=False)
-    clearing = env.ref('two_book.account_vat_clearing', raise_if_not_found=False)
 
     for config in env['pos.config'].search([]):
         vals = {}
+        company = config.company_id
         if tax_loc and not config.two_book_tax_location_id:
             vals['two_book_tax_location_id'] = tax_loc.id
         if vat_out and not config.two_book_vat_out_location_id:
@@ -66,12 +124,13 @@ def _assign_pos_config_defaults(env):
             vals['two_book_non_vat_fiscal_position_id'] = fp_non.id
         if journal_non and not config.two_book_non_vat_journal_id:
             vals['two_book_non_vat_journal_id'] = journal_non.id
+        clearing = _get_clearing_account(env, company)
         if clearing and not config.two_book_vat_clearing_account_id:
             vals['two_book_vat_clearing_account_id'] = clearing.id
         if not config.two_book_vat_journal_id:
             sale_journal = env['account.journal'].search([
                 ('type', '=', 'sale'),
-                ('company_id', '=', config.company_id.id),
+                ('company_id', '=', company.id),
             ], limit=1)
             if sale_journal:
                 vals['two_book_vat_journal_id'] = sale_journal.id
