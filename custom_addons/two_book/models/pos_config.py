@@ -94,6 +94,10 @@ class PosConfig(models.Model):
         fp_non = self.env.ref('two_book.fiscal_position_non_vat_th', raise_if_not_found=False)
         journal_non = self.env.ref('two_book.journal_non_vat_sales', raise_if_not_found=False)
         clearing = self.env.ref('two_book.account_vat_clearing', raise_if_not_found=False)
+        if not clearing or self.env.company not in clearing.company_ids:
+            clearing = self.env['account.account'].with_company(self.env.company).search(
+                [('code', '=', 'VATCLR')], limit=1,
+            )
         sale_journal = self.env['account.journal'].search([
             ('type', '=', 'sale'),
             ('company_id', '=', self.env.company.id),

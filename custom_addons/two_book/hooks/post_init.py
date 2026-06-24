@@ -11,25 +11,23 @@ def post_init_hook(env):
 
 
 def _ensure_vat_clearing_accounts(env):
-    """Create VAT clearing account per company (safer than XML on Odoo.sh)."""
+    """Create VAT clearing account per company (Odoo 19: company_ids, not company_id)."""
     Account = env['account.account'].sudo()
     IrModelData = env['ir.model.data'].sudo()
 
     for company in env.companies:
-        existing = Account.search([
-            ('code', '=', 'VATCLR'),
-            ('company_id', '=', company.id),
-        ], limit=1)
+        company_account = Account.with_company(company)
+        existing = company_account.search([('code', '=', 'VATCLR')], limit=1)
         if existing:
             _ensure_xmlid(IrModelData, 'two_book.account_vat_clearing', existing)
             continue
         try:
-            account = Account.create({
+            account = company_account.create({
                 'code': 'VATCLR',
                 'name': 'พักรายได้ VAT รอออกใบกำกับ',
                 'account_type': 'liability_current',
                 'reconcile': True,
-                'company_id': company.id,
+                'company_ids': [(6, 0, company.ids)],
             })
             _ensure_xmlid(IrModelData, 'two_book.account_vat_clearing', account)
         except Exception as err:
@@ -59,12 +57,9 @@ def _ensure_xmlid(ir_model_data, xml_name, record):
 
 def _get_clearing_account(env, company):
     account = env.ref('two_book.account_vat_clearing', raise_if_not_found=False)
-    if account and account.company_id == company:
+    if account and company in account.company_ids:
         return account
-    return env['account.account'].search([
-        ('code', '=', 'VATCLR'),
-        ('company_id', '=', company.id),
-    ], limit=1)
+    return env['account.account'].with_company(company).search([('code', '=', 'VATCLR')], limit=1)
 
 
 def _setup_fiscal_position_tax_maps(env):
