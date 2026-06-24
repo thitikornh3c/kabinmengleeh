@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models, fields
 
+from .db_utils import ensure_m2o_column
+
 
 class PosConfig(models.Model):
     _inherit = 'pos.config'
+
+    def init(self):
+        super().init()
+        ensure_m2o_column(self.env.cr, 'pos_config', 'two_book_vat_clearing_account_id')
 
     enable_two_book = fields.Boolean(
         string='เปิดใช้งาน Two Book (VAT/Non-VAT)',

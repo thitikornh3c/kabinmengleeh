@@ -2,9 +2,15 @@
 from odoo import api, fields, models, _
 from odoo.tools import float_is_zero
 
+from .db_utils import ensure_m2o_column
+
 
 class PosSession(models.Model):
     _inherit = 'pos.session'
+
+    def init(self):
+        super().init()
+        ensure_m2o_column(self.env.cr, 'pos_session', 'two_book_vat_move_id')
 
     two_book_vat_move_id = fields.Many2one(
         'account.move',
