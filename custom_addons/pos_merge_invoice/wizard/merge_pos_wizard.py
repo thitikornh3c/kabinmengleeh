@@ -45,11 +45,9 @@ class MergePOSOrdersWizard(models.TransientModel):
 
         invoice = AccountMove.create(invoice_vals)
 
-        # Link invoice to POS orders via the new field
-        # self.pos_order_ids.write({'invoice_id': invoice.id})
         self.pos_order_ids.write({
             'invoice_id': invoice.id,
-            'state': 'invoiced' # Set the state to 'invoiced'
+            'state': 'invoiced',
         })
 
         return {

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Two Book — White Paper | Odoo 19 POS (Thailand)</title>
+    <style>
+        :root {
+            --bg: #f4f6f9;
+            --paper: #ffffff;
+            --ink: #1a2332;
+            --muted: #5c6b7a;
+            --accent: #0d6efd;
+            --accent-soft: #e8f1ff;
+            --vat: #198754;
+            --nonvat: #6c757d;
+            --warn: #b45309;
+            --border: #dde3ea;
+            --code-bg: #f1f5f9;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Sarabun", "Segoe UI", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.65;
+            font-size: 16px;
+        }
+        .wrap {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+        .paper {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(26, 35, 50, 0.06);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #0b3d6e 0%, #0d6efd 100%);
+            color: #fff;
+            padding: 2.5rem 2rem 2rem;
+        }
+        header h1 {
+            margin: 0 0 0.35rem;
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        header .subtitle {
+            opacity: 0.92;
+            font-size: 1.05rem;
+            margin: 0;
+        }
+        header .meta {
+            margin-top: 1.25rem;
+            font-size: 0.88rem;
+            opacity: 0.85;
+            display: flex;
+            flex-wrap: gap: 1rem;
+        }
+        .content { padding: 2rem; }
+        h2 {
+            font-size: 1.35rem;
+            margin: 2rem 0 0.75rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 2px solid var(--accent-soft);
+            color: #0b3d6e;
+        }
+        h2:first-child { margin-top: 0; }
+        h3 {
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: #243447;
+        }
+        p { margin: 0.5rem 0 1rem; }
+        ul, ol { margin: 0.5rem 0 1rem; padding-left: 1.4rem; }
+        li { margin: 0.35rem 0; }
+        .lead {
+            font-size: 1.08rem;
+            color: var(--muted);
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.95rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 0.65rem 0.85rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: var(--accent-soft);
+            font-weight: 600;
+            color: #0b3d6e;
+        }
+        tr:nth-child(even) td { background: #fafbfc; }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .badge-vat { background: #d1e7dd; color: #0f5132; }
+        .badge-nonvat { background: #e9ecef; color: #495057; }
+        .diagram {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0 1.5rem;
+            font-family: ui-monospace, "Cascadia Code", monospace;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .steps {
+            counter-reset: step;
+            list-style: none;
+            padding: 0;
+        }
+        .steps li {
+            position: relative;
+            padding-left: 2.75rem;
+            margin-bottom: 1rem;
+        }
+        .steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0.1rem;
+            width: 2rem;
+            height: 2rem;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .callout {
+            border-radius: 8px;
+            padding: 1rem 1.15rem;
+            margin: 1rem 0 1.5rem;
+        }
+        .callout-info {
+            background: var(--accent-soft);
+            border-left: 4px solid var(--accent);
+        }
+        .callout-warn {
+            background: #fff8eb;
+            border-left: 4px solid var(--warn);
+        }
+        code {
+            background: var(--code-bg);
+            padding: 0.12rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fb;
+            border-top: 1px solid var(--border);
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+        @media print {
+            body { background: #fff; }
+            .paper { box-shadow: none; border: none; }
+            .wrap { padding: 0; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <article class="paper">
+        <header>
+            <h1>Two Book — VAT &amp; Non-VAT POS</h1>
+            <p class="subtitle">White Paper สำหรับร้านวัสดุก่อสร้าง (Odoo 19 · ประเทศไทย)</p>
+            <div class="meta">
+                <span>Module: <strong>two_book</strong></span>
+                <span>Version: <strong>19.0.1.1.0</strong></span>
+                <span>Depends: point_of_sale, account, stock, pos_merge_invoice</span>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <h2>1. บทนำ</h2>
+            <p class="lead">
+                โมดูล <strong>Two Book</strong> ออกแบบสำหรับธุรกิจที่<strong>จดทะเบียนภาษีมูลค่าเพิ่ม (VAT)</strong>แล้ว
+                แต่หน้าร้านไม่ได้ออกใบกำกับภาษีให้ลูกค้าทุกราย —
+                เช่น ร้านวัสดุก่อสร้างที่ลูกค้าส่วนใหญ่เป็นช่าง ร้านค้าปลีก หรือผู้ซื้อมาขายต่อโดยไม่ขอใบกำกับ
+            </p>
+            <p>
+                ระบบแยกการขายเป็น 2 เล่มใน Odoo เดียวกัน:
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>เล่ม</th>
+                        <th>ประเภทบิล</th>
+                        <th>ใบกำกับภาษี</th>
+                        <th>ภาษีขาย (ภ.พ.30)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-vat">VAT Book</span></td>
+                        <td>ใบกำกับภาษี 7%</td>
+                        <td>ออกได้ / Merge เป็นใบเดียว</td>
+                        <td>นับเข้า Output VAT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-nonvat">Non-VAT Book</span></td>
+                        <td>บิลเงินสด</td>
+                        <td>ไม่ออก</td>
+                        <td>ไม่นับ (รายได้ภายใน)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>2. ปัญหาที่แก้</h2>
+            <ul>
+                <li>Odoo POS มาตรฐานบันทึกทุกบิลผ่าน flow เดียว — ไม่แยก “กระเป๋า VAT” กับ “บิลเงินสด”</li>
+                <li>ร้านวัสดุขายจริงทุกบิล แต่ส่งสรรพากรเฉพาะยอดที่ออกใบกำกับ → สต็อกเล่มภาษีต้องแยกจากสต็อกหน้าลาน</li>
+                <li>ต้องสรุปยอด VAT / Non-VAT ต่อรอบขาย และเตรียมข้อมูล ภ.พ.30</li>
+            </ul>
+
+            <h2>3. สถาปัตยกรรม: Dual-Book + Dual-Stock</h2>
+
+            <h3>3.1 เลเยอร์บัญชี (Accounting)</h3>
+            <table>
+                <thead>
+                    <tr><th>องค์ประกอบ</th><th>VAT</th><th>Non-VAT</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Sale Journal</td><td>two_book_vat_journal_id</td><td>two_book_non_vat_journal_id</td></tr>
+                    <tr><td>Fiscal Position</td><td>VAT 7%</td><td>Exempt / ไม่มีภาษี</td></tr>
+                    <tr><td>ฟิลด์ POS Order</td><td colspan="2"><code>is_vat_order</code> → <code>two_book_type</code></td></tr>
+                    <tr><td>เลขใบกำกับ</td><td><code>tax_invoice_number</code></td><td>—</td></tr>
+                </tbody>
+            </table>
+
+            <h3>3.2 เลเยอร์สต็อก (Inventory)</h3>
+            <div class="diagram">ทุกบิล (VAT + Non-VAT)
+    └── ตัด WH/Stock → Customer     [สต็อกจริงหน้าร้าน — Odoo มาตรฐาน]
+
+บิล VAT เท่านั้น
+    └── ตัด WH/VAT → Virtual/VAT_Out  [เล่มภาษี — shadow picking]
+
+บิล Non-VAT
+    └── ไม่ตัด WH/VAT
+    └── บันทึก Stock Gap (two.book.stock.gap) รอ reconcile</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>XML ID</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>WH/VAT</td><td><code>two_book.stock_location_wh_vat</code></td><td>internal</td></tr>
+                    <tr><td>Virtual/VAT_Out</td><td><code>two_book.stock_location_vat_out</code></td><td>inventory</td></tr>
+                </tbody>
+            </table>
+
+            <h2>4. การติดตั้ง</h2>
+            <ol class="steps">
+                <li>ติดตั้งโมดูล <code>two_book</code> และ <code>pos_merge_invoice</code> (dependency)</li>
+                <li>Upgrade บน server:
+                    <br/><code>-u two_book,pos_merge_invoice</code>
+                </li>
+                <li>Restart Odoo และ hard-refresh หน้า POS (เคลียร์ cache assets)</li>
+            </ol>
+
+            <h2>5. การตั้งค่าครั้งแรก</h2>
+            <p>ไปที่ <strong>Point of Sale → Configuration → [POS Shop]</strong> → แท็บ <strong>Two Book (VAT/Non-VAT)</strong></p>
+
+            <table>
+                <thead>
+                    <tr><th>การตั้งค่า</th><th>คำอธิบาย</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>เปิดใช้งาน Two Book</td><td>เปิดระบบแยก VAT/Non-VAT สำหรับ POS นี้</td></tr>
+                    <tr><td>ค่าเริ่มต้น: ออกใบกำกับภาษี</td><td>แนะนำ <strong>ปิด</strong> — order ใหม่เป็น Non-VAT</td></tr>
+                    <tr><td>Journal VAT / Non-VAT</td><td>แยกสมุดรายได้และภาษีขาย</td></tr>
+                    <tr><td>Fiscal Position VAT / Non-VAT</td><td>Non-VAT ต้อง map ภาษี 7% → ไม่มีภาษี</td></tr>
+                    <tr><td>คลัง WH/VAT, Virtual/VAT_Out</td><td>มี default จาก module — ตรวจก่อน go-live</td></tr>
+                    <tr><td>Operation Type (Tax Stock)</td><td>Internal transfer — ว่างได้ (ระบบหาให้อัตโนมัติ)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-warn">
+                <strong>รับของเข้าคลัง:</strong> สินค้าต้องมีใน WH/Stock (ขายได้ทุกบิล)
+                และ WH/VAT (ขาย VAT ได้) — ถ้า WH/VAT ไม่พอ ระบบจะ log warning และบันทึก Stock Gap แทน
+            </div>
+
+            <h2>6. Flow ใช้งานหน้าร้าน (Counter)</h2>
+            <ol class="steps">
+                <li>เปิด POS Session ตามปกติ</li>
+                <li>เพิ่มสินค้าในตะกร้า</li>
+                <li>
+                    <strong>ก่อนชำระเงิน</strong> — กดปุ่มบน Actionpad:
+                    <ul>
+                        <li><span class="badge badge-nonvat">บิลเงินสด (Non-VAT)</span> — ลูกค้าทั่วไป / ไม่ขอใบกำกับ</li>
+                        <li><span class="badge badge-vat">ใบกำกับภาษี (VAT)</span> — ลูกค้าขอใบกำกับ / นิติบุคคล</li>
+                    </ul>
+                </li>
+                <li>ชำระเงิน — ระบบตัดสต็อกและบันทึกบัญชีตามประเภทบิล</li>
+            </ol>
+
+            <div class="callout callout-info">
+                <strong>สำคัญ:</strong> เลือก VAT/Non-VAT <em>ก่อน</em> validate payment —
+                หลังจ่ายแล้วแก้ประเภทบิลยาก
+            </div>
+
+            <h3>สิ่งที่เกิดขึ้นหลังชำระเงิน</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ประเภท</th>
+                        <th>WH/Stock</th>
+                        <th>WH/VAT</th>
+                        <th>บัญชี</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-nonvat">Non-VAT</span></td>
+                        <td>ตัด</td>
+                        <td>ไม่ตัด → Stock Gap</td>
+                        <td>รายได้ Non-VAT journal</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-vat">VAT</span></td>
+                        <td>ตัด</td>
+                        <td>ตัด → Virtual/VAT_Out</td>
+                        <td>รายได้ + VAT 7%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>7. Admin — Merge ใบกำกับ (pos_merge_invoice)</h2>
+            <p>ใช้เมื่อลูกค้า VAT ซื้อหลายบิล แล้วต้องการ<strong>ใบกำกับใบเดียว</strong></p>
+            <ol>
+                <li>ไป <strong>Point of Sale → Orders</strong></li>
+                <li>เลือก POS orders ที่เป็น <strong>VAT</strong> ของลูกค้าเดียวกัน</li>
+                <li>Action: <strong>Merge and Create Invoice</strong></li>
+            </ol>
+            <p>ระบบจะ:</p>
+            <ul>
+                <li>ปฏิเสธถ้ามี Non-VAT order ปน</li>
+                <li>ปฏิเสธถ้า order invoiced แล้ว</li>
+                <li>สร้าง Invoice ใบเดียวผ่าน VAT journal + fiscal position</li>
+                <li>บันทึก <code>tax_invoice_number</code> ให้ทุก order ที่ merge</li>
+            </ul>
+            <p><em>หมายเหตุ: Merge เป็นเรื่องบัญชี — ไม่ตัดสต็อกซ้ำ (ตัดไปแล้วตอนขายแต่ละบิล)</em></p>
+
+            <h2>8. รายงานและการตรวจสอบ</h2>
+            <table>
+                <thead>
+                    <tr><th>เมนู</th><th>ใช้ทำอะไร</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Point of Sale → รายงาน Two Book</td>
+                        <td>Pivot/Graph แยกยอด VAT vs Non-VAT ต่อ session — เตรียม ภ.พ.30</td>
+                    </tr>
+                    <tr>
+                        <td>Point of Sale → Stock Gap (Non-VAT)</td>
+                        <td>รายการสินค้าที่ขาย Non-VAT แต่ยังไม่ตัดเล่มภาษี (สถานะ Open)</td>
+                    </tr>
+                    <tr>
+                        <td>POS Session (ฟอร์ม)</td>
+                        <td>สรุป two_book_vat_total, two_book_vat_tax_total, two_book_non_vat_total</td>
+                    </tr>
+                    <tr>
+                        <td>POS Order (list/form)</td>
+                        <td>คอลัมน์ two_book_type, is_vat_order, tax_invoice_number</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>9. ปิดเดือน (บัญชี / สรรพากร)</h2>
+            <div class="diagram">ภ.พ.30
+    = ภาษีขาย (จากบิล VAT + merged invoices)
+    − ภาษีซื้อ (จาก Vendor Bills มาตรฐาน Odoo)
+
+รายได้รวม (งบการเงิน / ภ.ง.ด.)
+    = ยอดขาย VAT + ยอดขาย Non-VAT
+
+สต็อกเล่มภาษี
+    → ดู Stock Gap report
+    → reconcile WH/VAT ด้วย Inventory Adjustment หรือ Internal Transfer
+      (กระจายเหตุผล: เบิกใช้, เสียหาย, ตัวอย่าง — ไม่ควรตรงกับยอด Non-VAT เป๊ะทุกเดือน)</div>
+
+            <h2>10. โครงสร้างโมดูล (Technical)</h2>
+            <table>
+                <thead>
+                    <tr><th>ไฟล์ / Model</th><th>หน้าที่</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>models/pos_config.py</code></td><td>การตั้งค่า Two Book + default locations</td></tr>
+                    <tr><td><code>models/pos_order.py</code></td><td>is_vat_order, journal/FP, dual-stock picking</td></tr>
+                    <tr><td><code>models/pos_session.py</code></td><td>สรุปยอด VAT/Non-VAT ต่อ session</td></tr>
+                    <tr><td><code>models/stock_gap.py</code></td><td>two.book.stock.gap</td></tr>
+                    <tr><td><code>models/stock_move.py</code></td><td>is_tax_stock_move flag</td></tr>
+                    <tr><td><code>wizard/merge_pos_wizard.py</code></td><td>Override merge — VAT only</td></tr>
+                    <tr><td><code>static/src/js/two_book_*.js</code></td><td>ปุ่ม POS, fiscal position, serialize order</td></tr>
+                    <tr><td><code>data/account_data.xml</code></td><td>FP VAT/Non-VAT, journal NVAT</td></tr>
+                    <tr><td><code>data/stock_data.xml</code></td><td>WH/VAT, Virtual/VAT_Out</td></tr>
+                </tbody>
+            </table>
+
+            <h2>11. Troubleshooting</h2>
+            <table>
+                <thead>
+                    <tr><th>อาการ</th><th>แนวทางแก้</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ไม่เห็นปุ่ม VAT/Non-VAT บน POS</td>
+                        <td>เปิด enable_two_book ใน config · upgrade module · hard refresh POS</td>
+                    </tr>
+                    <tr>
+                        <td>Non-VAT ยังมีภาษี 7%</td>
+                        <td>ตรวจ Fiscal Position Non-VAT ว่า map tax ถูกต้อง</td>
+                    </tr>
+                    <tr>
+                        <td>ขาย VAT แล้ว WH/VAT ไม่ลด</td>
+                        <td>ตรวจ location config · สต็อก WH/VAT พอหรือไม่ · ดู server log</td>
+                    </tr>
+                    <tr>
+                        <td>Merge ไม่ได้</td>
+                        <td>ต้องเป็น VAT orders ทั้งหมด · ลูกค้าเดียวกัน · ยังไม่ invoiced</td>
+                    </tr>
+                    <tr>
+                        <td>Stock Gap โตเรื่อยๆ</td>
+                        <td>ปกติสำหรับ Non-VAT — ต้อง reconcile เป็นระยะ (wizard ยังไม่มีใน v1)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>12. Roadmap (ยังไม่มีใน v1)</h2>
+            <ul>
+                <li>Wizard reconcile Stock Gap แบบ batch (ตัด WH/VAT อัตโนมัติ)</li>
+                <li>Sync รับของเข้า WH/Stock → WH/VAT อัตโนมัติ</li>
+                <li>แยก template ใบเสร็จ POS สำหรับ VAT / Non-VAT</li>
+                <li>ACL จำกัดสิทธิ์สลับ VAT/Non-VAT (ถ้าต้องการ)</li>
+            </ul>
+
+        </div>
+
+        <footer>
+            Two Book Module · Odoo 19 · เอกสารนี้อยู่ที่ <code>custom_addons/two_book/doc/two_book_whitepaper.html</code>
+            · อัปเดตตาม implementation v19.0.1.1.0
+        </footer>
+    </article>
+</div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+.two-book-container .two-book-btn {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.two-book-btn.vat-active {
+    border: 2px solid #198754;
+}
+
+.two-book-btn.non-vat-active {
+    border: 2px solid #6c757d;
+}

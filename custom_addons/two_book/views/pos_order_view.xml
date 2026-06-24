@@ -26,6 +26,13 @@
                 <field name="two_book_type" readonly="1"/>
                 <field name="tax_invoice_number" readonly="1"
                        invisible="not is_vat_order"/>
+                <field name="stock_gap_ids" readonly="1" invisible="is_vat_order">
+                    <list>
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+                        <field name="state"/>
+                    </list>
+                </field>
             </field>
         </field>
     </record>
@@ -41,6 +48,7 @@
                     <field name="two_book_vat_total" readonly="1"/>
                     <field name="two_book_vat_tax_total" readonly="1"/>
                     <field name="two_book_non_vat_total" readonly="1"/>
+                    <field name="two_book_vat_move_id" readonly="1"/>
                 </group>
                 <div class="alert alert-success" role="alert">
                     <strong>ยอดขาย VAT</strong> ใช้สำหรับยื่น ภ.พ.30 (รายงานภาษีขาย)<br/>

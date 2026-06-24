@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_two_book_stock_gap_reconcile_wizard" model="ir.ui.view">
+        <field name="name">two.book.stock.gap.reconcile.wizard.form</field>
+        <field name="model">two.book.stock.gap.reconcile.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reconcile Stock Gap">
+                <group>
+                    <field name="gap_ids" readonly="1">
+                        <list>
+                            <field name="pos_order_id"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                        </list>
+                    </field>
+                    <field name="adjustment_reason"/>
+                    <field name="note"/>
+                </group>
+                <footer>
+                    <button name="action_reconcile" type="object" string="ตัดสต็อกภาษี (Reconcile)" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_two_book_stock_gap_reconcile" model="ir.actions.act_window">
+        <field name="name">Reconcile Stock Gap</field>
+        <field name="res_model">two.book.stock.gap.reconcile.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_gap_ids': active_ids}</field>
+    </record>
+
+    <record id="action_two_book_stock_gap_reconcile_binding" model="ir.actions.server">
+        <field name="name">Reconcile Stock Gap</field>
+        <field name="model_id" ref="model_two_book_stock_gap"/>
+        <field name="binding_model_id" ref="model_two_book_stock_gap"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Reconcile Stock Gap',
+    'res_model': 'two.book.stock.gap.reconcile.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'default_gap_ids': records.ids},
+}
+        </field>
+    </record>
+
+</odoo>

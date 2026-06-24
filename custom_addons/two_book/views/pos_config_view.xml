@@ -26,13 +26,22 @@
                            invisible="not enable_two_book">
                         <field name="two_book_non_vat_journal_id"/>
                         <field name="two_book_non_vat_fiscal_position_id"/>
+                        <field name="two_book_vat_clearing_account_id"/>
+                    </group>
+
+                    <group string="Dual-Stock (สต็อก 2 เลเยอร์)"
+                           invisible="not enable_two_book">
+                        <field name="two_book_tax_location_id"/>
+                        <field name="two_book_vat_out_location_id"/>
+                        <field name="two_book_tax_picking_type_id"/>
                     </group>
 
                     <div invisible="not enable_two_book"
                          class="alert alert-info" role="alert">
-                        <strong>หมายเหตุ:</strong>
-                        ระบบจะตัด Stock ทุกรายการไม่ว่าจะเลือก VAT หรือ Non-VAT
-                        เพื่อให้ยอด Inventory ตรงกับหน้าชั้นวางเสมอ
+                        <strong>Dual-Stock:</strong>
+                        ทุกบิลตัดสต็อกจริง (WH/Stock) เสมอ —
+                        บิล VAT ตัด WH/VAT เพิ่ม —
+                        บิล Non-VAT บันทึก Stock Gap รอ reconcile
                     </div>
                 </page>
             </notebook>

@@ -523,8 +523,9 @@
                             </div>
                             <div class="mb-3 mt-5">
                                 <p class=" lh-sm">Total amount in words:</p>
+                                <t t-set="words_lang" t-value="'en_US' if o.partner_id.lang and o.partner_id.lang.startswith('en') else 'th_TH'"/>
                                 <div style="padding: 8px; border: 1px solid #000; width: 330px; display: inline-block; font-size: 13px">
-                                    <span t-field="o.with_context(lang='en_US').amount_total_words">Thirty one dollar and Five cents</span>
+                                    <span t-out="o.amount_to_words(o.amount_total, words_lang)"/>
                                 </div>
                                 <div style="width: 330px; font-size: 11px;  margin-top: 12px;">
                                     <p>(Please check correctness of entries in the document within 7 days, otherwise document deemed accepted.)</p>

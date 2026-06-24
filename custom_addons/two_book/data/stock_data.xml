@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Tax stock layer (เล่มภาษี) — sibling under main stock -->
+        <record id="stock_location_wh_vat" model="stock.location">
+            <field name="name">WH/VAT</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+        </record>
+
+        <!-- Virtual destination for VAT stock deduction -->
+        <record id="stock_location_vat_out" model="stock.location">
+            <field name="name">Virtual/VAT_Out</field>
+            <field name="usage">inventory</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+        </record>
+
+    </data>
+</odoo>
