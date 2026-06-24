@@ -3,3 +3,4 @@ access_pos_config_two_book,pos.config two book,point_of_sale.model_pos_config,ba
 access_pos_config_two_book_manager,pos.config two book manager,point_of_sale.model_pos_config,point_of_sale.group_pos_manager,1,1,1,0
 access_two_book_stock_gap_user,two.book.stock.gap user,model_two_book_stock_gap,base.group_user,1,0,0,0
 access_two_book_stock_gap_manager,two.book.stock.gap manager,model_two_book_stock_gap,point_of_sale.group_pos_manager,1,1,1,1
+access_two_book_stock_gap_reconcile_wizard,two.book.stock.gap.reconcile.wizard,model_two_book_stock_gap_reconcile_wizard,point_of_sale.group_pos_manager,1,1,1,1

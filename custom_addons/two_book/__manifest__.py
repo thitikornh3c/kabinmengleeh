@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Two Book - VAT & Non-VAT Sales (Thailand)',
-    'version': '19.0.1.2.2',
+    'version': '19.0.1.2.3',
     'category': 'Accounting/Accounting',
     'summary': 'รองรับการขายแบบ Hybrid: ใบกำกับภาษีเต็มรูป และบิลเงินสด (Non-VAT) สำหรับร้านวัสดุก่อสร้างไทย',
     'description': """
@@ -17,7 +17,6 @@
     'depends': ['point_of_sale', 'account', 'stock', 'pos_merge_invoice'],
     'data': [
         'security/ir.model.access.csv',
-        'security/stock_gap_wizard_access.csv',
         'data/account_data.xml',
         'data/stock_data.xml',
         'views/pos_config_view.xml',
