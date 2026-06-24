@@ -35,9 +35,9 @@ export class TwoBookButton extends Component {
     }
 
     get buttonClass() {
-        return this.isVatOrder
-            ? "two-book-btn vat-active btn btn-success w-100 py-2 mb-2"
-            : "two-book-btn non-vat-active btn btn-secondary w-100 py-2 mb-2";
+        const base =
+            "two-book-btn btn btn-lg py-3 d-flex align-items-center justify-content-center flex-fill text-truncate";
+        return this.isVatOrder ? `${base} btn-success vat-active` : `${base} btn-secondary non-vat-active`;
     }
 
     toggleVatMode() {
