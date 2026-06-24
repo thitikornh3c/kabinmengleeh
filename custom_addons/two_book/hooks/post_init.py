@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from odoo import Command
+
 _logger = logging.getLogger(__name__)
 
 
 def post_init_hook(env):
-    _ensure_vat_clearing_accounts(env)
-    _setup_fiscal_position_tax_maps(env)
-    _assign_pos_config_defaults(env)
+    for step in (
+        _ensure_vat_clearing_accounts,
+        _setup_fiscal_position_tax_maps,
+        _assign_pos_config_defaults,
+    ):
+        try:
+            step(env)
+        except Exception as err:
+            _logger.exception('Two Book post_init %s failed: %s', step.__name__, err)
 
 
 def _ensure_vat_clearing_accounts(env):
@@ -27,7 +35,7 @@ def _ensure_vat_clearing_accounts(env):
                 'name': 'พักรายได้ VAT รอออกใบกำกับ',
                 'account_type': 'liability_current',
                 'reconcile': True,
-                'company_ids': [(6, 0, company.ids)],
+                'company_ids': [Command.set(company.ids)],
             })
             _ensure_xmlid(IrModelData, 'two_book.account_vat_clearing', account)
         except Exception as err:
@@ -63,18 +71,23 @@ def _get_clearing_account(env, company):
 
 
 def _setup_fiscal_position_tax_maps(env):
+    """Map sale VAT taxes to 0% when Non-VAT fiscal position applies (Odoo 19 API)."""
     non_vat_fp = env.ref('two_book.fiscal_position_non_vat_th', raise_if_not_found=False)
     if not non_vat_fp:
         return
 
-    FPTax = env['account.fiscal.position.tax']
+    Tax = env['account.tax'].sudo()
+    if 'original_tax_ids' not in Tax._fields:
+        _logger.info('Two Book: skip FP tax map (legacy fiscal position tax model)')
+        return
+
     for company in env.companies:
-        sale_taxes = env['account.tax'].search([
+        sale_taxes = Tax.search([
             ('company_id', '=', company.id),
             ('type_tax_use', '=', 'sale'),
             ('amount', '>', 0),
         ])
-        zero_tax = env['account.tax'].search([
+        zero_tax = Tax.search([
             ('company_id', '=', company.id),
             ('type_tax_use', '=', 'sale'),
             ('amount', '=', 0),
@@ -85,18 +98,16 @@ def _setup_fiscal_position_tax_maps(env):
                 company.name,
             )
             continue
+
         fp = non_vat_fp.with_company(company)
-        for tax in sale_taxes:
-            if FPTax.search_count([
-                ('position_id', '=', fp.id),
-                ('tax_src_id', '=', tax.id),
-            ]):
-                continue
-            FPTax.create({
-                'position_id': fp.id,
-                'tax_src_id': tax.id,
-                'tax_dest_id': zero_tax.id,
-            })
+        vals = {}
+        if fp not in zero_tax.fiscal_position_ids:
+            vals['fiscal_position_ids'] = [Command.link(fp.id)]
+        taxes_to_replace = sale_taxes.filtered(lambda tax: tax not in zero_tax.original_tax_ids)
+        if taxes_to_replace:
+            vals['original_tax_ids'] = [Command.link(tax.id) for tax in taxes_to_replace]
+        if vals:
+            zero_tax.write(vals)
 
 
 def _assign_pos_config_defaults(env):
