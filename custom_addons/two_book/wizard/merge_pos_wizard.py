@@ -11,10 +11,7 @@ class MergePOSOrdersWizard(models.TransientModel):
         if not orders:
             raise UserError(_("Please select at least one POS order."))
 
-        if any(not getattr(order, 'is_vat_order', False) for order in orders):
-            raise UserError(_("Only VAT orders can be merged into a tax invoice."))
-
-        if any(order.state == 'invoiced' or order.account_move for order in orders):
+        if any(order.account_move for order in orders):
             raise UserError(_("One or more selected orders are already invoiced."))
 
         partners = orders.mapped('partner_id')

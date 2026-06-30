@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Action: รายงานสรุป Two Book -->
-    <record id="action_two_book_report" model="ir.actions.act_window">
-        <field name="name">รายงาน Two Book (VAT/Non-VAT)</field>
-        <field name="res_model">pos.order</field>
-        <field name="view_mode">list,pivot,graph</field>
-        <field name="domain">[('state', 'not in', ['cancel', 'draft'])]</field>
-        <field name="context">{'group_by': ['two_book_type', 'session_id']}</field>
+    <!-- Search: filter by invoice status -->
+    <record id="view_pos_order_two_book_search" model="ir.ui.view">
+        <field name="name">pos.order.two.book.search</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+        <field name="arch" type="xml">
+            <filter name="invoiced" position="before">
+                <separator/>
+                <filter name="two_book_invoiced" string="ออกใบกำกับแล้ว"
+                        domain="[('two_book_invoice_status', '=', 'invoiced')]"/>
+                <filter name="two_book_pending" string="รอออกใบกำกับ"
+                        domain="[('two_book_invoice_status', '=', 'pending')]"/>
+            </filter>
+            <field name="name" position="after">
+                <field name="tax_invoice_number"/>
+                <field name="two_book_invoice_status"/>
+            </field>
+            <group position="inside">
+                <filter string="สถานะใบกำกับ" name="group_invoice_status"
+                        context="{'group_by': 'two_book_invoice_status'}"/>
+            </group>
+        </field>
     </record>
 
-    <!-- Pivot View สำหรับ Two Book Report -->
+    <!-- Order list columns defined in views/pos_order_view.xml -->
+
+    <!-- Pivot: orders by session x invoice status -->
     <record id="view_pos_order_two_book_pivot" model="ir.ui.view">
         <field name="name">pos.order.two.book.pivot</field>
         <field name="model">pos.order</field>
         <field name="type">pivot</field>
         <field name="arch" type="xml">
-            <pivot string="สรุปยอดขาย Two Book" disable_linking="True">
+            <pivot string="สรุปยอดขายตามใบกำกับ" disable_linking="True">
                 <field name="session_id" type="row"/>
-                <field name="two_book_type" type="col"/>
+                <field name="two_book_invoice_status" type="col"/>
                 <field name="amount_untaxed" type="measure" string="ยอดก่อนภาษี"/>
                 <field name="amount_tax" type="measure" string="ภาษีขาย"/>
                 <field name="amount_total" type="measure" string="ยอดรวม"/>
@@ -26,11 +43,151 @@
         </field>
     </record>
 
-    <!-- Menu: Two Book Report -->
+    <!-- Line list: product detail per order -->
+    <record id="view_pos_order_line_two_book_list" model="ir.ui.view">
+        <field name="name">pos.order.line.two.book.list</field>
+        <field name="model">pos.order.line</field>
+        <field name="arch" type="xml">
+            <list string="รายการสินค้า Two Book" create="false" edit="false" delete="false">
+                <field name="two_book_order_ref" string="Order No."/>
+                <field name="two_book_invoice_status" widget="badge"
+                       decoration-success="two_book_invoice_status == 'invoiced'"
+                       decoration-warning="two_book_invoice_status == 'pending'"/>
+                <field name="product_id"/>
+                <field name="full_product_name" optional="hide"/>
+                <field name="qty" sum="รวมจำนวน"/>
+                <field name="two_book_line_untaxed" sum="รวมก่อนภาษี"/>
+                <field name="two_book_line_tax" sum="รวมภาษี"/>
+                <field name="price_subtotal_incl" string="รวม" sum="ยอดรวม"/>
+                <field name="order_id" string="Session" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Line pivot: product x invoice status -->
+    <record id="view_pos_order_line_two_book_pivot" model="ir.ui.view">
+        <field name="name">pos.order.line.two.book.pivot</field>
+        <field name="model">pos.order.line</field>
+        <field name="type">pivot</field>
+        <field name="arch" type="xml">
+            <pivot string="สรุปสินค้าตามใบกำกับ" disable_linking="True">
+                <field name="product_id" type="row"/>
+                <field name="two_book_invoice_status" type="col"/>
+                <field name="qty" type="measure"/>
+                <field name="two_book_line_untaxed" type="measure" string="ยอดก่อนภาษี"/>
+                <field name="two_book_line_tax" type="measure" string="ภาษี"/>
+                <field name="price_subtotal_incl" type="measure" string="ยอดรวม"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_pos_order_line_two_book_search" model="ir.ui.view">
+        <field name="name">pos.order.line.two.book.search</field>
+        <field name="model">pos.order.line</field>
+        <field name="arch" type="xml">
+            <search string="ค้นหารายการสินค้า">
+                <field name="two_book_order_ref" string="Order No."/>
+                <field name="product_id"/>
+                <field name="order_id"/>
+                <filter name="line_invoiced" string="ออกใบกำกับแล้ว"
+                        domain="[('two_book_invoice_status', '=', 'invoiced')]"/>
+                <filter name="line_pending" string="รอออกใบกำกับ"
+                        domain="[('two_book_invoice_status', '=', 'pending')]"/>
+                <group>
+                    <filter string="สถานะใบกำกับ" name="group_line_status"
+                            context="{'group_by': 'two_book_invoice_status'}"/>
+                    <filter string="สินค้า" name="group_product"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter string="Order" name="group_order"
+                            context="{'group_by': 'order_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_two_book_invoiced" model="ir.actions.act_window">
+        <field name="name">ยอดขาย — ออกใบกำกับแล้ว</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('state', 'in', ['paid', 'done', 'invoiced']), ('two_book_invoice_status', '=', 'invoiced')]</field>
+        <field name="context">{'search_default_group_invoice_status': 0}</field>
+    </record>
+
+    <record id="action_two_book_pending" model="ir.actions.act_window">
+        <field name="name">ยอดขาย — รอออกใบกำกับ (รอ Merge)</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('state', 'in', ['paid', 'done']), ('two_book_invoice_status', '=', 'pending')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_two_book_lines_invoiced" model="ir.actions.act_window">
+        <field name="name">รายการสินค้า — ออกใบกำกับแล้ว</field>
+        <field name="res_model">pos.order.line</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="domain">[('order_id.state', 'in', ['paid', 'done', 'invoiced']), ('two_book_invoice_status', '=', 'invoiced')]</field>
+    </record>
+
+    <record id="action_two_book_lines_pending" model="ir.actions.act_window">
+        <field name="name">รายการสินค้า — รอออกใบกำกับ</field>
+        <field name="res_model">pos.order.line</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="domain">[('order_id.state', 'in', ['paid', 'done']), ('two_book_invoice_status', '=', 'pending')]</field>
+    </record>
+
+    <record id="action_two_book_report" model="ir.actions.act_window">
+        <field name="name">สรุป Two Book ทั้งหมด</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="domain">[('state', 'in', ['paid', 'done', 'invoiced'])]</field>
+        <field name="context">{'search_default_group_invoice_status': 1}</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem
+        id="menu_two_book_summary_root"
+        name="สรุป Two Book"
+        parent="point_of_sale.menu_point_of_sale"
+        sequence="48"
+    />
+
+    <menuitem
+        id="menu_two_book_invoiced"
+        name="ออกใบกำกับแล้ว (Orders)"
+        parent="menu_two_book_summary_root"
+        action="action_two_book_invoiced"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_two_book_pending"
+        name="รอออกใบกำกับ — รอ Merge (Orders)"
+        parent="menu_two_book_summary_root"
+        action="action_two_book_pending"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_two_book_lines_invoiced"
+        name="ออกใบกำกับแล้ว (รายการสินค้า)"
+        parent="menu_two_book_summary_root"
+        action="action_two_book_lines_invoiced"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_two_book_lines_pending"
+        name="รอออกใบกำกับ (รายการสินค้า)"
+        parent="menu_two_book_summary_root"
+        action="action_two_book_lines_pending"
+        sequence="40"
+    />
+
     <menuitem
         id="menu_two_book_report"
-        name="รายงาน Two Book"
-        parent="point_of_sale.menu_point_of_sale"
+        name="สรุปทั้งหมด (Pivot)"
+        parent="menu_two_book_summary_root"
         action="action_two_book_report"
         sequence="50"
     />

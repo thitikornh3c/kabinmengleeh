@@ -20,6 +20,11 @@ class PosOrder(models.Model):
         ('non_vat', 'บิลเงินสด (Non-VAT)'),
     ], string='ประเภทเอกสาร', compute='_compute_two_book_type', store=True)
 
+    two_book_invoice_status = fields.Selection([
+        ('invoiced', 'ออกใบกำกับแล้ว'),
+        ('pending', 'รอออกใบกำกับ'),
+    ], string='สถานะใบกำกับ', compute='_compute_two_book_invoice_status', store=True, index=True)
+
     tax_invoice_number = fields.Char(
         string='เลขที่ใบกำกับภาษี',
         readonly=True,
@@ -53,6 +58,16 @@ class PosOrder(models.Model):
         for order in self:
             order.two_book_type = 'vat' if order.is_vat_order else 'non_vat'
 
+    @api.depends('account_move', 'state')
+    def _compute_two_book_invoice_status(self):
+        for order in self:
+            if order.account_move:
+                order.two_book_invoice_status = 'invoiced'
+            elif order.state in ('paid', 'done'):
+                order.two_book_invoice_status = 'pending'
+            else:
+                order.two_book_invoice_status = False
+
     @api.model
     def _load_pos_data_fields(self, config):
         fields_list = list(super()._load_pos_data_fields(config))
@@ -83,7 +98,7 @@ class PosOrder(models.Model):
     def action_pos_order_invoice(self):
         res = super().action_pos_order_invoice()
         for order in self:
-            if order.is_vat_order and order.account_move:
+            if order.account_move:
                 order.tax_invoice_number = order.account_move.name
         return res
 
@@ -190,15 +205,13 @@ class PosOrder(models.Model):
     def get_two_book_merge_invoice_vals(self):
         """Defaults for merged VAT invoice (used by pos_merge_invoice)."""
         self.ensure_one()
-        if not self.is_vat_order:
-            return {}
-        vals = self._prepare_invoice_vals()
-        result = {
-            key: vals[key]
-            for key in ('journal_id', 'fiscal_position_id')
-            if vals.get(key)
-        }
-        return result
+        config = self.config_id
+        vals = {}
+        if config.two_book_vat_journal_id:
+            vals['journal_id'] = config.two_book_vat_journal_id.id
+        if config.two_book_vat_fiscal_position_id:
+            vals['fiscal_position_id'] = config.two_book_vat_fiscal_position_id.id
+        return vals
 
     def _two_book_skip_session_sales(self):
         self.ensure_one()
@@ -217,6 +230,37 @@ class PosOrder(models.Model):
 
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
+
+    two_book_invoice_status = fields.Selection(
+        related='order_id.two_book_invoice_status',
+        string='สถานะใบกำกับ',
+        store=True,
+        readonly=True,
+    )
+    two_book_order_ref = fields.Char(
+        related='order_id.name',
+        string='Order Ref',
+        store=True,
+        readonly=True,
+    )
+    two_book_line_untaxed = fields.Monetary(
+        string='ยอดก่อนภาษี',
+        compute='_compute_two_book_line_amounts',
+        currency_field='currency_id',
+        store=True,
+    )
+    two_book_line_tax = fields.Monetary(
+        string='ภาษี',
+        compute='_compute_two_book_line_amounts',
+        currency_field='currency_id',
+        store=True,
+    )
+
+    @api.depends('price_subtotal', 'price_subtotal_incl')
+    def _compute_two_book_line_amounts(self):
+        for line in self:
+            line.two_book_line_untaxed = line.price_subtotal
+            line.two_book_line_tax = line.price_subtotal_incl - line.price_subtotal
 
     def _get_tax_ids_after_fiscal_position(self):
         order = self.order_id

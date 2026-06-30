@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Two Book - VAT & Non-VAT Sales (Thailand)',
-    'version': '19.0.1.2.6',
+    'version': '19.0.1.3.0',
     'category': 'Accounting/Accounting',
     'summary': 'รองรับการขายแบบ Hybrid: ใบกำกับภาษีเต็มรูป และบิลเงินสด (Non-VAT) สำหรับร้านวัสดุก่อสร้างไทย',
     'description': """

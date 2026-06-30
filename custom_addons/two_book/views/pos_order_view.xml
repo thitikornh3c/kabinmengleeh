@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- เพิ่ม Column is_vat_order ใน POS Order List -->
+    <!-- เพิ่ม Column สถานะใบกำกับ ใน POS Order List -->
     <record id="view_pos_order_two_book_list" model="ir.ui.view">
         <field name="name">pos.order.two.book.list</field>
         <field name="model">pos.order</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
         <field name="arch" type="xml">
             <field name="name" position="after">
-                <field name="two_book_type" widget="badge"
-                       decoration-success="two_book_type == 'vat'"
-                       decoration-muted="two_book_type == 'non_vat'"/>
+                <field name="two_book_invoice_status" widget="badge"
+                       decoration-success="two_book_invoice_status == 'invoiced'"
+                       decoration-warning="two_book_invoice_status == 'pending'"/>
+                <field name="tax_invoice_number" optional="show"/>
             </field>
         </field>
     </record>
@@ -22,11 +23,14 @@
         <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
         <field name="arch" type="xml">
             <field name="session_id" position="after">
-                <field name="is_vat_order" widget="boolean_toggle"/>
+                <field name="two_book_invoice_status" widget="badge"
+                       decoration-success="two_book_invoice_status == 'invoiced'"
+                       decoration-warning="two_book_invoice_status == 'pending'"/>
+                <field name="is_vat_order" widget="boolean_toggle" invisible="1"/>
                 <field name="two_book_type" readonly="1"/>
                 <field name="tax_invoice_number" readonly="1"
-                       invisible="not is_vat_order"/>
-                <field name="stock_gap_ids" readonly="1" invisible="is_vat_order">
+                       invisible="two_book_invoice_status != 'invoiced'"/>
+                <field name="stock_gap_ids" readonly="1" invisible="two_book_invoice_status == 'invoiced'">
                     <list>
                         <field name="product_id"/>
                         <field name="quantity"/>
