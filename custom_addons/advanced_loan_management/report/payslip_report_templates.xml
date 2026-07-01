@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_payslip_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">ใบแจ้งเงินเดือน</h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>พนักงาน:</strong>
+                                <span t-field="o.employee_id"/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>งวด:</strong>
+                                <span t-field="o.date_from"/> - <span t-field="o.date_to"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">รายการรายได้</th>
+                                </tr>
+                                <tr>
+                                    <th>รายการ</th>
+                                    <th class="text-end">จำนวนเงิน</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.get_payslip_earning_lines()" t-as="line">
+                                    <td><span t-esc="line.name"/></td>
+                                    <td class="text-end"><span t-esc="line.total"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm mt-3">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">รายการหัก</th>
+                                </tr>
+                                <tr>
+                                    <th>รายการ</th>
+                                    <th class="text-end">จำนวนเงิน</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.get_payslip_deduction_lines()" t-as="line">
+                                    <td><span t-esc="line.name"/></td>
+                                    <td class="text-end"><span t-esc="-line.total"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm mt-3">
+                            <tbody>
+                                <tr>
+                                    <th>เงินเดือนสุทธิ</th>
+                                    <th class="text-end">
+                                        <span t-esc="o.get_payslip_net_amount()"/>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

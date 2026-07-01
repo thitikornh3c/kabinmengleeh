@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+import base64
 import logging
 import json
 from datetime import datetime, timedelta
@@ -651,10 +652,113 @@ class HRPayslip(models.Model):
                 )
 
             slip.trigger_custom_event()
+
+        if not self.env.context.get('skip_payslip_pdf_regen'):
+            self._regenerate_payslip_pdf()
                         # if slip.employee_id.id == 50:
                         #     line.amount = 12500
                         #     line.total = 12500
 
+
+    def _get_payslip_report(self):
+        """Return the payslip PDF report action to render."""
+        for xml_id in (
+            'advanced_loan_management.action_report_payslip_loan_management',
+            'hr_payroll.action_report_payslip',
+            'hr_payroll.payslip_report',
+        ):
+            try:
+                report = self.env.ref(xml_id)
+            except ValueError:
+                continue
+            if report._name == 'ir.actions.report' and report.model == 'hr.payslip':
+                return report
+        return self.env['ir.actions.report'].sudo().search([
+            ('model', '=', 'hr.payslip'),
+            ('report_type', '=', 'qweb-pdf'),
+        ], limit=1)
+
+    _PAYSLIP_PDF_SKIP_RULE_CODES = frozenset({'GROSS', 'NET'})
+
+    def _get_payslip_report_lines(self):
+        self.ensure_one()
+        return self.line_ids.filtered(
+            lambda line: (
+                line.salary_rule_id.code not in self._PAYSLIP_PDF_SKIP_RULE_CODES
+                and line.total
+            )
+        ).sorted('sequence')
+
+    def get_payslip_earning_lines(self):
+        self.ensure_one()
+        return self._get_payslip_report_lines().filtered(lambda line: line.total > 0)
+
+    def get_payslip_deduction_lines(self):
+        self.ensure_one()
+        return self._get_payslip_report_lines().filtered(lambda line: line.total < 0)
+
+    def get_payslip_net_amount(self):
+        self.ensure_one()
+        net_line = self.line_ids.filtered(lambda line: line.salary_rule_id.code == 'NET')[:1]
+        return net_line.total if net_line else 0.0
+
+    def _regenerate_payslip_pdf(self):
+        """Refresh the payslip PDF preview attachment after recomputation."""
+        report = self._get_payslip_report()
+        if not report:
+            _logger.warning('No payslip PDF report found; skipping PDF regeneration.')
+            return
+
+        Attachment = self.env['ir.attachment'].sudo()
+        for payslip in self.filtered('line_ids'):
+            try:
+                pdf_content, _report_type = report._render_qweb_pdf(
+                    report.report_name, payslip.ids
+                )
+            except TypeError:
+                pdf_content, _report_type = report._render_qweb_pdf(payslip.ids)
+            except Exception:
+                _logger.exception(
+                    'Failed to render payslip PDF for employee %s (id=%s)',
+                    payslip.employee_id.name, payslip.id,
+                )
+                continue
+
+            if not pdf_content:
+                continue
+
+            attachment_name = 'Payslip - %s - %s.pdf' % (
+                payslip.employee_id.name,
+                payslip._get_payslip_reference(),
+            )
+            pdf_b64 = base64.b64encode(pdf_content)
+            existing = payslip.message_main_attachment_id
+            if (
+                existing
+                and existing.res_model == 'hr.payslip'
+                and existing.res_id == payslip.id
+            ):
+                existing.write({
+                    'name': attachment_name,
+                    'datas': pdf_b64,
+                    'mimetype': 'application/pdf',
+                })
+            else:
+                attachment = Attachment.create({
+                    'name': attachment_name,
+                    'type': 'binary',
+                    'datas': pdf_b64,
+                    'res_model': 'hr.payslip',
+                    'res_id': payslip.id,
+                    'mimetype': 'application/pdf',
+                })
+                if 'message_main_attachment_id' in payslip._fields:
+                    payslip.message_main_attachment_id = attachment.id
+                else:
+                    payslip.message_post(
+                        body='Payslip PDF updated.',
+                        attachment_ids=[attachment.id],
+                    )
 
     def _get_payslip_reference(self):
         """Return a stable payslip identifier for logging (number field removed in Odoo 19)."""

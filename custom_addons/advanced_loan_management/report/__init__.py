@@ -20,4 +20,5 @@
 #
 ################################################################################
 from . import loan_management_reports
+from . import payslip_report
 
