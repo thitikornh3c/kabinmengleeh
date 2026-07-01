@@ -1,6 +1,6 @@
 {
     "name": "POS Sales Summary Styled Report by H3C",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.2",
     "summary": "Daily POS summary styled like Sales Details",
     "category": "Point of Sale",
     "author": "ChatGPT",

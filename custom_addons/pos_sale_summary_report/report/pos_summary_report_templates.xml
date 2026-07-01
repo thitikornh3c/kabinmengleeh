@@ -1,74 +1,71 @@
 <odoo>
   <template id="summary_template">
     <t t-call="web.basic_layout">
-      <!-- <t t-set="docs" t-value="docs"/>
-      <t t-set="data" t-value="data or {}"/> -->
-      <!-- <t t-set="data" t-value="data.get('data', {})"/> -->
-      <t t-set="data" t-value="data or {}"/> 
-      <div class="page">
-        <h2>POS Daily Summary Report</h2>
+      <t t-foreach="docs" t-as="doc">
+        <div class="page">
+          <h2>POS Daily Summary Report</h2>
 
-        <!-- Show dates -->
-        <p>Date From: <t t-esc="data.get('date_from','')"/></p>
-        <p>Date To: <t t-esc="data.get('date_to','')"/></p>
-        <p>Sesson: <t t-esc="data.get('ids','')"/></p>
-        <p>Order: <t t-esc="data.get('orders','no-order')"/></p>
-        <!-- Summary table -->
-        <t t-if="data.get('orders')">
-          <t t-foreach="data['orders']" t-as="order">
-            <p>Order: <t t-esc="order['name']"/> | Date: <t t-esc="order['date_order']"/></p>
+          <p>Date From: <t t-esc="date_from or ''"/></p>
+          <p>Date To: <t t-esc="date_to or ''"/></p>
+          <p>POS: <t t-esc="config_names or ''"/></p>
+          <p>Orders: <t t-esc="order_count or 0"/></p>
+
+          <t t-if="not summary_by_date">
+            <p><em>No POS orders found for the selected date range and configuration.</em></p>
           </t>
-        </t>
 
-        <p>summary_by_date: <t t-esc="data.get('summary_by_date', 'empty')"/></p>
+          <t t-if="summary_by_date">
+            <t t-foreach="summary_by_date.items()" t-as="date_group">
+              <t t-set="date" t-value="date_group[0]"/>
+              <t t-set="lines" t-value="date_group[1]"/>
+              <h4>Date: <t t-esc="date"/></h4>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr t-foreach="lines" t-as="line">
+                    <td><t t-esc="line['product_name']"/></td>
+                    <td><t t-esc="line['qty']"/></td>
+                    <td><t t-esc="line['total']"/></td>
+                  </tr>
+                </tbody>
+              </table>
+            </t>
+          </t>
 
-        <t t-if="data.get('summary_by_date')">
-          <t t-foreach="data['summary_by_date'].items()" t-as="date_group">
-            <t t-set="date" t-value="date_group[0]"/>
-            <t t-set="lines" t-value="date_group[1]"/>
-            <p>Date: <t t-esc="date"/></p>
+          <h4>Orders Pending Invoicing (with VAT products)</h4>
+          <t t-if="not pending_orders">
+            <p><em>No pending invoicing orders in this period.</em></p>
+          </t>
+          <t t-if="pending_orders">
             <table class="table table-sm">
               <thead>
                 <tr>
-                  <th>Product</th>
-                  <th>Qty</th>
+                  <th>Order</th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Tax ID</th>
                   <th>Total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr t-foreach="lines" t-as="line">
-                  <td><t t-esc="line['product_name']"/></td>
-                  <td><t t-esc="line['qty']"/></td>
-                  <td><t t-esc="line['total']"/></td>
+                <tr t-foreach="pending_orders" t-as="po">
+                  <td><t t-esc="po['name']"/></td>
+                  <td><t t-esc="po['date_order']"/></td>
+                  <td><t t-esc="po['customer']"/></td>
+                  <td><t t-esc="po['vat']"/></td>
+                  <td><t t-esc="po['amount_total']"/></td>
                 </tr>
               </tbody>
             </table>
           </t>
-        </t>
-
-        <h6>Order not create Invoice</h6>
-        <t t-if="data.get('pending_orders')">
-          <h4>Orders Pending Invoicing (with VAT products)</h4>
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>Order</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Tax ID</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr t-foreach="data['pending_orders']" t-as="po">
-                <td><t t-esc="po['name']"/></td>
-                <td><t t-esc="po['date_order']"/></td>
-                <td><t t-esc="po['customer']"/></td>
-                <td><t t-esc="po['vat']"/></td>
-              </tr>
-            </tbody>
-          </table>
-        </t>
-      </div>
+        </div>
+      </t>
     </t>
   </template>
 </odoo>
