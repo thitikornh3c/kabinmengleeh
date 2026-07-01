@@ -171,6 +171,40 @@ class HRPayslip(models.Model):
         else:  # diff > 0.5
             return amount - 1
 
+    def _get_pre_adjustment_line_amounts(self, slip):
+        """Return salary line amounts computed by super() before custom overrides."""
+        amounts = {code: 0.0 for code in ('SSO', 'with_holding', 'BASIC_LOAN_DEDUCTION')}
+        for line in slip.line_ids:
+            code = line.salary_rule_id.code
+            if code in amounts:
+                amounts[code] = line.amount
+        return amounts
+
+    def _recalculate_net_line(self, slip, pre_amounts, sso_amount, withholding_tax,
+                              total_other, loan_line, sso_recalculated=False,
+                              withholding_recalculated=False):
+        """Adjust NET only by the delta between custom values and super() values."""
+        sso_delta = (sso_amount - pre_amounts['SSO']) if sso_recalculated else 0.0
+        withholding_delta = (
+            (-withholding_tax) - pre_amounts['with_holding']
+        ) if withholding_recalculated else 0.0
+        loan_delta = (
+            (total_other - pre_amounts['BASIC_LOAN_DEDUCTION']) if loan_line else 0.0
+        )
+
+        for line in slip.line_ids:
+            if line.salary_rule_id.code != 'NET':
+                continue
+            net_sum = line.amount + sso_delta + withholding_delta + loan_delta
+            _logger.info(
+                f"Processing NET adjustment for employee {slip.employee_id.id}: "
+                f"base={line.amount} sso_delta={sso_delta} "
+                f"wh_delta={withholding_delta} loan_delta={loan_delta} => {net_sum}"
+            )
+            line.amount = net_sum
+            line.total = net_sum
+            break
+
     def calculate_withholding_tax(self, gross_salary, empId):
         month_tax = 0
         # if empId == 23: 
@@ -270,6 +304,8 @@ class HRPayslip(models.Model):
             withholding_tax = 0
             contract_type_code = ''
             grossTotal = 0
+            sso_recalculated = False
+            pre_amounts = self._get_pre_adjustment_line_amounts(slip)
 
             if loan_line:
                 _logger.info(f"Using loan line ID: {loan_line.id}, amount: {loan_line.amount}")
@@ -441,34 +477,12 @@ class HRPayslip(models.Model):
                             sso_amount = self.round_half_up(sso_amount)
                             line.amount = sso_amount
                             line.total = sso_amount
-                    # elif line.salary_rule_id.code == 'BASIC_LOAN_DEDUCTION' and loan_line:
-                    #     line_year = repayment.date.strftime('%Y')
-                    #     line_month = int(repayment.date.strftime('%m'))
-                    #     line.name = f"{line.name} ({line_month}/{line_year})"
-    
-                    #     loan = -loan_line.amount
-                    #     totalOther = totalOther + loan
-                    #     line.amount = loan
-                    #     line.total = loan
-                        # line.name = f'{line.name} ({loan_contracts[0].id})'
-                    
-                        # for loan in loan_contracts:
-                        #     line.name = loan
-                    # else:
-                    #     if line.salary_rule_id.code != 'EXTRAPAID':
-                    #         totalOther = totalOther + line.amount
-                    #        # line.name = f'{line.name} {line.amount} {totalOther}'
+                            sso_recalculated = True
 
-                # Loop re calculate1
-                # for line in slip.line_ids:
-                if line.salary_rule_id.code == 'NET':
-                    # workDataAmount = line.amount
-                    _logger.info(f"Processing NET line of employee {line.amount } {sso_amount} {line.salary_rule_id}")
-                    netSum = line.amount + sso_amount + totalOther
-                    line.amount = netSum
-                    line.total = netSum
-                    # line.amount = amonthSalary + totalOther + sso_amount
-                    # line.total = amonthSalary + totalOther + sso_amount
+                self._recalculate_net_line(
+                    slip, pre_amounts, sso_amount, withholding_tax, totalOther,
+                    loan_line, sso_recalculated=sso_recalculated,
+                )
             elif contract and contract.schedule_pay == 'monthly':
 
                 startDate = slip.date_from  # Start date
@@ -622,35 +636,20 @@ class HRPayslip(models.Model):
                             sso_amount = self.round_half_up(sso_amount)
                             line.amount = sso_amount
                             line.total = sso_amount
-                    # elif line.salary_rule_id.code == 'LOAN_DEDUCTION':
-                    #     loan = -1000
-                    #     totalOther = totalOther + loan
-                    #     line.amount = loan
-                    #     line.total = loan
-                    #     line.name = f'{line.name} ({loan_contracts[0].id})'
-                    #     # for loan in loan_contracts:
-                        #     line.name = loan
-                    # else:
-                    #     if line.salary_rule_id.code != 'NET':
-                    #         _logger.info(f"Processing other line of employee {line.salary_rule_id.code}: {line.amount}")
-                    #         totalOther = totalOther + sso_amount + line.amount
-                    #         # line.name = f'{line.name} {line.amount} {totalOther}'
+                            sso_recalculated = True
 
                 _logger.info(f"Processing payslip deduct cost of employee {totalOther}: {sso_amount} {withholding_tax}")
-                # Loop re calculate1
                 for line in slip.line_ids:
                     if line.salary_rule_id.code == 'with_holding':
-                        # workDataAmount = line.amount
                         line.amount = -withholding_tax
                         line.total = -withholding_tax
-                    if line.salary_rule_id.code == 'NET':
-                        # workDataAmount = line.amount
-                        
-                        sumTotal = line.amount + sso_amount - withholding_tax + totalOther
-                        # sumTotal = amonthSalary - ((-totalOther) + sso_amount + withholding_tax)
-                        line.amount = sumTotal
-                        line.total = sumTotal
-                        
+
+                self._recalculate_net_line(
+                    slip, pre_amounts, sso_amount, withholding_tax, totalOther,
+                    loan_line, sso_recalculated=sso_recalculated,
+                    withholding_recalculated=True,
+                )
+
             slip.trigger_custom_event()
                         # if slip.employee_id.id == 50:
                         #     line.amount = 12500
