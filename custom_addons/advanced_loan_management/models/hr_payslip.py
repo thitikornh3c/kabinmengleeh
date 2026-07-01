@@ -679,6 +679,45 @@ class HRPayslip(models.Model):
         ], limit=1)
 
     _PAYSLIP_PDF_SKIP_RULE_CODES = frozenset({'GROSS', 'NET'})
+    _PAYSLIP_DEDUCTION_REPORT_SKIP_CODES = frozenset({'SSO', 'with_holding'})
+    _BASIC_LOAN_DEDUCTION_LABEL = 'เบิกล่วงหน้า'
+
+    def _get_payslip_line_code(self, line):
+        if 'code' in line._fields and line.code:
+            return line.code
+        return line.salary_rule_id.code
+
+    def _is_payslip_deduction_report_line(self, line):
+        code = self._get_payslip_line_code(line)
+        if code in self._PAYSLIP_PDF_SKIP_RULE_CODES:
+            return False
+        if code in self._PAYSLIP_DEDUCTION_REPORT_SKIP_CODES:
+            return False
+        if line.category_id and line.category_id.code == 'DED':
+            return True
+        return (line.total or 0.0) < 0
+
+    def get_payslip_deduction_lines_grouped(self):
+        """Return deduction rows grouped by display name with summed amounts."""
+        self.ensure_one()
+        groups = []
+        totals = {}
+        for line in self.line_ids.sorted('sequence'):
+            if not self._is_payslip_deduction_report_line(line):
+                continue
+            amount = abs(line.total or 0.0)
+            if amount <= 0.0:
+                continue
+            code = self._get_payslip_line_code(line)
+            if code == 'BASIC_LOAN_DEDUCTION':
+                label = self._BASIC_LOAN_DEDUCTION_LABEL
+            else:
+                label = line.name or line.salary_rule_id.name
+            if label not in totals:
+                totals[label] = 0.0
+                groups.append(label)
+            totals[label] += amount
+        return [{'name': label, 'amount': totals[label]} for label in groups]
 
     def _get_payslip_report_lines(self):
         self.ensure_one()

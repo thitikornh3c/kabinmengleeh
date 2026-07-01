@@ -46,9 +46,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.get_payslip_deduction_lines()" t-as="line">
-                                    <td><span t-esc="line.name"/></td>
-                                    <td class="text-end"><span t-esc="-line.total"/></td>
+                                <tr t-foreach="o.get_payslip_deduction_lines_grouped()" t-as="item">
+                                    <td><span t-esc="item['name']"/></td>
+                                    <td class="text-end">
+                                        <span t-esc="'{0:,.2f}'.format(item['amount'])"/>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
