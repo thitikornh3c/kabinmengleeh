@@ -1,7 +1,21 @@
 <odoo>
   <template id="summary_template">
     <t t-call="web.html_container">
-      <div class="page" style="padding: 24px; font-family: Arial, sans-serif;">
+      <t t-set="head">
+        <meta charset="utf-8"/>
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap"/>
+        <link rel="stylesheet"
+              type="text/css"
+              href="/pos_sale_summary_report/static/src/css/pos_summary_report.css"/>
+        <style>
+          body, .page, .article, table, th, td, h1, h2, h3, h4, p, span, strong, em, div {
+            font-family: 'Sarabun', 'Noto Sans Thai', sans-serif !important;
+          }
+        </style>
+      </t>
+
+      <div class="page article o_pos_summary_report" style="padding: 24px;">
         <h2 style="text-align: center;">POS Daily Summary Report</h2>
 
         <p><strong>Date From:</strong> <t t-esc="date_from or ''"/></p>
@@ -27,9 +41,9 @@
             </thead>
             <tbody>
               <tr t-foreach="day_group['lines']" t-as="line">
-                <td style="padding: 4px;"><t t-esc="line['product_name']"/></td>
-                <td style="text-align: right; padding: 4px;"><t t-esc="line['qty']"/></td>
-                <td style="text-align: right; padding: 4px;"><t t-esc="line['total']"/></td>
+                <td style="padding: 4px;"><span t-esc="line['product_name']"/></td>
+                <td style="text-align: right; padding: 4px;"><span t-esc="line['qty']"/></td>
+                <td style="text-align: right; padding: 4px;"><span t-esc="line['total']"/></td>
               </tr>
             </tbody>
           </table>
@@ -52,11 +66,11 @@
             </thead>
             <tbody>
               <tr t-foreach="pending_orders" t-as="po">
-                <td style="padding: 4px;"><t t-esc="po['name']"/></td>
-                <td style="padding: 4px;"><t t-esc="po['date_order']"/></td>
-                <td style="padding: 4px;"><t t-esc="po['customer']"/></td>
-                <td style="padding: 4px;"><t t-esc="po['vat']"/></td>
-                <td style="text-align: right; padding: 4px;"><t t-esc="po['amount_total']"/></td>
+                <td style="padding: 4px;"><span t-esc="po['name']"/></td>
+                <td style="padding: 4px;"><span t-esc="po['date_order']"/></td>
+                <td style="padding: 4px;"><span t-esc="po['customer']"/></td>
+                <td style="padding: 4px;"><span t-esc="po['vat']"/></td>
+                <td style="text-align: right; padding: 4px;"><span t-esc="po['amount_total']"/></td>
               </tr>
             </tbody>
           </table>
