@@ -3,6 +3,7 @@ import logging
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.tools import float_is_zero
 
 _logger = logging.getLogger(__name__)
 
@@ -58,9 +59,12 @@ class PosOrder(models.Model):
         for order in self:
             order.two_book_type = 'vat' if order.is_vat_order else 'non_vat'
 
-    @api.depends('account_move', 'state')
+    @api.depends('account_move', 'state', 'is_vat_order', 'config_id.enable_two_book')
     def _compute_two_book_invoice_status(self):
         for order in self:
+            if not order.config_id.enable_two_book or not order.is_vat_order:
+                order.two_book_invoice_status = False
+                continue
             if order.account_move:
                 order.two_book_invoice_status = 'invoiced'
             elif order.state in ('paid', 'done'):
@@ -95,11 +99,96 @@ class PosOrder(models.Model):
 
         return vals
 
+    def _two_book_assert_vat_invoice_allowed(self):
+        blocked = self.filtered(
+            lambda o: o.config_id.enable_two_book and not o.is_vat_order
+        )
+        if blocked:
+            raise UserError(_(
+                'Two Book: Non-VAT orders cannot be invoiced (%(orders)s).',
+                orders=', '.join(blocked.mapped('name')),
+            ))
+
+    def _two_book_release_vat_clearing(self, invoice):
+        """Debit VAT clearing created at session close when the tax invoice is posted."""
+        orders = self.filtered(
+            lambda o: (
+                o.config_id.enable_two_book
+                and o.is_vat_order
+                and o.session_id
+                and o.session_id._two_book_should_split_session()
+            )
+        )
+        if not orders:
+            return self.env['account.move']
+
+        Move = self.env['account.move'].sudo()
+        created_moves = self.env['account.move']
+        currency = invoice.currency_id
+
+        for config, config_orders in orders.grouped('config_id').items():
+            clearing = config.two_book_vat_clearing_account_id
+            if not clearing:
+                _logger.warning(
+                    'Two Book: missing VAT clearing account on %s — skip release',
+                    config.display_name,
+                )
+                continue
+
+            receivable_lines = invoice.line_ids.filtered(
+                lambda line: line.account_id.account_type == 'asset_receivable'
+            )
+            receivable_account = (
+                receivable_lines[:1].account_id
+                or invoice.partner_id.with_company(invoice.company_id).property_account_receivable_id
+            )
+            if not receivable_account:
+                raise UserError(_(
+                    'Two Book: cannot find receivable account for invoice %(invoice)s.',
+                    invoice=invoice.display_name,
+                ))
+
+            journal = config.two_book_vat_journal_id or invoice.journal_id
+            total = sum(config_orders.mapped('amount_paid'))
+            if float_is_zero(total, precision_rounding=currency.rounding):
+                continue
+
+            move = Move.create({
+                'move_type': 'entry',
+                'journal_id': journal.id,
+                'date': invoice.invoice_date or fields.Date.context_today(self),
+                'ref': _('Two Book VAT clearing release: %s', invoice.name),
+                'company_id': invoice.company_id.id,
+                'line_ids': [
+                    (0, 0, {
+                        'name': _('Release VAT clearing (%s)', ', '.join(config_orders.mapped('name'))),
+                        'account_id': clearing.id,
+                        'partner_id': invoice.partner_id.id,
+                        'debit': total if total > 0 else 0.0,
+                        'credit': -total if total < 0 else 0.0,
+                    }),
+                    (0, 0, {
+                        'name': _('Release VAT clearing (%s)', invoice.name),
+                        'account_id': receivable_account.id,
+                        'partner_id': invoice.partner_id.id,
+                        'debit': -total if total < 0 else 0.0,
+                        'credit': total if total > 0 else 0.0,
+                    }),
+                ],
+            })
+            move.action_post()
+            created_moves |= move
+
+        return created_moves
+
     def action_pos_order_invoice(self):
+        self._two_book_assert_vat_invoice_allowed()
         res = super().action_pos_order_invoice()
         for order in self:
             if order.account_move:
                 order.tax_invoice_number = order.account_move.name
+                if order.config_id.enable_two_book and order.is_vat_order:
+                    order._two_book_release_vat_clearing(order.account_move)
         return res
 
     def _create_order_picking(self):

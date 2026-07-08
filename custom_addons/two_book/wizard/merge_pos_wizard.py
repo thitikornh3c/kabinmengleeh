@@ -6,10 +6,24 @@ from odoo.exceptions import UserError
 class MergePOSOrdersWizard(models.TransientModel):
     _inherit = 'merge.pos.orders.wizard'
 
+    def _two_book_validate_merge_orders(self, orders):
+        two_book_orders = orders.filtered(lambda o: o.config_id.enable_two_book)
+        if not two_book_orders:
+            return
+        non_vat = two_book_orders.filtered(lambda o: not o.is_vat_order)
+        if non_vat:
+            raise UserError(_(
+                "Two Book: Cannot merge Non-VAT orders (%(orders)s). "
+                "Select VAT orders only.",
+                orders=', '.join(non_vat.mapped('name')),
+            ))
+
     def action_merge_and_invoice(self):
         orders = self.pos_order_ids
         if not orders:
             raise UserError(_("Please select at least one POS order."))
+
+        self._two_book_validate_merge_orders(orders)
 
         if any(order.account_move for order in orders):
             raise UserError(_("One or more selected orders are already invoiced."))
@@ -67,6 +81,10 @@ class MergePOSOrdersWizard(models.TransientModel):
             'state': 'invoiced',
             'tax_invoice_number': invoice.name,
         })
+
+        orders.filtered(
+            lambda o: o.config_id.enable_two_book and o.is_vat_order
+        )._two_book_release_vat_clearing(invoice)
 
         return {
             'type': 'ir.actions.act_window',
