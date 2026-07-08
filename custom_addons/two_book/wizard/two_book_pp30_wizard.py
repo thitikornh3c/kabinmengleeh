@@ -325,6 +325,6 @@ class TwoBookPP30Wizard(models.TransientModel):
         })
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/%s' % attachment.id,
+            'url': '/web/content/%s/%s?download=false' % (attachment.id, filename),
             'target': 'new',
         }

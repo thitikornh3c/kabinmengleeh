@@ -8,9 +8,9 @@ from odoo.tools.misc import file_path
 _logger = logging.getLogger(__name__)
 
 try:
-    from PyPDF2 import PdfReader, PdfWriter
-except ImportError:  # pragma: no cover - Odoo.sh installs PyPDF2 via requirements.txt
-    PdfReader = PdfWriter = None
+    from pdfrw import PdfDict, PdfName, PdfObject, PdfReader, PdfString, PdfWriter
+except ImportError:  # pragma: no cover - Odoo.sh installs pdfrw via requirements.txt
+    PdfDict = PdfName = PdfObject = PdfReader = PdfString = PdfWriter = None
 
 PP30_LINE_FIELDS = {
     '1': 'Text2.1',
@@ -38,70 +38,91 @@ class TwoBookPP30PdfBuilder:
     @classmethod
     def build(cls, report_data):
         if PdfReader is None or PdfWriter is None:
-            raise RuntimeError('PyPDF2 is required to print PP30. Add PyPDF2 to requirements.txt.')
+            raise RuntimeError('pdfrw is required to print PP30. Add pdfrw to requirements.txt.')
 
         template_path = file_path(cls.TEMPLATE_PATH)
-        reader = PdfReader(template_path)
-        writer = cls._clone_reader(reader)
+        pdf = PdfReader(template_path)
         field_values = cls._build_field_values(report_data)
-
-        for page in writer.pages:
-            cls._update_page_fields(writer, page, field_values)
-
-        cls._set_need_appearances(writer)
+        cls._fill_acroform(pdf, field_values)
 
         output = io.BytesIO()
-        writer.write(output)
+        PdfWriter().write(output, pdf)
         return output.getvalue()
 
-    @staticmethod
-    def _clone_reader(reader):
-        writer = PdfWriter()
-        if hasattr(writer, 'append'):
-            writer.append(reader)
-            return writer
-        if hasattr(writer, 'clone_reader_document_root'):
-            writer.clone_reader_document_root(reader)
-            return writer
-        if hasattr(writer, 'appendPagesFromReader'):
-            writer.appendPagesFromReader(reader)
-            return writer
-        for page in reader.pages:
-            writer.add_page(page)
-        return writer
+    @classmethod
+    def _fill_acroform(cls, pdf, field_values):
+        acroform = pdf.Root.AcroForm
+        if not acroform or not acroform.Fields:
+            raise RuntimeError('PP30 template has no AcroForm fields.')
+
+        acroform.update(PdfDict(NeedAppearances=PdfObject('true')))
+        cls._walk_fields(acroform.Fields, field_values)
+
+    @classmethod
+    def _walk_fields(cls, fields, field_values, prefix=''):
+        for field in fields or []:
+            name = cls._field_name(field.T)
+            full_name = '.'.join(part for part in (prefix, name) if part)
+
+            if field.Kids:
+                if full_name in field_values and cls._is_button_group(field):
+                    cls._set_button_group(field, field_values[full_name])
+                else:
+                    cls._walk_fields(field.Kids, field_values, full_name)
+                continue
+
+            if full_name not in field_values:
+                continue
+
+            value = field_values[full_name]
+            if field.FT == PdfName('Btn') or cls._is_button_group(field):
+                cls._set_button_group(field, value)
+            else:
+                cls._set_text_field(field, value)
 
     @staticmethod
-    def _update_page_fields(writer, page, field_values):
-        if hasattr(writer, 'update_page_form_field_values'):
-            try:
-                writer.update_page_form_field_values(page, field_values, auto_regenerate=False)
-                return
-            except TypeError:
-                writer.update_page_form_field_values(page, field_values)
-                return
-        if hasattr(writer, 'updatePageFormFieldValues'):
-            writer.updatePageFormFieldValues(page, field_values)
+    def _field_name(field_t):
+        if not field_t:
+            return ''
+        name = str(field_t)
+        if name.startswith('(') and name.endswith(')'):
+            return name[1:-1]
+        return name
+
+    @staticmethod
+    def _is_button_group(field):
+        return field.FT == PdfName('Btn') or (field.Kids and not field.FT)
+
+    @staticmethod
+    def _set_text_field(field, value):
+        if value in (None, ''):
             return
-        raise RuntimeError('PyPDF2 version does not support PDF form field updates.')
+        field.V = PdfString.encode(str(value))
 
-    @staticmethod
-    def _set_need_appearances(writer):
-        if hasattr(writer, 'set_need_appearances_writer'):
-            try:
-                writer.set_need_appearances_writer(True)
-                return
-            except TypeError:
-                writer.set_need_appearances_writer()
-                return
-        try:
-            from PyPDF2.generic import BooleanObject, NameObject
-            root = writer._root_object  # pylint: disable=protected-access
-            if '/AcroForm' in root:
-                root['/AcroForm'].update({
-                    NameObject('/NeedAppearances'): BooleanObject(True),
-                })
-        except Exception as err:
-            _logger.debug('Two Book PP30: skip NeedAppearances flag: %s', err)
+    @classmethod
+    def _set_button_group(cls, field, value):
+        if value in (None, ''):
+            return
+        state = str(value)
+        if not state.startswith('/'):
+            state = '/%s' % state
+        state_name = PdfName(state[1:])
+
+        field.V = state_name
+        if not field.Kids:
+            field.AS = state_name
+            return
+
+        for kid in field.Kids:
+            selected = PdfName('Off')
+            if kid.AP and kid.AP.N:
+                for appearance in kid.AP.N.keys():
+                    if str(appearance) == state:
+                        selected = appearance
+                        break
+            kid.AS = selected
+            if selected != PdfName('Off'):
+                kid.V = state_name
 
     @classmethod
     def _build_field_values(cls, report_data):
