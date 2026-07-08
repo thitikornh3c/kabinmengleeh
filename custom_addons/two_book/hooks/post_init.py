@@ -174,7 +174,7 @@ def _ensure_pp30_menus(env):
             'parent_id': parent.id,
             'action': action_ref,
             'sequence': sequence,
-            'groups_id': [(5, 0, 0)],
+            'group_ids': [(5, 0, 0)],
         }
         if menu:
             menu.write(vals)
