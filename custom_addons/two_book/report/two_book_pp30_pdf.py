@@ -87,8 +87,12 @@ class TwoBookPP30PdfBuilder:
     @staticmethod
     def _set_need_appearances(writer):
         if hasattr(writer, 'set_need_appearances_writer'):
-            writer.set_need_appearances_writer(True)
-            return
+            try:
+                writer.set_need_appearances_writer(True)
+                return
+            except TypeError:
+                writer.set_need_appearances_writer()
+                return
         try:
             from PyPDF2.generic import BooleanObject, NameObject
             root = writer._root_object  # pylint: disable=protected-access
