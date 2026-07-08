@@ -46,10 +46,16 @@
 
     <menuitem
         id="menu_two_book_pp30"
-        name="แบบ ภ.พ.30 (2568)"
+        name="Print ภ.พ.30 (2568)"
         parent="menu_two_book_summary_root"
         action="action_two_book_pp30_wizard"
-        sequence="60"
-        groups="account.group_account_invoice,point_of_sale.group_pos_manager"/>
+        sequence="55"/>
+
+    <menuitem
+        id="menu_two_book_pp30_reporting"
+        name="Print ภ.พ.30 (2568)"
+        parent="point_of_sale.menu_point_root"
+        action="action_two_book_pp30_wizard"
+        sequence="25"/>
 
 </odoo>
