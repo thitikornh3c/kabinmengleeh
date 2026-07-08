@@ -145,8 +145,9 @@ class TwoBookPP30PdfBuilder:
             'Text1.10': address.get('province') or '',
             'Text1.13': zip_code,
             'Text1.16': address.get('phone') or '',
-            'Text2.19': str(report_data.get('tax_year_be') or ''),
-            'Text2.20': str(report_data.get('tax_year_be') or ''),
+            # อย่าใส่ Text2.19/Text2.20 — เป็นช่อง (ชื่อ) และ ยื่นวันที่ ในกล่องคำรับรอง
+            # พ.ศ. ของเดือนภาษี (แถวเลือกเดือน)
+            'Text1.22': str(report_data.get('tax_year_be') or ''),
             'Radio Button3': '/%s' % max(0, min(11, (report_data.get('tax_month') or 1) - 1)),
             'Radio Button4': '/0',
             'Radio Button5': '/0',
