@@ -11,6 +11,7 @@ def post_init_hook(env):
         _ensure_vat_clearing_accounts,
         _setup_fiscal_position_tax_maps,
         _assign_pos_config_defaults,
+        _ensure_pp30_menus,
     ):
         try:
             step(env)
@@ -142,3 +143,42 @@ def _assign_pos_config_defaults(env):
                 vals['two_book_vat_journal_id'] = sale_journal.id
         if vals:
             config.write(vals)
+
+
+def _ensure_pp30_menus(env):
+    """Create/update PP30 menus if XML load missed them (access/menu sync issues)."""
+    action = env.ref('two_book.action_two_book_pp30_wizard', raise_if_not_found=False)
+    if not action:
+        _logger.error('Two Book PP30: action_two_book_pp30_wizard missing — check wizard model load')
+        return
+
+    Menu = env['ir.ui.menu'].sudo()
+    IrModelData = env['ir.model.data'].sudo()
+    action_ref = f'ir.actions.act_window,{action.id}'
+
+    menu_specs = (
+        ('menu_two_book_pp30', 'Print ภ.พ.30 (2568)', 'two_book.menu_two_book_summary_root', 55),
+        ('menu_two_book_pp30_top', 'ภ.พ.30', 'point_of_sale.menu_point_root', 16),
+        ('menu_two_book_pp30_orders', 'ภ.พ.30', 'point_of_sale.menu_point_of_sale', 47),
+    )
+    for xml_name, label, parent_xmlid, sequence in menu_specs:
+        parent = env.ref(parent_xmlid, raise_if_not_found=False)
+        if not parent:
+            _logger.warning('Two Book PP30: parent menu %s not found', parent_xmlid)
+            continue
+
+        full_xmlid = f'two_book.{xml_name}'
+        menu = env.ref(full_xmlid, raise_if_not_found=False)
+        vals = {
+            'name': label,
+            'parent_id': parent.id,
+            'action': action_ref,
+            'sequence': sequence,
+            'groups_id': [(5, 0, 0)],
+        }
+        if menu:
+            menu.write(vals)
+        else:
+            menu = Menu.create(vals)
+            _ensure_xmlid(IrModelData, full_xmlid, menu)
+            _logger.info('Two Book PP30: created menu %s', full_xmlid)
