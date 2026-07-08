@@ -192,4 +192,20 @@
         sequence="50"
     />
 
+    <menuitem
+        id="menu_two_book_pp30"
+        name="Print ภ.พ.30 (2568)"
+        parent="menu_two_book_summary_root"
+        action="action_two_book_pp30_wizard"
+        sequence="55"
+    />
+
+    <menuitem
+        id="menu_two_book_pp30_top"
+        name="ภ.พ.30"
+        parent="point_of_sale.menu_point_root"
+        action="action_two_book_pp30_wizard"
+        sequence="16"
+    />
+
 </odoo>
