@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from calendar import monthrange
 from datetime import datetime, time, timedelta
+import base64
 import re
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero
+
+from odoo.addons.two_book.report.two_book_pp30_pdf import TwoBookPP30PdfBuilder
 
 THAI_MONTHS = [
     (1, 'มกราคม'),
@@ -310,5 +313,18 @@ class TwoBookPP30Wizard(models.TransientModel):
     def action_print(self):
         self.ensure_one()
         report_data = self._prepare_report_data()
-        report = self.env.ref('two_book.action_two_book_pp30_report')
-        return report.report_action(self.ids, data={'report_data': report_data})
+        pdf_bytes = TwoBookPP30PdfBuilder.build(report_data)
+        filename = 'PP30_%s_%s.pdf' % (self.date_from, self.date_to)
+        attachment = self.env['ir.attachment'].sudo().create({
+            'name': filename,
+            'type': 'binary',
+            'datas': base64.b64encode(pdf_bytes),
+            'mimetype': 'application/pdf',
+            'res_model': self._name,
+            'res_id': self.id,
+        })
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/%s' % attachment.id,
+            'target': 'new',
+        }

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Stub only: PP30 PDF is filled from static/pdf/pp30_010968.pdf -->
+    <template id="two_book_pp30_template">
+        <t t-foreach="docs" t-as="doc">
+            <div class="article" t-att-data-oe-model="doc._name" t-att-data-oe-id="doc.id"/>
+        </t>
+    </template>
+
     <record id="action_two_book_pp30_report" model="ir.actions.report">
         <field name="name">แบบ ภ.พ.30 (2568)</field>
         <field name="model">two.book.pp30.wizard</field>
