@@ -2,18 +2,23 @@
 <odoo>
 
     <record id="paperformat_two_book_pp30" model="report.paperformat">
-        <field name="name">Two Book PP30 A4</field>
+        <field name="name">PP30 Official A4</field>
         <field name="default" eval="False"/>
         <field name="format">A4</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">12</field>
-        <field name="margin_bottom">12</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
         <field name="margin_left">8</field>
         <field name="margin_right">8</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
+        <field name="dpi">96</field>
     </record>
+
+    <template id="two_book_pp30_money_row">
+        <td class="money"><t t-esc="line['baht_fmt']"/></td>
+        <td class="money st"><t t-esc="line['satang_fmt']"/></td>
+    </template>
 
     <template id="two_book_pp30_template">
         <t t-call="web.html_container">
@@ -26,165 +31,314 @@
                       href="/two_book/static/src/css/two_book_pp30_report.css"/>
             </t>
 
-            <div class="page article o_two_book_pp30_report">
-                <h2>รายงานสรุปภาษีมูลค่าเพิ่ม (ภ.พ.30)</h2>
-                <p class="subtitle">Two Book — ข้อมูลสำหรับยื่นภ.พ.30</p>
+            <div class="page article o_pp30_official">
+                <div class="form-code"><t t-esc="form_code or 'ภ.พ.30'"/></div>
 
-                <p><strong>บริษัท:</strong> <t t-esc="company_name or ''"/></p>
-                <p><strong>เลขประจำตัวผู้เสียภาษี:</strong> <t t-esc="company_vat or ''"/></p>
-                <p><strong>ช่วงวันที่:</strong> <t t-esc="date_from or ''"/> ถึง <t t-esc="date_to or ''"/></p>
-
-                <div class="summary-box">
-                    <h4>สรุปยอดภ.พ.30</h4>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>1. มูลค่าสินค้า/บริการ (ขาย — ฐานภาษี)</td>
-                                <td class="text-right"><t t-esc="output_base_fmt or '0.00'"/></td>
-                            </tr>
-                            <tr>
-                                <td>2. ภาษีขาย (Output VAT)</td>
-                                <td class="text-right"><t t-esc="output_vat_fmt or '0.00'"/></td>
-                            </tr>
-                            <tr>
-                                <td>3. มูลค่าสินค้า/บริการ (ซื้อ — ฐานภาษี)</td>
-                                <td class="text-right"><t t-esc="input_base_fmt or '0.00'"/></td>
-                            </tr>
-                            <tr>
-                                <td>4. ภาษีซื้อ (Input VAT)</td>
-                                <td class="text-right"><t t-esc="input_vat_fmt or '0.00'"/></td>
-                            </tr>
-                            <tr>
-                                <td><strong>5. ภาษีที่ต้องนำส่ง (2 − 4)</strong></td>
-                                <td class="text-right"><strong><t t-esc="net_vat_fmt or '0.00'"/></strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="cert-box">
+                    คำรับรอง ข้าพเจ้าขอรับรองว่า ข้อความที่แสดงในแบบแสดงรายการนี้ ถูกต้องและเป็นความจริงทุกประการ
+                    กรณียื่นแบบแสดงรายการเกินกำหนดเวลาหรือยื่นเพิ่มเติม ข้าพเจ้าขอลดเบี้ยปรับด้วย
+                    <div class="field-row" style="margin-top: 8px;">
+                        ลงชื่อ <span class="line-box" style="min-width: 220px;"/> ผู้ประกอบการ
+                        (<span class="line-box" style="min-width: 160px;"/>)
+                        ยื่นวันที่ <span class="line-box" style="min-width: 90px;"/>
+                    </div>
                 </div>
 
-                <h4 style="margin-top: 24px;">รายละเอียดภาษีขาย (ใบกำกับขาย / Invoice)</h4>
-                <t t-if="not output_lines">
-                    <p><em>ไม่มีรายการภาษีขายในช่วงนี้</em></p>
-                </t>
-                <t t-if="output_lines">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>วันที่</th>
-                                <th>เลขที่</th>
-                                <th>ลูกค้า</th>
-                                <th>เลขผู้เสียภาษี</th>
-                                <th class="text-right">ฐานภาษี</th>
-                                <th class="text-right">ภาษีขาย</th>
-                                <th>แหล่งที่มา</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="output_lines" t-as="line">
-                                <td><t t-esc="line['date']"/></td>
-                                <td><t t-esc="line['doc_no']"/></td>
-                                <td><t t-esc="line['partner']"/></td>
-                                <td><t t-esc="line['tax_id']"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['base'])"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['vat'])"/></td>
-                                <td><t t-esc="line['source']"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </t>
+                <p class="form-title">แบบแสดงรายการภาษีมูลค่าเพิ่ม</p>
+                <p class="form-subtitle">ตามประมวลรัษฎากร (แบบ ภ.พ.30 ปรับปรุง <t t-esc="form_revision or '2568'"/>)</p>
 
-                <h4 style="margin-top: 24px;">รายละเอียดภาษีซื้อ (Vendor Bills)</h4>
-                <t t-if="not input_lines">
-                    <p><em>ไม่มีรายการภาษีซื้อในช่วงนี้</em></p>
-                </t>
-                <t t-if="input_lines">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>วันที่</th>
-                                <th>เลขที่</th>
-                                <th>ผู้ขาย</th>
-                                <th>เลขผู้เสียภาษี</th>
-                                <th class="text-right">ฐานภาษี</th>
-                                <th class="text-right">ภาษีซื้อ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="input_lines" t-as="line">
-                                <td><t t-esc="line['date']"/></td>
-                                <td><t t-esc="line['doc_no']"/></td>
-                                <td><t t-esc="line['partner']"/></td>
-                                <td><t t-esc="line['tax_id']"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['base'])"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['vat'])"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </t>
+                <div class="field-row">
+                    <span class="field-label">เลขประจำตัวผู้เสียภาษีอากร</span>
+                    <t t-foreach="company_vat_digits or []" t-as="digit">
+                        <span class="digit-box"><t t-esc="digit.strip() and digit or ''"/></span>
+                    </t>
+                    <span style="margin-left: 12px;">สาขาที่</span>
+                    <t t-foreach="branch_digits or []" t-as="bd">
+                        <span class="digit-box"><t t-esc="bd"/></span>
+                    </t>
+                </div>
 
-                <h4 style="margin-top: 24px;">Two Book — ข้อมูลเสริม</h4>
-                <table>
+                <div class="field-row">
+                    <span class="field-label">ชื่อผู้ประกอบการ</span>
+                    <span class="line-box" style="min-width: 420px;"><t t-esc="company_name or ''"/></span>
+                </div>
+                <div class="field-row">
+                    <span class="field-label">ชื่อสถานประกอบการ</span>
+                    <span class="line-box" style="min-width: 420px;"><t t-esc="company_name or ''"/></span>
+                </div>
+
+                <div class="field-row">
+                    ที่อยู่ : อาคาร <span class="line-box"><t t-esc="address.get('building') or ''"/></span>
+                    ห้องเลขที่ <span class="line-box"><t t-esc="address.get('room') or ''"/></span>
+                    ชั้นที่ <span class="line-box"><t t-esc="address.get('floor') or ''"/></span>
+                </div>
+                <div class="field-row">
+                    หมู่บ้าน <span class="line-box"><t t-esc="address.get('village') or ''"/></span>
+                    เลขที่ <span class="line-box"><t t-esc="address.get('number') or ''"/></span>
+                    หมู่ที่ <span class="line-box"><t t-esc="address.get('moo') or ''"/></span>
+                    ตรอก/ซอย <span class="line-box"><t t-esc="address.get('soi') or ''"/></span>
+                </div>
+                <div class="field-row">
+                    ถนน <span class="line-box"><t t-esc="address.get('road') or ''"/></span>
+                    ตำบล/แขวง <span class="line-box"><t t-esc="address.get('subdistrict') or ''"/></span>
+                    อำเภอ/เขต <span class="line-box"><t t-esc="address.get('district') or ''"/></span>
+                </div>
+                <div class="field-row">
+                    จังหวัด <span class="line-box"><t t-esc="address.get('province') or ''"/></span>
+                    รหัสไปรษณีย์ <span class="line-box"><t t-esc="address.get('zip') or ''"/></span>
+                    โทรศัพท์ <span class="line-box"><t t-esc="address.get('phone') or ''"/></span>
+                </div>
+
+                <div class="field-row" style="margin-top: 8px;">
+                    <span t-if="filing_normal">(/) ยื่นปกติ</span>
+                    <span t-else="">( ) ยื่นปกติ</span>
+                    <span style="margin-left: 16px;">
+                        (<t t-if="not filing_normal and supplementary_no">/</t><t t-else=""> </t>)
+                        ยื่นเพิ่มเติมครั้งที่ <t t-esc="supplementary_no or ''"/>
+                    </span>
+                    <span style="margin-left: 16px;">ของ ภ.พ.30 ซึ่งยื่นไว้</span>
+                </div>
+
+                <div class="field-row">
+                    สำหรับเดือนภาษี พ.ศ. <strong><t t-esc="tax_year_be or ''"/></strong>
+                </div>
+
+                <table class="month-grid">
+                    <tr t-foreach="tax_month_rows or []" t-as="month_row">
+                        <td t-foreach="month_row" t-as="month">
+                            <span class="check"><t t-if="month['selected']">✓</t></span>
+                            (<t t-esc="month['num']"/>) <t t-esc="month['name']"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">การคำนวณภาษี</th>
+                            <th class="money">บาท</th>
+                            <th class="money st">สต.</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <tr>
-                            <td>ยอดขาย Non-VAT (POS — ไม่นับใน ภ.พ.30)</td>
-                            <td class="text-right"><t t-esc="pos_non_vat_total_fmt or '0.00'"/></td>
+                            <td class="line-no">1.</td>
+                            <td class="line-desc">ยอดขายในเดือนนี้</td>
+                            <t t-set="line" t-value="pp30_lines.get('1')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
                         </tr>
                         <tr>
-                            <td>POS VAT ออกใบกำกับแล้ว (จำนวน order)</td>
-                            <td class="text-right"><t t-esc="pos_vat_invoiced_count or 0"/></td>
+                            <td class="line-no">2.</td>
+                            <td class="line-desc">ลบ ยอดขายที่เสียภาษีในอัตราร้อยละ 0 (ถ้ามี)</td>
+                            <t t-set="line" t-value="pp30_lines.get('2')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
                         </tr>
                         <tr>
-                            <td>POS VAT รอ merge/invoice (จำนวน order)</td>
-                            <td class="text-right"><t t-esc="pos_vat_pending_count or 0"/></td>
+                            <td class="line-no">3.</td>
+                            <td class="line-desc">ลบ ยอดขายที่ได้รับยกเว้น (ถ้ามี)</td>
+                            <t t-set="line" t-value="pp30_lines.get('3')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">4.</td>
+                            <td class="line-desc">ยอดขายที่ต้องเสียภาษี (1. - 2. - 3.)</td>
+                            <t t-set="line" t-value="pp30_lines.get('4')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">5.</td>
+                            <td class="line-desc">ภาษีขายเดือนนี้</td>
+                            <t t-set="line" t-value="pp30_lines.get('5')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">6.</td>
+                            <td class="line-desc">ยอดซื้อที่มีสิทธินำภาษีซื้อมาหักในการคำนวณภาษีเดือนนี้</td>
+                            <t t-set="line" t-value="pp30_lines.get('6')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">7.</td>
+                            <td class="line-desc">ภาษีซื้อเดือนนี้ (ตามหลักฐานใบกำกับภาษีของยอดซื้อตาม 6.)</td>
+                            <t t-set="line" t-value="pp30_lines.get('7')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">8.</td>
+                            <td class="line-desc">ภาษีที่ต้องชำระเดือนนี้ (ถ้า 5. มากกว่า 7.)</td>
+                            <t t-set="line" t-value="pp30_lines.get('8')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">9.</td>
+                            <td class="line-desc">ภาษีที่ชำระเกินเดือนนี้ (ถ้า 7. มากกว่า 5.)</td>
+                            <t t-set="line" t-value="pp30_lines.get('9')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">10.</td>
+                            <td class="line-desc">ภาษีที่ชำระเกินยกมา</td>
+                            <t t-set="line" t-value="pp30_lines.get('10')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">11.</td>
+                            <td class="line-desc">ต้องชำระ (ถ้า 8. มากกว่า 10.)</td>
+                            <t t-set="line" t-value="pp30_lines.get('11')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">12.</td>
+                            <td class="line-desc">ชำระเกิน ((ถ้า 10. มากกว่า 8.) หรือ (9. รวมกับ 10.))</td>
+                            <t t-set="line" t-value="pp30_lines.get('12')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">13.</td>
+                            <td class="line-desc">เงินเพิ่ม (กรณียื่นเกินกำหนด / ยื่นเพิ่มเติม)</td>
+                            <t t-set="line" t-value="pp30_lines.get('13')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">14.</td>
+                            <td class="line-desc">เบี้ยปรับ</td>
+                            <t t-set="line" t-value="pp30_lines.get('14')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">15.</td>
+                            <td class="line-desc">รวมภาษี เงินเพิ่ม และเบี้ยปรับที่ต้องชำระ</td>
+                            <t t-set="line" t-value="pp30_lines.get('15')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
+                        </tr>
+                        <tr>
+                            <td class="line-no">16.</td>
+                            <td class="line-desc">รวมภาษีที่ชำระเกิน หลังคำนวณเงินเพิ่มและเบี้ยปรับแล้ว</td>
+                            <t t-set="line" t-value="pp30_lines.get('16')"/>
+                            <t t-call="two_book.two_book_pp30_money_row"/>
                         </tr>
                     </tbody>
                 </table>
 
-                <t t-if="pending_lines">
-                    <h4 style="margin-top: 16px;">POS VAT รอออกใบกำกับ (ยังไม่รวมใน ภ.พ.30)</h4>
-                    <table>
+                <div class="signature-block">
+                    <strong>การขอคืนภาษี</strong> ( ) เป็นเงินสด &nbsp;&nbsp; ( ) โอนเข้าธนาคาร / พร้อมเพย์
+                    <div class="field-row" style="margin-top: 8px;">
+                        ลงชื่อ <span class="line-box" style="min-width: 220px;"/> ผู้ประกอบการ
+                    </div>
+                    <div class="field-row">ประทับตรานิติบุคคล (ถ้ามี)</div>
+                </div>
+
+                <p class="note-box">
+                    ข้อมูลช่อง 1–12 ดึงจาก Invoice/Bill ที่ Posted ใน Odoo ช่วง
+                    <t t-esc="date_from or ''"/> ถึง <t t-esc="date_to or ''"/>.
+                    ช่อง 13–16 ให้กรอกมือก่อนยื่น e-Filing หากยื่นปกติภายในกำหนด.
+                    POS VAT รอ merge <t t-esc="pos_vat_pending_count or 0"/> รายการ (ดูใบแนบ).
+                </p>
+            </div>
+
+            <div class="page article o_pp30_official page-break">
+                <p class="attachment-title">ใบแนบ ภ.พ.30</p>
+                <p style="text-align: center;">
+                    <t t-esc="company_name or ''"/> |
+                    เลขประจำตัวผู้เสียภาษี <t t-esc="company_vat or ''"/> |
+                    เดือนภาษี <t t-esc="tax_month or ''"/>/<t t-esc="tax_year_be or ''"/>
+                </p>
+
+                <h4>ภาษีขาย — ใบกำกับภาษีขาย / ใบแจ้งหนี้</h4>
+                <t t-if="not output_lines">
+                    <p><em>ไม่มีรายการ</em></p>
+                </t>
+                <t t-if="output_lines">
+                    <table class="detail-table">
                         <thead>
                             <tr>
                                 <th>วันที่</th>
-                                <th>Order</th>
-                                <th>ลูกค้า</th>
-                                <th class="text-right">ฐานภาษี</th>
-                                <th class="text-right">ภาษีขาย</th>
-                                <th class="text-right">ยอดรวม</th>
+                                <th>เลขที่เอกสาร</th>
+                                <th>ชื่อผู้ซื้อ</th>
+                                <th>เลขผู้เสียภาษี</th>
+                                <th style="text-align: right;">มูลค่าสินค้า/บริการ</th>
+                                <th style="text-align: right;">ภาษีมูลค่าเพิ่ม</th>
+                                <th>หมายเหตุ</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="pending_lines" t-as="line">
-                                <td><t t-esc="line['date']"/></td>
-                                <td><t t-esc="line['doc_no']"/></td>
-                                <td><t t-esc="line['partner']"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['base'])"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['vat'])"/></td>
-                                <td class="text-right"><t t-esc="'{:,.2f}'.format(line['total'])"/></td>
+                            <tr t-foreach="output_lines" t-as="row">
+                                <td><t t-esc="row['date']"/></td>
+                                <td><t t-esc="row['doc_no']"/></td>
+                                <td><t t-esc="row['partner']"/></td>
+                                <td><t t-esc="row['tax_id']"/></td>
+                                <td style="text-align: right;"><t t-esc="'{:,.2f}'.format(row['base'])"/></td>
+                                <td style="text-align: right;"><t t-esc="'{:,.2f}'.format(row['vat'])"/></td>
+                                <td><t t-esc="row['source']"/></td>
                             </tr>
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3"><strong>รวมรอออกใบกำกับ</strong></td>
-                                <td class="text-right"><strong><t t-esc="pending_base_fmt or '0.00'"/></strong></td>
-                                <td class="text-right"><strong><t t-esc="pending_vat_fmt or '0.00'"/></strong></td>
-                                <td/>
-                            </tr>
-                        </tfoot>
                     </table>
                 </t>
 
-                <p class="note">
-                    หมายเหตุ: รายงานนี้สรุปจาก Invoice/Bill ที่ Posted ในช่วงวันที่
-                    ภ.พ.30 จริงอาจต้องปรับตามวันที่ใบกำกับและกฎหมายภาษี —
-                    POS VAT ที่ยังไม่ merge/invoice จะยังไม่ถูกนับในภาษีขาย
+                <h4 style="margin-top: 16px;">ภาษีซื้อ — ใบกำกับภาษีซื้อ / Vendor Bill</h4>
+                <t t-if="not input_lines">
+                    <p><em>ไม่มีรายการ</em></p>
+                </t>
+                <t t-if="input_lines">
+                    <table class="detail-table">
+                        <thead>
+                            <tr>
+                                <th>วันที่</th>
+                                <th>เลขที่เอกสาร</th>
+                                <th>ชื่อผู้ขาย</th>
+                                <th>เลขผู้เสียภาษี</th>
+                                <th style="text-align: right;">มูลค่าสินค้า/บริการ</th>
+                                <th style="text-align: right;">ภาษีมูลค่าเพิ่ม</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="input_lines" t-as="row">
+                                <td><t t-esc="row['date']"/></td>
+                                <td><t t-esc="row['doc_no']"/></td>
+                                <td><t t-esc="row['partner']"/></td>
+                                <td><t t-esc="row['tax_id']"/></td>
+                                <td style="text-align: right;"><t t-esc="'{:,.2f}'.format(row['base'])"/></td>
+                                <td style="text-align: right;"><t t-esc="'{:,.2f}'.format(row['vat'])"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <t t-if="pending_lines">
+                    <h4 style="margin-top: 16px;">Two Book — POS VAT รอออกใบกำกับ (ยังไม่รวมในช่อง 5)</h4>
+                    <table class="detail-table">
+                        <thead>
+                            <tr>
+                                <th>วันที่</th>
+                                <th>POS Order</th>
+                                <th>ลูกค้า</th>
+                                <th style="text-align: right;">ฐานภาษี</th>
+                                <th style="text-align: right;">ภาษีขาย</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="pending_lines" t-as="row">
+                                <td><t t-esc="row['date']"/></td>
+                                <td><t t-esc="row['doc_no']"/></td>
+                                <td><t t-esc="row['partner']"/></td>
+                                <td style="text-align: right;"><t t-esc="'{:,.2f}'.format(row['base'])"/></td>
+                                <td style="text-align: right;"><t t-esc="'{:,.2f}'.format(row['vat'])"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <p class="note-box">
+                    ใบแนบนี้จัดทำจากระบบ Odoo Two Book เพื่อประกอบการตรวจสอบก่อนยื่น
+                    <a href="https://www.rd.go.th/fileadmin/tax_pdf/vat/2568/pp30_010968.pdf">แบบ ภ.พ.30 2568</a>
+                    ผ่าน RD e-Filing
                 </p>
             </div>
         </t>
     </template>
 
     <record id="action_two_book_pp30_report" model="ir.actions.report">
-        <field name="name">Two Book PP30 Report</field>
+        <field name="name">แบบ ภ.พ.30 (2568)</field>
         <field name="model">two.book.pp30.wizard</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">two_book.two_book_pp30_template</field>

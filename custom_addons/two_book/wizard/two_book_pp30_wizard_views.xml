@@ -5,15 +5,30 @@
         <field name="name">two.book.pp30.wizard.form</field>
         <field name="model">two.book.pp30.wizard</field>
         <field name="arch" type="xml">
-            <form string="รายงาน ภ.พ.30">
+            <form string="แบบ ภ.พ.30 (2568)">
                 <group>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                    <field name="date_from"/>
-                    <field name="date_to"/>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="branch_code"/>
+                    </group>
+                    <group>
+                        <field name="overpaid_carryforward"/>
+                        <field name="filing_normal"/>
+                        <field name="supplementary_no" invisible="filing_normal"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
                 </group>
+                <div class="alert alert-info" role="alert">
+                    สร้างแบบตามโครงสร้าง
+                    <strong>ภ.พ.30 ปรับปรุง 2568</strong>
+                    (ช่อง 1–16 + ใบแนบ) จาก Invoice/Bill ที่ Posted ใน Odoo
+                    — ยื่นจริงผ่าน RD e-Filing
+                </div>
                 <footer>
                     <button name="action_print"
-                            string="Print PDF"
+                            string="Print ภ.พ.30"
                             type="object"
                             class="btn-primary"/>
                     <button string="Cancel" special="cancel"/>
@@ -23,7 +38,7 @@
     </record>
 
     <record id="action_two_book_pp30_wizard" model="ir.actions.act_window">
-        <field name="name">รายงาน ภ.พ.30</field>
+        <field name="name">แบบ ภ.พ.30 (2568)</field>
         <field name="res_model">two.book.pp30.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -31,7 +46,7 @@
 
     <menuitem
         id="menu_two_book_pp30"
-        name="รายงาน ภ.พ.30"
+        name="แบบ ภ.พ.30 (2568)"
         parent="menu_two_book_summary_root"
         action="action_two_book_pp30_wizard"
         sequence="60"
