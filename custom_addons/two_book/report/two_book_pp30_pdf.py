@@ -42,22 +42,62 @@ class TwoBookPP30PdfBuilder:
 
         template_path = file_path(cls.TEMPLATE_PATH)
         reader = PdfReader(template_path)
-        writer = PdfWriter()
-        writer.append(reader)
-
+        writer = cls._clone_reader(reader)
         field_values = cls._build_field_values(report_data)
+
         for page in writer.pages:
-            writer.update_page_form_field_values(
-                page,
-                field_values,
-                auto_regenerate=False,
-            )
-        if hasattr(writer, 'set_need_appearances_writer'):
-            writer.set_need_appearances_writer(True)
+            cls._update_page_fields(writer, page, field_values)
+
+        cls._set_need_appearances(writer)
 
         output = io.BytesIO()
         writer.write(output)
         return output.getvalue()
+
+    @staticmethod
+    def _clone_reader(reader):
+        writer = PdfWriter()
+        if hasattr(writer, 'append'):
+            writer.append(reader)
+            return writer
+        if hasattr(writer, 'clone_reader_document_root'):
+            writer.clone_reader_document_root(reader)
+            return writer
+        if hasattr(writer, 'appendPagesFromReader'):
+            writer.appendPagesFromReader(reader)
+            return writer
+        for page in reader.pages:
+            writer.add_page(page)
+        return writer
+
+    @staticmethod
+    def _update_page_fields(writer, page, field_values):
+        if hasattr(writer, 'update_page_form_field_values'):
+            try:
+                writer.update_page_form_field_values(page, field_values, auto_regenerate=False)
+                return
+            except TypeError:
+                writer.update_page_form_field_values(page, field_values)
+                return
+        if hasattr(writer, 'updatePageFormFieldValues'):
+            writer.updatePageFormFieldValues(page, field_values)
+            return
+        raise RuntimeError('PyPDF2 version does not support PDF form field updates.')
+
+    @staticmethod
+    def _set_need_appearances(writer):
+        if hasattr(writer, 'set_need_appearances_writer'):
+            writer.set_need_appearances_writer(True)
+            return
+        try:
+            from PyPDF2.generic import BooleanObject, NameObject
+            root = writer._root_object  # pylint: disable=protected-access
+            if '/AcroForm' in root:
+                root['/AcroForm'].update({
+                    NameObject('/NeedAppearances'): BooleanObject(True),
+                })
+        except Exception as err:
+            _logger.debug('Two Book PP30: skip NeedAppearances flag: %s', err)
 
     @classmethod
     def _build_field_values(cls, report_data):
