@@ -221,7 +221,7 @@
                 </table>
 
                 <div class="signature-block">
-                    <strong>การขอคืนภาษี</strong> ( ) เป็นเงินสด &nbsp;&nbsp; ( ) โอนเข้าธนาคาร / พร้อมเพย์
+                    <strong>การขอคืนภาษี</strong> ( ) เป็นเงินสด    ( ) โอนเข้าธนาคาร / พร้อมเพย์
                     <div class="field-row" style="margin-top: 8px;">
                         ลงชื่อ <span class="line-box" style="min-width: 220px;"/> ผู้ประกอบการ
                     </div>
@@ -329,9 +329,7 @@
                 </t>
 
                 <p class="note-box">
-                    ใบแนบนี้จัดทำจากระบบ Odoo Two Book เพื่อประกอบการตรวจสอบก่อนยื่น
-                    <a href="https://www.rd.go.th/fileadmin/tax_pdf/vat/2568/pp30_010968.pdf">แบบ ภ.พ.30 2568</a>
-                    ผ่าน RD e-Filing
+                    ใบแนบนี้จัดทำจากระบบ Odoo Two Book เพื่อประกอบการตรวจสอบก่อนยื่นผ่าน RD e-Filing
                 </p>
             </div>
         </t>

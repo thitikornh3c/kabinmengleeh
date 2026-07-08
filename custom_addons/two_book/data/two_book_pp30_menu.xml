@@ -5,8 +5,8 @@
     <menuitem
         id="menu_two_book_pp30"
         name="Print ภ.พ.30 (2568)"
-        parent="two_book.menu_two_book_summary_root"
-        action="two_book.action_two_book_pp30_wizard"
+        parent="menu_two_book_summary_root"
+        action="action_two_book_pp30_wizard"
         sequence="55"
     />
 
@@ -14,7 +14,7 @@
         id="menu_two_book_pp30_top"
         name="ภ.พ.30"
         parent="point_of_sale.menu_point_root"
-        action="two_book.action_two_book_pp30_wizard"
+        action="action_two_book_pp30_wizard"
         sequence="16"
     />
 
@@ -22,7 +22,7 @@
         id="menu_two_book_pp30_orders"
         name="ภ.พ.30"
         parent="point_of_sale.menu_point_of_sale"
-        action="two_book.action_two_book_pp30_wizard"
+        action="action_two_book_pp30_wizard"
         sequence="47"
     />
 
