@@ -29,8 +29,8 @@ class AccountPayment(models.Model):
     def action_post(self):
         res = super().action_post()
         for record in self:
-            if record.ref:
+            if record.memo:
                 loan_lines = self.env['repayment.line'].search([
-                    ('name', 'ilike', record.ref)])
+                    ('name', 'ilike', record.memo)])
                 loan_lines.write({'state': 'paid'})
         return res
